@@ -1,9 +1,7 @@
 package com.ISS.Booking_iss_tim21.model;
 
-enum ReviewType{
-    Accommodation,
-    Owner
-}
+import com.ISS.Booking_iss_tim21.model.enumeration.ReviewType;
+
 public class Review {
 
     ReviewType type;
