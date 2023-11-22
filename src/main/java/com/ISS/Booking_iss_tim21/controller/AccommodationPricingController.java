@@ -67,7 +67,7 @@ public class AccommodationPricingController {
         accommodationPricing.setPrice(accommodationPricingDTO.getPrice());
 
 
-//        accommodationPricing = accommodationPricing.save(accommodationPricing);
+//        accommodationPricing = pricingService.save(accommodationPricing);
         return new ResponseEntity<>(new AccommodationPricingDTO(accommodationPricing), HttpStatus.OK);
     }
 

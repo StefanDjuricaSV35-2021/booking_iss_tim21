@@ -71,7 +71,7 @@ public class ReservationRequestController {
         reservationRequest.setStatus(reservationRequestDTO.getStatus());
 
 
-//        accommodationPricing = accommodationPricing.save(accommodationPricing);
+//        reservationRequest = requestService.save(reservationRequest);
         return new ResponseEntity<>(new ReservationRequestDTO(reservationRequest), HttpStatus.OK);
     }
 
