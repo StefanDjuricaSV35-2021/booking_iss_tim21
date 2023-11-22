@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 @RestController
-@RequestMapping(value = "api/courses")
+@RequestMapping(value = "api/guests")
 public class GuestController {
 
 //    @Autowired

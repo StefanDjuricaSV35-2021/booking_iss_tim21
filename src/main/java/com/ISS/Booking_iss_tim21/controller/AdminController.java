@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "api/courses")
+@RequestMapping(value = "api/admins")
 public class AdminController {
 
 //    @Autowired

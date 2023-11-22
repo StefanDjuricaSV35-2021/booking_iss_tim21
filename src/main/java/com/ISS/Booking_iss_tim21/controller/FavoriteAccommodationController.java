@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "api/courses")
+@RequestMapping(value = "api/favorite-accommodations")
 public class FavoriteAccommodationController {
 
 //    @Autowired
