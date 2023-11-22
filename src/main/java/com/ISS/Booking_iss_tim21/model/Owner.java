@@ -15,5 +15,4 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @Entity
 public class Owner extends User{
-
 }

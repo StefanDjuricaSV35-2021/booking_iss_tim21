@@ -11,5 +11,4 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 @Entity
 public class Guest extends User{
-
 }
