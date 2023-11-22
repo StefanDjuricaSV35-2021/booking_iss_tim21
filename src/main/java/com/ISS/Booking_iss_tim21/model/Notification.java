@@ -1,9 +1,6 @@
 package com.ISS.Booking_iss_tim21.model;
 
-<<<<<<< Updated upstream
-import com.ISS.Booking_iss_tim21.model.enumeration.NotificationType;
 
-=======
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +17,6 @@ enum NotificationType{
 @Getter
 @Setter
 @Entity
->>>>>>> Stashed changes
 public class Notification {
 
     @Id
