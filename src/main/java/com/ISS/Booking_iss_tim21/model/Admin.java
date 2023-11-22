@@ -13,17 +13,6 @@ import javax.persistence.Id;
 @Setter
 @NoArgsConstructor
 @Entity
-public class Admin {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+public class Admin extends User{
 
-    private String email;
-    private String password;
-    private String name;
-    private String surname;
-    private String country;
-    private String city;
-    private String street;
-    private String phone;
 }

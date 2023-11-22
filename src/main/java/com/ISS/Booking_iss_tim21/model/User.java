@@ -25,7 +25,4 @@ public class User {
     private String city;
     private String street;
     private String phone;
-
-    @Embedded
-    private ArrayList<Accommodation> favoriteApartments;
 }
