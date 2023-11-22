@@ -1,9 +1,6 @@
 package com.ISS.Booking_iss_tim21.model;
 
-<<<<<<< Updated upstream
-import com.ISS.Booking_iss_tim21.model.enumeration.ReviewType;
 
-=======
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +15,6 @@ enum ReviewType{
 @Getter
 @Setter
 @Entity
->>>>>>> Stashed changes
 public class Review {
 
     @Id
