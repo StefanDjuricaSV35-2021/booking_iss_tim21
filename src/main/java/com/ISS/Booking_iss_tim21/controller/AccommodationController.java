@@ -6,8 +6,10 @@ import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
 import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/apartments")
+@RequestMapping("/accommodations")
 public class AccommodationController {
 //    @Autowired
 //    private AccommodationService accommodationService;
@@ -32,13 +34,14 @@ public class AccommodationController {
         for(Accommodation a : accommodations) {
             accommodationPreviewDTOs.add(new AccommodationPreviewDTO(a));
         }
+
         return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<AccommodationDetailsDTO> getAccommodation(@PathVariable Long id) {
 
-        //Accommodation accommodation = Accommodation.findOne(id);
+        //Accommodation accommodation = accommodationService.findOne(id);
         Accommodation accommodation = new Accommodation(1L, 1L, "name", AccommodationType.Apartment, 1, 2, "a", new HashSet<Amenity>(), new HashSet<String>(), 2);
 
 
@@ -49,7 +52,7 @@ public class AccommodationController {
         return new ResponseEntity<>(new AccommodationDetailsDTO(accommodation), HttpStatus.OK);
     }
 
-    @PostMapping(consumes = "application/json")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDetailsDTO> createAccommodation(@RequestBody AccommodationDetailsDTO accommodationDTO) {
         Accommodation accommodation = new Accommodation(accommodationDTO);
         //Long accommodationId = accommodationService.createAccommodation(accommodation);
