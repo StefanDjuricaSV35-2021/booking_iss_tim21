@@ -1,5 +1,7 @@
 package com.ISS.Booking_iss_tim21.model;
 
+import javax.persistence.Embedded;
+
 enum NotificationType{
     RESERVATION_REQUEST,
     RESERVATION_CANCELLATION,
