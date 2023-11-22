@@ -62,7 +62,6 @@ public class AccommodationPricingController {
         if (accommodationPricing == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        accommodationPricing.setId(accommodationPricingDTO.getId());
         accommodationPricing.setAccommodationId(accommodationPricingDTO.getAccommodationId());
         accommodationPricing.setTimeSlot(accommodationPricingDTO.getTimeSlot());
         accommodationPricing.setPrice(accommodationPricingDTO.getPrice());
@@ -86,7 +85,7 @@ public class AccommodationPricingController {
     }
 
     @GetMapping(value = "/{accommodationId}/accommodationPricings")
-    public ResponseEntity<List<AccommodationPricingDTO>> getAccommodationsPricings(@PathVariable Long accommodationId) {
+    public ResponseEntity<List<AccommodationPricingDTO>> getPricingsForAccommodation(@PathVariable Long accommodationId) {
 //        Set<AccommodationPricing> accommodationPricings = pricingService.getAccommodationsPricings(accommodationId);
         Set<AccommodationPricing> accommodationPricings = new HashSet<>();
         accommodationPricings.add(new AccommodationPricing(1L, 1L, new TimeSlot(), 1.0));
@@ -100,7 +99,7 @@ public class AccommodationPricingController {
     }
 
     @GetMapping(value = "/{accommodationId}/activeAccommodationPricings")
-    public ResponseEntity<List<AccommodationPricingDTO>> getActiveAccommodationsPricings(@PathVariable Long accommodationId) {
+    public ResponseEntity<List<AccommodationPricingDTO>> getActivePricingsForAccommodation(@PathVariable Long accommodationId) {
         long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
 
 //        Set<AccommodationPricing> accommodationPricings = pricingService.getAccommodationsPricings(accommodationId);

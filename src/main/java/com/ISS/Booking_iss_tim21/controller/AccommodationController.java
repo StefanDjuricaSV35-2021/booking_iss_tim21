@@ -67,7 +67,6 @@ public class AccommodationController {
         if (accommodation == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        accommodation.setId(accommodationDTO.getId());
         accommodation.setOwnerId(accommodationDTO.getOwnerId());
         accommodation.setName(accommodationDTO.getName());
         accommodation.setType(accommodationDTO.getType());
