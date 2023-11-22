@@ -1,5 +1,6 @@
 package com.ISS.Booking_iss_tim21.model;
 
+import com.ISS.Booking_iss_tim21.model.enumeration.ReservationRequestStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

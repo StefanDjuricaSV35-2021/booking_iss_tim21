@@ -15,7 +15,6 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @Embeddable
-@Entity
 public class TimeSlot {
     Date startDate;
     Date endDate;
