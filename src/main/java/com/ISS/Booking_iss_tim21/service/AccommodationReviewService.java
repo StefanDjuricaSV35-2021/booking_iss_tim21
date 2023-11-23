@@ -9,7 +9,7 @@ import java.util.List;
 
 @Service
 public class AccommodationReviewService {
-    
+
     AccommodationReviewRepository repository;
 
     public List<AccommodationReview> getAll() {return repository.findAll();}

@@ -4,7 +4,7 @@ package com.ISS.Booking_iss_tim21.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Getter
 @Setter
@@ -16,11 +16,11 @@ public class OwnerReview {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "reviewer_id")
     Guest reviewer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "reviewed_id")
     Owner reviewed;
 
     @Column(name = "comment", nullable = true)

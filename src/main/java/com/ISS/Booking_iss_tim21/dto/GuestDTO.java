@@ -30,7 +30,7 @@ public class GuestDTO {
         // Explicitly define the mappings
         PropertyMap<Guest, GuestDTO> propertyMap = new PropertyMap<Guest, GuestDTO>() {
             protected void configure() {
-                map().setUserId(source.getUserId());
+                map().setUserId(source.getId());
                 map().setEmail(source.getEmail());
                 map().setPassword(source.getPassword());
                 map().setName(source.getName());

@@ -3,10 +3,9 @@ package com.ISS.Booking_iss_tim21.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 
-import javax.persistence.*;
+
+import jakarta.persistence.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -14,10 +13,12 @@ import java.util.ArrayList;
 @Setter
 @NoArgsConstructor
 @Entity
+@Table(name = "\"User\"")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    @Column(name = "user_id")
+    private Long Id;
 
     private String email;
     private String password;

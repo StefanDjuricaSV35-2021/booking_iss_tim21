@@ -2,7 +2,7 @@ package com.ISS.Booking_iss_tim21.model;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Getter
 @Setter

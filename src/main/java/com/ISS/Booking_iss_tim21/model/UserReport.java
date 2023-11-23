@@ -3,7 +3,7 @@ package com.ISS.Booking_iss_tim21.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Getter
 @Setter
@@ -15,11 +15,11 @@ public class UserReport {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "reported_id")
     User reported;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "reporter_id")
     User reporter;
 
     @Column(name = "description", nullable = true)

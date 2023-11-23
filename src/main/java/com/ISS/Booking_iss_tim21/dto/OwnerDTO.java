@@ -30,7 +30,7 @@ public class OwnerDTO {
         // Explicitly define the mappings
         PropertyMap<Owner, OwnerDTO> propertyMap = new PropertyMap<Owner, OwnerDTO>() {
             protected void configure() {
-                map().setUserId(source.getUserId());
+                map().setUserId(source.getId());
                 map().setEmail(source.getEmail());
                 map().setPassword(source.getPassword());
                 map().setName(source.getName());

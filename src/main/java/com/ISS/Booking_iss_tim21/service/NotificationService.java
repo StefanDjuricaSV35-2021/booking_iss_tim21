@@ -10,6 +10,7 @@ import java.util.List;
 @Service
 public class NotificationService {
 
+    @Autowired
     NotificationRepository repository;
 
     public List<Notification> getAll(){
