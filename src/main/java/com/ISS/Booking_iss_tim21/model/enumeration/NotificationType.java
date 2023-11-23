@@ -1,6 +1,6 @@
 package com.ISS.Booking_iss_tim21.model.enumeration;
 
-enum NotificationType {
+public enum NotificationType {
     RESERVATION_REQUEST,
     RESERVATION_CANCELLATION,
     OWNER_REVIEW,

@@ -1,22 +1,20 @@
 package com.ISS.Booking_iss_tim21.model;
 
 
+import com.ISS.Booking_iss_tim21.model.enumeration.NotificationType;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 
-enum NotificationType{
-    RESERVATION_REQUEST,
-    RESERVATION_CANCELLATION,
-    OWNER_REVIEW,
-    ACCOMMODATION_REVIEW,
-    RESERVATION_REQUEST_RESPONSE
-
-}
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Notification {
 
     @Id

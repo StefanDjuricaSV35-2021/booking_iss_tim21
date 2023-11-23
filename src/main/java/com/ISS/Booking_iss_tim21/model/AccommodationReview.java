@@ -1,5 +1,6 @@
 package com.ISS.Booking_iss_tim21.model;
 
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +9,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-public class UserReport {
+public class AccommodationReview {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,12 +17,17 @@ public class UserReport {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    User reported;
+    Guest reviewer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    User reporter;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id")
+//    Accommodation reviewed;
+    
+    @Column(name = "comment", nullable = true)
+    String comment;
 
-    @Column(name = "description", nullable = true)
-    String description;
+    @Column(name = "rating", nullable = true)
+    int rating;
+
 }
+

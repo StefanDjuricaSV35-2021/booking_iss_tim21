@@ -17,7 +17,7 @@ public class ReviewReport {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "report_id")
-    Review reported;
+    AccommodationReview reported;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

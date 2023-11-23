@@ -3,6 +3,8 @@ package com.ISS.Booking_iss_tim21.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 import javax.persistence.*;
 import java.lang.reflect.Array;
@@ -25,4 +27,5 @@ public class User {
     private String city;
     private String street;
     private String phone;
+
 }
