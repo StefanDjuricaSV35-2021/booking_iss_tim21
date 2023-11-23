@@ -9,8 +9,7 @@ import java.util.List;
 
 @Service
 public class AccommodationReviewService {
-
-    @Autowired
+    
     AccommodationReviewRepository repository;
 
     public List<AccommodationReview> getAll() {return repository.findAll();}
