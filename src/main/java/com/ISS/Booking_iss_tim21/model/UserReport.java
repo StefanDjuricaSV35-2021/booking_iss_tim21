@@ -12,16 +12,15 @@ public class UserReport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reported_id")
-    User reported;
+    private User reported;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporter_id")
-    User reporter;
+    private User reporter;
 
-    @Column(name = "description", nullable = true)
-    String description;
+    private String description;
 }

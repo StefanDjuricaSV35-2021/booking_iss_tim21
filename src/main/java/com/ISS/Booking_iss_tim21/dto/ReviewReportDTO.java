@@ -10,13 +10,13 @@ public class ReviewReportDTO {
 
     private Integer id;
     AccommodationReviewDTO reported;
-    OwnerDTO reporter;
+    UserDTO reporter;
     String description;
 
     public ReviewReportDTO(ReviewReport report) {
         this.id=report.getId();
         this.reported=new AccommodationReviewDTO(report.getReported());
-        this.reporter=new OwnerDTO(report.getReporter());
+        this.reporter=new UserDTO(report.getReporter());
         this.description=report.getDescription();
 
     }

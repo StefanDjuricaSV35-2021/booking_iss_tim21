@@ -1,16 +1,14 @@
 package com.ISS.Booking_iss_tim21.dto;
 
-import com.ISS.Booking_iss_tim21.model.Owner;
 import com.ISS.Booking_iss_tim21.model.OwnerReview;
-import com.ISS.Booking_iss_tim21.model.User;
 
 public class OwnerReviewDTO {
 
     private Integer id;
 
-    GuestDTO reviewer;
+    UserDTO reviewer;
 
-    OwnerDTO reviewed;
+    UserDTO reviewed;
 
     String comment;
 
@@ -18,8 +16,8 @@ public class OwnerReviewDTO {
 
     public OwnerReviewDTO(OwnerReview review) {
         this.id=review.getId();
-        this.reviewer = new GuestDTO(review.getReviewer());
-        this.reviewed= new OwnerDTO(review.getReviewed());
+        this.reviewer = new UserDTO(review.getReviewer());
+        this.reviewed= new UserDTO(review.getReviewed());
         this.comment=review.getComment();
         this.rating=review.getRating();
     }
@@ -28,11 +26,11 @@ public class OwnerReviewDTO {
         return id;
     }
 
-    public GuestDTO getReviewer() {
+    public UserDTO getReviewer() {
         return reviewer;
     }
 
-    public OwnerDTO getReviewed() {
+    public UserDTO getReviewed() {
         return reviewed;
     }
 

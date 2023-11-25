@@ -13,16 +13,16 @@ public class ReviewReport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "report_id")
-    AccommodationReview reported;
+    private AccommodationReview reported;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    Owner reporter;
+    private User reporter;
 
     @Column(name = "description", nullable = true)
-    String description;
+    private String description;
 }

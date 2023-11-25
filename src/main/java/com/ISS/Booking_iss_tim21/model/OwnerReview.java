@@ -13,21 +13,21 @@ public class OwnerReview {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewer_id")
-    Guest reviewer;
+    private User reviewer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewed_id")
-    Owner reviewed;
+    private User reviewed;
 
     @Column(name = "comment", nullable = true)
-    String comment;
+    private String comment;
 
     @Column(name = "rating", nullable = true)
-    int rating;
+    private int rating;
 
 }
 

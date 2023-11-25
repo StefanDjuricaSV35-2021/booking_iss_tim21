@@ -7,7 +7,7 @@ public class AccommodationReviewDTO {
 
     private Integer id;
 
-    GuestDTO reviewer;
+    UserDTO reviewer;
 
     String comment;
 
@@ -15,7 +15,7 @@ public class AccommodationReviewDTO {
 
     public AccommodationReviewDTO(AccommodationReview review) {
         this.id=review.getId();
-        this.reviewer = new GuestDTO(review.getReviewer());
+        this.reviewer = new UserDTO(review.getReviewer());
         this.comment=review.getComment();
         this.rating=review.getRating();
     }
@@ -24,7 +24,7 @@ public class AccommodationReviewDTO {
         return id;
     }
 
-    public GuestDTO getReviewer() {
+    public UserDTO getReviewer() {
         return reviewer;
     }
 

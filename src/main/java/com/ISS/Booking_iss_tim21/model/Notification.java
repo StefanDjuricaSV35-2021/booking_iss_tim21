@@ -19,16 +19,16 @@ public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    User recipient;
+    private User recipient;
 
     @Enumerated(EnumType.STRING)
-    NotificationType type;
+    private NotificationType type;
 
     @Column(name = "message", nullable = true)
-    String message;
+    private String message;
 
 }

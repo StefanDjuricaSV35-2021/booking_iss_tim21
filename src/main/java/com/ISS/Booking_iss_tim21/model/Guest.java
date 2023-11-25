@@ -9,6 +9,5 @@ import jakarta.persistence.Entity;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
-public class Guest extends User{
+public class Guest{
 }

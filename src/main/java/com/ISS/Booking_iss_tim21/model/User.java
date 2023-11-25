@@ -1,13 +1,13 @@
 package com.ISS.Booking_iss_tim21.model;
 
+import com.ISS.Booking_iss_tim21.model.enumeration.UserType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 import jakarta.persistence.*;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+
 
 @Getter
 @Setter
@@ -17,9 +17,9 @@ import java.util.ArrayList;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
     private Long Id;
 
+    private UserType type;
     private String email;
     private String password;
     private String name;

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/reviews/owner")
+@RequestMapping("/reviews/user")
 public class OwnerReviewController {
 
     @Autowired

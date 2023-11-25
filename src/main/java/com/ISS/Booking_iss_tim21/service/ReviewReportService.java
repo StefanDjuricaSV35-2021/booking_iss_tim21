@@ -12,17 +12,19 @@ import java.util.List;
 @Service
 public class ReviewReportService {
 
+    @Autowired
+
     ReviewReportRepository repository;
 
     public List<ReviewReport> getAll(){
         return repository.findAll();
     }
 
-    public ReviewReport findOne(Integer id) {
+    public ReviewReport findOne(Long id) {
         return repository.findById(id).orElseGet(null);
     }
 
-    public void remove(Integer id) {
+    public void remove(Long id) {
         repository.deleteById(id);
     }
 

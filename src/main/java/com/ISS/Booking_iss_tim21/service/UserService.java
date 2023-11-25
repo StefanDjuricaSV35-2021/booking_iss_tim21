@@ -1,34 +1,31 @@
 package com.ISS.Booking_iss_tim21.service;
 
-import com.ISS.Booking_iss_tim21.model.Notification;
-import com.ISS.Booking_iss_tim21.repository.NotificationRepository;
+import com.ISS.Booking_iss_tim21.model.User;
+import com.ISS.Booking_iss_tim21.model.UserReport;
+import com.ISS.Booking_iss_tim21.repository.UserReportRepository;
+import com.ISS.Booking_iss_tim21.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class NotificationService {
+public class UserService {
 
     @Autowired
-    NotificationRepository repository;
+    UserRepository repository;
 
-    public List<Notification> getAll(){
+    public List<User> getAll(){
         return repository.findAll();
     }
 
-    public Notification findOne(Long id) {
+    public User findOne(Long id) {
         return repository.findById(id).orElseGet(null);
     }
 
     public void remove(Long id) {
         repository.deleteById(id);
     }
-
-
-
-
-
 
 
 }

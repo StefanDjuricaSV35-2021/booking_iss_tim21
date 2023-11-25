@@ -1,9 +1,6 @@
 package com.ISS.Booking_iss_tim21.dto;
 
-import com.ISS.Booking_iss_tim21.model.Accommodation;
-import com.ISS.Booking_iss_tim21.model.Admin;
 import com.ISS.Booking_iss_tim21.model.User;
-import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +10,7 @@ import org.modelmapper.PropertyMap;
 @Getter
 @AllArgsConstructor
 @Setter
-public class AdminDTO {
+public class UserDTO {
     private Long userId;
 
     private String email;
@@ -25,11 +22,11 @@ public class AdminDTO {
     private String street;
     private String phone;
 
-    public AdminDTO(Admin admin) {
+    public UserDTO(User user) {
         ModelMapper modelMapper = new ModelMapper();
 
         // Explicitly define the mappings
-        PropertyMap<Admin, AdminDTO> propertyMap = new PropertyMap<Admin, AdminDTO>() {
+        PropertyMap<User, UserDTO> propertyMap = new PropertyMap<User, UserDTO>() {
             protected void configure() {
                 map().setUserId(source.getId());
                 map().setEmail(source.getEmail());
@@ -46,6 +43,6 @@ public class AdminDTO {
         modelMapper.addMappings(propertyMap);
 
         // Perform the mapping
-        modelMapper.map(admin, this);
+        modelMapper.map(user, this);
     }
 }

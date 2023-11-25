@@ -10,11 +10,12 @@ import java.util.List;
 @Service
 public class AccommodationReviewService {
 
+    @Autowired
     AccommodationReviewRepository repository;
 
     public List<AccommodationReview> getAll() {return repository.findAll();}
-    public AccommodationReview findOne(Integer id) {
+    public AccommodationReview findOne(Long id) {
         return repository.findById(id).orElseGet(null);
     }
-    public void remove(Integer id) { repository.deleteById(id);}
+    public void remove(Long id) { repository.deleteById(id);}
 }

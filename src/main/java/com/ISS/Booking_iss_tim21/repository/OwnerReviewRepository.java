@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface OwnerReviewRepository extends JpaRepository<OwnerReview,Integer> {
+public interface OwnerReviewRepository extends JpaRepository<OwnerReview,Long> {
 }

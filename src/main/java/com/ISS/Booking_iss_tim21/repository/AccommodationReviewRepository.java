@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface AccommodationReviewRepository extends JpaRepository<AccommodationReview,Integer> {
+public interface AccommodationReviewRepository extends JpaRepository<AccommodationReview,Long> {
 }

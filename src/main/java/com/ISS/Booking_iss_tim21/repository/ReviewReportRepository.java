@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface ReviewReportRepository extends JpaRepository<ReviewReport,Integer> {
+public interface ReviewReportRepository extends JpaRepository<ReviewReport,Long> {
 }

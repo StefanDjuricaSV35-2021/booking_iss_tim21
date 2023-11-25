@@ -13,21 +13,21 @@ public class AccommodationReview {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    Guest reviewer;
+    private User reviewer;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "user_id")
 //    Accommodation reviewed;
     
     @Column(name = "comment", nullable = true)
-    String comment;
+    private String comment;
 
     @Column(name = "rating", nullable = true)
-    int rating;
+    private int rating;
 
 }
 

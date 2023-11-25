@@ -1,8 +1,6 @@
 package com.ISS.Booking_iss_tim21.dto;
 
-import com.ISS.Booking_iss_tim21.model.Admin;
 import com.ISS.Booking_iss_tim21.model.FavoriteAccommodation;
-import com.ISS.Booking_iss_tim21.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

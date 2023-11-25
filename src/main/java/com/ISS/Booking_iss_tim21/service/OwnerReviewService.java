@@ -11,11 +11,13 @@ import java.util.List;
 @Service
 public class OwnerReviewService {
 
+    @Autowired
+
     OwnerReviewRepository repository;
 
     public List<OwnerReview> getAll() {return repository.findAll();}
-    public OwnerReview findOne(Integer id) {
+    public OwnerReview findOne(Long id) {
         return repository.findById(id).orElseGet(null);
     }
-    public void remove(Integer id) { repository.deleteById(id);}
+    public void remove(Long id) { repository.deleteById(id);}
 }
