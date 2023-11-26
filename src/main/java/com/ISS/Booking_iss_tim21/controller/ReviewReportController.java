@@ -32,7 +32,7 @@ public class ReviewReportController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteReviewReport(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteReviewReport(@PathVariable Long id) {
 
         ReviewReport report = service.findOne(id);
 

@@ -63,7 +63,7 @@ public class OwnerReviewController {
 
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteOwnerReview(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteOwnerReview(@PathVariable Long id) {
 
         OwnerReview review = service.findOne(id);
 

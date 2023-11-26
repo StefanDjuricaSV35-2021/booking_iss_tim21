@@ -4,7 +4,7 @@ import com.ISS.Booking_iss_tim21.model.OwnerReview;
 
 public class OwnerReviewDTO {
 
-    private Integer id;
+    private Long id;
 
     UserDTO reviewer;
 
@@ -22,7 +22,7 @@ public class OwnerReviewDTO {
         this.rating=review.getRating();
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 

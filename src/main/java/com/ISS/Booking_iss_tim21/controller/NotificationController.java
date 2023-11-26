@@ -34,7 +34,7 @@ public class NotificationController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteCourse(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
 
         Notification course = service.findOne(id);
 
