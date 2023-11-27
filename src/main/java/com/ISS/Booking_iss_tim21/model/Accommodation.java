@@ -3,25 +3,23 @@ package com.ISS.Booking_iss_tim21.model;
 import com.ISS.Booking_iss_tim21.dto.AccommodationDetailsDTO;
 import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
 import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@Entity
+@Entity
 public class Accommodation {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long ownerId;
     private String name;
@@ -29,8 +27,13 @@ public class Accommodation {
     private int minGuests;
     private int maxGuests;
     private String description;
-    private HashSet<Amenity> amenities;
-    private HashSet<String> photos;
+
+    @ElementCollection(targetClass = Amenity.class, fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
+    private Set<Amenity> amenities;
+
+    @ElementCollection
+    private Set<String> photos;
     private int daysForCancellation;
 
     public Accommodation(AccommodationDetailsDTO accommodationDTO) {
