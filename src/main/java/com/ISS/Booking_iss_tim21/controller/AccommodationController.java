@@ -29,7 +29,6 @@ public class AccommodationController {
     @GetMapping
     public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodations() {
         // List<Accommodation> accommodations = accommodationService.findAll();
-        //accommodations.add(new Accommodation(1L, 1L, "name", AccommodationType.Apartment, 1, 2, "a", new HashSet<Amenity>(), new HashSet<String>(), 2));
 
         List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
         for(Accommodation a : accommodations) {

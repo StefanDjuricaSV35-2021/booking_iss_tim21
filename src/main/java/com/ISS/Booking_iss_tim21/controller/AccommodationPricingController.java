@@ -12,19 +12,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pricings")
 public class AccommodationPricingController {
     //    @Autowired
     //    private AccommodationPricingService pricingService;
+    private static List<AccommodationPricing> accommodationPricings = new ArrayList<>();
 
     @GetMapping
     public ResponseEntity<List<AccommodationPricingDTO>> getAccommodationPricings() {
-        // List<AccommodationPricing> accommodationPricings = pricingService.findAll();
-        List<AccommodationPricing> accommodationPricings = new ArrayList<>();
-        accommodationPricings.add(new AccommodationPricing(1L, 1L, new TimeSlot(), 1.0));
-
         List<AccommodationPricingDTO> accommodationPricingDTOs = new ArrayList<>();
         for(AccommodationPricing a : accommodationPricings) {
             accommodationPricingDTOs.add(new AccommodationPricingDTO(a));
@@ -37,7 +35,7 @@ public class AccommodationPricingController {
     public ResponseEntity<AccommodationPricingDTO> getAccommodationPricing(@PathVariable Long id) {
 
         //AccommodationPricing accommodationPrice = pricingController.findOne(id);
-        AccommodationPricing accommodationPricing = new AccommodationPricing(1L, 1L, new TimeSlot(), 1.0);
+        AccommodationPricing accommodationPricing =findAccommodationPricingById(id);
 
         if (accommodationPricing == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -50,13 +48,14 @@ public class AccommodationPricingController {
     public ResponseEntity<AccommodationPricingDTO> createAccommodationPricing(@RequestBody AccommodationPricingDTO accommodationPricingDTO) {
         AccommodationPricing accommodationPricing = new AccommodationPricing(accommodationPricingDTO);
         //Long accommodationPricingId = pricingService.createAccommodation(accommodation);
+        accommodationPricings.add(accommodationPricing);
         return new ResponseEntity<>(new AccommodationPricingDTO(accommodationPricing), HttpStatus.CREATED);
     }
 
     @PutMapping(consumes = "application/json")
     public ResponseEntity<AccommodationPricingDTO> updateAccommodation(@RequestBody AccommodationPricingDTO accommodationPricingDTO) {
 //      AccommodationPricing accommodationPricing = pricingService.findOne(AccommodationPricingDTO.getId());
-        AccommodationPricing accommodationPricing = new AccommodationPricing(1L, 1L, new TimeSlot(), 1.0);
+        AccommodationPricing accommodationPricing = findAccommodationPricingById(accommodationPricingDTO.getId());
 
 
         if (accommodationPricing == null) {
@@ -74,10 +73,12 @@ public class AccommodationPricingController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteAccommodationPricing(@PathVariable Long id) {
 //        AccommodationPricing accommodationPricing = pricingService.findOne(id);
-        AccommodationPricing accommodationPricing = new AccommodationPricing(1L, 1L, new TimeSlot(), 1.0);
+        AccommodationPricing accommodationPricing = findAccommodationPricingById(id);
 
         if (accommodationPricing != null) {
 //            pricingService.remove(id);
+            accommodationPricings.remove(accommodationPricing);
+
             return  new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -87,32 +88,50 @@ public class AccommodationPricingController {
     @GetMapping(value = "/{accommodationId}/accommodationPricings")
     public ResponseEntity<List<AccommodationPricingDTO>> getPricingsForAccommodation(@PathVariable Long accommodationId) {
 //        Set<AccommodationPricing> accommodationPricings = pricingService.getAccommodationsPricings(accommodationId);
-        Set<AccommodationPricing> accommodationPricings = new HashSet<>();
-        accommodationPricings.add(new AccommodationPricing(1L, 1L, new TimeSlot(), 1.0));
+        Set<AccommodationPricing> accommodationPricings = getAccommodationPricingsForAccommodation(accommodationId);
 
         List<AccommodationPricingDTO> accommodationPricingDTOS = new ArrayList<>();
         for (AccommodationPricing a : accommodationPricings) {
             accommodationPricingDTOS.add(new AccommodationPricingDTO(a));
         }
         return new ResponseEntity<>(accommodationPricingDTOS, HttpStatus.OK);
-
     }
 
     @GetMapping(value = "/{accommodationId}/activeAccommodationPricings")
     public ResponseEntity<List<AccommodationPricingDTO>> getActivePricingsForAccommodation(@PathVariable Long accommodationId) {
-        long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
-
-//        Set<AccommodationPricing> accommodationPricings = pricingService.getAccommodationsPricings(accommodationId);
-        Set<AccommodationPricing> accommodationPricings = new HashSet<>();
-        accommodationPricings.add(new AccommodationPricing(1L, 1L, new TimeSlot(), 1.0));
+//        Set<AccommodationPricing> accommodationPricings = pricingService.getActiveAccommodationsPricings(accommodationId);
+        Set<AccommodationPricing> activeAccommodationPricings = getActiveAccommodationPricings(accommodationId);
 
         List<AccommodationPricingDTO> accommodationPricingDTOS = new ArrayList<>();
-        for (AccommodationPricing a : accommodationPricings) {
-            if (a.getTimeSlot().getEndDate() > currentUnixTimestamp) {
-                accommodationPricingDTOS.add(new AccommodationPricingDTO(a));
-            }
+        for (AccommodationPricing a : activeAccommodationPricings) {
+            accommodationPricingDTOS.add(new AccommodationPricingDTO(a));
         }
         return new ResponseEntity<>(accommodationPricingDTOS, HttpStatus.OK);
 
+    }
+
+
+
+    // Temporary function
+    private AccommodationPricing findAccommodationPricingById(Long id) {
+        return accommodationPricings.stream()
+                .filter(a -> a.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
+    // Temporary function
+    private Set<AccommodationPricing> getAccommodationPricingsForAccommodation(Long accommodationId) {
+        return accommodationPricings.stream()
+                .filter(a -> a.getAccommodationId().equals(accommodationId))
+                .collect(Collectors.toSet());
+    }
+
+    // Temporary function
+    private Set<AccommodationPricing> getActiveAccommodationPricings(Long accommodationId) {
+        long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
+        return accommodationPricings.stream()
+                .filter(a -> a.getAccommodationId().equals(accommodationId) && a.getTimeSlot().getEndDate() > currentUnixTimestamp)
+                .collect(Collectors.toSet());
     }
 }
