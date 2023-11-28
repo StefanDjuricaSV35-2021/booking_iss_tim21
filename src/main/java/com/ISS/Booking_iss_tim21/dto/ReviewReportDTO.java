@@ -8,7 +8,7 @@ import javax.persistence.*;
 public class ReviewReportDTO {
 
 
-    private Integer id;
+    private Long id;
     AccommodationReviewDTO reported;
     UserDTO reporter;
     String description;

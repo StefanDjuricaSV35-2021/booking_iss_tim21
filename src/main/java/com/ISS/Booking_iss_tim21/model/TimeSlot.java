@@ -16,6 +16,6 @@ import java.util.Date;
 @NoArgsConstructor
 @Embeddable
 public class TimeSlot {
-    long startDate;
-    long endDate;
+    private long startDate;
+    private long endDate;
 }

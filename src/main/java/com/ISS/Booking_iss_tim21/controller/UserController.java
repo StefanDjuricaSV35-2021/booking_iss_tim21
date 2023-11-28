@@ -37,6 +37,7 @@ public class UserController {
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
         User user = userService.findOne(id);
 
+
         // course must exist
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -87,7 +88,7 @@ public class UserController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         User course = userService.findOne(id);
-        User user = new User();
+
 
         if (user != null) {
             userService.remove(id);

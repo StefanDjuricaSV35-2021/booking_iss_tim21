@@ -4,7 +4,7 @@ import com.ISS.Booking_iss_tim21.model.Notification;
 
 public class NotificationDTO {
 
-    private Integer id;
+    private Long id;
     String message;
 
     public NotificationDTO(Notification notification) {
@@ -12,13 +12,13 @@ public class NotificationDTO {
     }
 
 
-    public NotificationDTO(Integer id, String message) {
+    public NotificationDTO(Long id, String message) {
         this.id = id;
         this.message = message;
     }
 
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 

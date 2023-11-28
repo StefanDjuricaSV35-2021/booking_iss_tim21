@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 
 import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -22,8 +23,8 @@ public class AccommodationDetailsDTO {
     private int minGuests;
     private int maxGuests;
     private String description;
-    private HashSet<Amenity> amenities;
-    private HashSet<String> photos;
+    private Set<Amenity> amenities;
+    private Set<String> photos;
     private int daysForCancellation;
 
     public AccommodationDetailsDTO(Accommodation accommodation) {
