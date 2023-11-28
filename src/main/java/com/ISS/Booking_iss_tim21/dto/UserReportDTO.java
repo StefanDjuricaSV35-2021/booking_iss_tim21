@@ -5,7 +5,7 @@ import com.ISS.Booking_iss_tim21.model.UserReport;
 
 public class UserReportDTO {
 
-        Integer id;
+        Long id;
         UserDTO reported;
         UserDTO reporter;
         String description;

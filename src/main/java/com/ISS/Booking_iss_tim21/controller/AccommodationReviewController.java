@@ -35,7 +35,7 @@ public class AccommodationReviewController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteAccommodationReview(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteAccommodationReview(@PathVariable Long id) {
 
         AccommodationReview review = service.findOne(id);
 

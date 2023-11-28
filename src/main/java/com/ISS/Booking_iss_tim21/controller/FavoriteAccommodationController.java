@@ -33,7 +33,7 @@ public class FavoriteAccommodationController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<FavoriteAccommodationDTO> getFavoriteAccommodation(@PathVariable Integer id) {
+    public ResponseEntity<FavoriteAccommodationDTO> getFavoriteAccommodation(@PathVariable Long id) {
 //        FavoriteAccommodation favoriteAccommodation = favoriteAccommodationService.findOne(id);
         FavoriteAccommodation favoriteAccommodation = new FavoriteAccommodation();
 
@@ -74,7 +74,7 @@ public class FavoriteAccommodationController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteFavoriteAccommodation(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteFavoriteAccommodation(@PathVariable Long id) {
 //        FavoriteAccommodation course = favoriteAccommodationService.findOne(id);
         FavoriteAccommodation favoriteAccommodation = new FavoriteAccommodation();
 

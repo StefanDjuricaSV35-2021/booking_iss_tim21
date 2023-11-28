@@ -3,6 +3,8 @@ package com.ISS.Booking_iss_tim21.controller;
 
 import com.ISS.Booking_iss_tim21.dto.UserDTO;
 import com.ISS.Booking_iss_tim21.model.User;
+import com.ISS.Booking_iss_tim21.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,14 +16,13 @@ import java.util.List;
 @RequestMapping(value = "api/Users")
 public class UserController {
 
-//    @Autowired
-//    private UserService userService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getUsers() {
 
-//        List<User> users = userService.findAll();
-        List<User> users = new ArrayList<>();
+        List<User> users = userService.getAll();
 
         // convert courses to DTOs
         List<UserDTO> usersDTO = new ArrayList<>();
@@ -33,9 +34,8 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable Integer id) {
-//        User user = userService.findOne(id);
-        User user = new User();
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
+        User user = userService.findOne(id);
 
         // course must exist
         if (user == null) {
@@ -64,9 +64,8 @@ public class UserController {
 
     @PutMapping(consumes = "application/json")
     public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO) {
-        // a course must exist
-//        User user = userService.findOne(userDTO.getUserId());
-        User user = new User();
+
+        User user = userService.findOne(userDTO.getUserId());
 
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -86,12 +85,12 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
-//        User course = userService.findOne(id);
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        User course = userService.findOne(id);
         User user = new User();
 
         if (user != null) {
-//            userService.remove(id);
+            userService.remove(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
