@@ -59,7 +59,7 @@ public class UserController {
         user.setStreet(userDTO.getStreet());
         user.setPhone(userDTO.getPhone());
 
-//        user = userService.save(user);
+        user = userService.save(user);
         return new ResponseEntity<>(new UserDTO(user), HttpStatus.CREATED);
     }
 
@@ -81,13 +81,14 @@ public class UserController {
         user.setStreet(userDTO.getStreet());
         user.setPhone(userDTO.getPhone());
 
-//        user = userService.save(user);
+        user = userService.save(user);
         return new ResponseEntity<>(new UserDTO(user), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        User course = userService.findOne(id);
+
+        User user = userService.findOne(id);
 
 
         if (user != null) {
