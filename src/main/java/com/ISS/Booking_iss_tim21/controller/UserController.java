@@ -87,7 +87,8 @@ public class UserController {
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        User course = userService.findOne(id);
+        
+        User user = userService.findOne(id);
 
 
         if (user != null) {
