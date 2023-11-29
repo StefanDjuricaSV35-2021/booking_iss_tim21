@@ -3,6 +3,7 @@ package com.ISS.Booking_iss_tim21.controller;
 
 import com.ISS.Booking_iss_tim21.dto.UserDTO;
 import com.ISS.Booking_iss_tim21.model.User;
+import com.ISS.Booking_iss_tim21.model.enumeration.UserType;
 import com.ISS.Booking_iss_tim21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -97,6 +98,20 @@ public class UserController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping(value = "/{type}")
+    public ResponseEntity<List<UserDTO>> getTypeUsers(@PathVariable UserType type) {
+        List<User> users = userService.getTypeUsers(type);
+
+
+        // convert courses to DTOs
+        List<UserDTO> usersDTO = new ArrayList<>();
+        for (User s : users) {
+            usersDTO.add(new UserDTO(s));
+        }
+
+        return new ResponseEntity<>(usersDTO, HttpStatus.OK);
     }
 }
 
