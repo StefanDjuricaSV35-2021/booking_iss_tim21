@@ -1,5 +1,7 @@
 package com.ISS.Booking_iss_tim21.model;
 
+import com.ISS.Booking_iss_tim21.dto.AccommodationDetailsDTO;
+import com.ISS.Booking_iss_tim21.dto.UserDTO;
 import com.ISS.Booking_iss_tim21.model.enumeration.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +18,6 @@ import lombok.experimental.FieldNameConstants;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "\"User\"")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,4 +33,16 @@ public class User {
     private String street;
     private String phone;
 
+    public User(UserDTO userDTO) {
+        this.Id = userDTO.getId();
+        this.type = userDTO.getType();
+        this.email = userDTO.getEmail();
+        this.password = userDTO.getPassword();
+        this.name = userDTO.getName();
+        this.surname = userDTO.getSurname();
+        this.country = userDTO.getCountry();
+        this.city = userDTO.getCity();
+        this.street = userDTO.getStreet();
+        this.phone = userDTO.getPhone();
+    }
 }
