@@ -2,7 +2,9 @@ package com.ISS.Booking_iss_tim21.controller;
 
 import com.ISS.Booking_iss_tim21.dto.ReservationDTO;
 import com.ISS.Booking_iss_tim21.model.Reservation;
+import com.ISS.Booking_iss_tim21.model.ReservationRequest;
 import com.ISS.Booking_iss_tim21.model.TimeSlot;
+import com.ISS.Booking_iss_tim21.model.enumeration.ReservationRequestStatus;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +21,11 @@ public class ReservationController {
     //    @Autowired
     //    private ReservationService reservationService;
     private static List<Reservation> reservations = new ArrayList<>();
+
+    static {
+        reservations.add(new Reservation(1L, 1L, 1L, 2, 2.0, new TimeSlot(), ReservationStatus.Active));
+        reservations.add(new Reservation(2L, 2L, 2L, 3, 3.5, new TimeSlot(), ReservationStatus.Active));
+    }
 
 
     @GetMapping

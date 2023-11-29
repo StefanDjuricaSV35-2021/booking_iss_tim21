@@ -21,6 +21,10 @@ public class ReservationRequestController {
     //    private ReservationRequestService requestService;
     private static List<ReservationRequest> reservationRequests = new ArrayList<>();
 
+    static {
+        reservationRequests.add(new ReservationRequest(1L, 1L, 1L, 2, 2.0, new TimeSlot(), ReservationRequestStatus.Accepted));
+        reservationRequests.add(new ReservationRequest(2L, 2L, 2L, 3, 3.5, new TimeSlot(), ReservationRequestStatus.Accepted));
+    }
     @GetMapping
     public ResponseEntity<List<ReservationRequestDTO>> getReservationRequests() {
         // List<ReservationRequest> reservationRequests = requestService.findAll();
