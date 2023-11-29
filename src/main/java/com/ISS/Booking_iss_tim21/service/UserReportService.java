@@ -28,5 +28,10 @@ public class UserReportService {
         repository.deleteById(id);
     }
 
+    public void save(UserReport ur) {
+        repository.save(ur);
+    }
+
+
 
 }

@@ -1,6 +1,8 @@
 package com.ISS.Booking_iss_tim21.controller;
 
+import com.ISS.Booking_iss_tim21.dto.AccommodationDetailsDTO;
 import com.ISS.Booking_iss_tim21.dto.NotificationDTO;
+import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.Notification;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.NotificationType;
@@ -14,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "api/notifications")
+@RequestMapping(value = "notifications")
 public class NotificationController {
 
     @Autowired
@@ -31,6 +33,27 @@ public class NotificationController {
         }
 
         return new ResponseEntity<>(notificationsDTO, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<List<NotificationDTO>> getUserNotifications(@PathVariable Long id) {
+
+        //Accommodation accommodation = accommodationService.findOne(id);
+        List<Notification> notifications= service.getUserNotification(id);
+
+        if (notifications == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        List<NotificationDTO> notificationDTOS=new ArrayList<NotificationDTO>();
+
+        for (Notification n:notifications) {
+
+            notificationDTOS.add(new NotificationDTO(n));
+
+        }
+
+        return new ResponseEntity<>(notificationDTOS, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")

@@ -17,6 +17,8 @@ public class NotificationService {
         return repository.findAll();
     }
 
+    public List<Notification> getUserNotification(Long userId){ return repository.findAllByUserId(userId);}
+
     public Notification findOne(Long id) {
         return repository.findById(id).orElseGet(null);
     }

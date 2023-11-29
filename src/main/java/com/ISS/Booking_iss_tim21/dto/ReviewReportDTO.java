@@ -9,13 +9,13 @@ public class ReviewReportDTO {
 
 
     private Long id;
-    Long reportedAptId;
+    Long reportedReviewId;
     Long reporterId;
     String description;
 
     public ReviewReportDTO(ReviewReport report) {
         this.id=report.getId();
-        this.reportedAptId=report.getReported().getId();
+        this.reportedReviewId=report.getReported().getId();
         this.reporterId=report.getReporter().getId();
         this.description=report.getDescription();
 
@@ -25,8 +25,8 @@ public class ReviewReportDTO {
         return id;
     }
 
-    public Long getReportedAptId() {
-        return reportedAptId;
+    public Long getReportedReviewId() {
+        return reportedReviewId;
     }
 
     public Long getReporterId() {

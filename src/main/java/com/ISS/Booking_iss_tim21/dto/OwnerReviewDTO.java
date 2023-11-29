@@ -1,7 +1,9 @@
 package com.ISS.Booking_iss_tim21.dto;
 
 import com.ISS.Booking_iss_tim21.model.OwnerReview;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class OwnerReviewDTO {
 
     private Long id;

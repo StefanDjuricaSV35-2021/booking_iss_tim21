@@ -1,6 +1,7 @@
 package com.ISS.Booking_iss_tim21.model;
 
 
+import com.ISS.Booking_iss_tim21.dto.OwnerReviewDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +13,6 @@ import jakarta.persistence.*;
 public class OwnerReview {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,6 +28,8 @@ public class OwnerReview {
 
     @Column(name = "rating", nullable = true)
     private int rating;
+
+
 
 }
 

@@ -2,7 +2,12 @@ package com.ISS.Booking_iss_tim21.dto;
 
 
 import com.ISS.Booking_iss_tim21.model.UserReport;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserReportDTO {
 
         Long id;

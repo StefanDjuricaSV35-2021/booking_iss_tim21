@@ -20,4 +20,5 @@ public class OwnerReviewService {
         return repository.findById(id).orElseGet(null);
     }
     public void remove(Long id) { repository.deleteById(id);}
+    public void save(OwnerReview or){repository.save(or);}
 }
