@@ -3,6 +3,7 @@ package com.ISS.Booking_iss_tim21.controller;
 
 import com.ISS.Booking_iss_tim21.dto.UserDTO;
 import com.ISS.Booking_iss_tim21.model.User;
+import com.ISS.Booking_iss_tim21.model.enumeration.UserType;
 import com.ISS.Booking_iss_tim21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "api/Users")
+@RequestMapping(value = "/users")
 public class UserController {
 
     @Autowired
@@ -50,6 +51,8 @@ public class UserController {
     public ResponseEntity<UserDTO> saveUser(@RequestBody UserDTO userDTO) {
         User user = new User();
 
+        user.setId(userDTO.getId());
+        user.setType(userDTO.getType());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
         user.setName(userDTO.getName());
@@ -66,12 +69,14 @@ public class UserController {
     @PutMapping(consumes = "application/json")
     public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO) {
 
-        User user = userService.findOne(userDTO.getUserId());
+        User user = userService.findOne(userDTO.getId());
 
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        user.setId(userDTO.getId());
+        user.setType(userDTO.getType());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
         user.setName(userDTO.getName());
@@ -97,6 +102,20 @@ public class UserController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping(value = "/type/{type}")
+    public ResponseEntity<List<UserDTO>> getTypeUsers(@PathVariable UserType type) {
+        List<User> users = userService.getTypeUsers(type);
+
+
+        // convert courses to DTOs
+        List<UserDTO> usersDTO = new ArrayList<>();
+        for (User s : users) {
+            usersDTO.add(new UserDTO(s));
+        }
+
+        return new ResponseEntity<>(usersDTO, HttpStatus.OK);
     }
 }
 

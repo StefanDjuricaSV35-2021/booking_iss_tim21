@@ -26,6 +26,11 @@ public class AccommodationController {
 //    private AccommodationService accommodationService;
     private static List<Accommodation> accommodations = new ArrayList<>();
 
+    static {
+        accommodations.add(new Accommodation(1L, 1L, "name", AccommodationType.Apartment, 1, 2, "a", new HashSet<Amenity>(), new HashSet<String>(), 2));
+        accommodations.add(new Accommodation(2L, 1L, "name", AccommodationType.Apartment, 1, 2, "a", new HashSet<Amenity>(), new HashSet<String>(), 2));
+    }
+
     @GetMapping
     public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodations() {
         // List<Accommodation> accommodations = accommodationService.findAll();

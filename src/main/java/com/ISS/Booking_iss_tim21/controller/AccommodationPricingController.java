@@ -21,6 +21,10 @@ public class AccommodationPricingController {
     //    private AccommodationPricingService pricingService;
     private static List<AccommodationPricing> accommodationPricings = new ArrayList<>();
 
+    static {
+        accommodationPricings.add(new AccommodationPricing(1L, 1L, new TimeSlot(), 1.0));
+        accommodationPricings.add(new AccommodationPricing(2L, 1L, new TimeSlot(), 1.0));
+    }
     @GetMapping
     public ResponseEntity<List<AccommodationPricingDTO>> getAccommodationPricings() {
         List<AccommodationPricingDTO> accommodationPricingDTOs = new ArrayList<>();
