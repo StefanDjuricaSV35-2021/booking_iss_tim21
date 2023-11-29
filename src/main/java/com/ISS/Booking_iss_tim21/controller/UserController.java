@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "api/Users")
+@RequestMapping(value = "/users")
 public class UserController {
 
     @Autowired
@@ -51,6 +51,8 @@ public class UserController {
     public ResponseEntity<UserDTO> saveUser(@RequestBody UserDTO userDTO) {
         User user = new User();
 
+        user.setId(userDTO.getId());
+        user.setType(userDTO.getType());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
         user.setName(userDTO.getName());
@@ -67,12 +69,14 @@ public class UserController {
     @PutMapping(consumes = "application/json")
     public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDTO) {
 
-        User user = userService.findOne(userDTO.getUserId());
+        User user = userService.findOne(userDTO.getId());
 
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        user.setId(userDTO.getId());
+        user.setType(userDTO.getType());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
         user.setName(userDTO.getName());
@@ -100,7 +104,7 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/{type}")
+    @GetMapping(value = "/type/{type}")
     public ResponseEntity<List<UserDTO>> getTypeUsers(@PathVariable UserType type) {
         List<User> users = userService.getTypeUsers(type);
 
