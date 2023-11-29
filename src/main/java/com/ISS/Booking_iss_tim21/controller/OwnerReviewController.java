@@ -41,7 +41,24 @@ public class OwnerReviewController {
         return new ResponseEntity<>(reviewsDTO, HttpStatus.OK);
     }
 
-  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<List<OwnerReviewDTO>> getOwnerReviews(@PathVariable Long id) {
+        //Accommodation accommodation = accommodationService.findOne(id);
+        List<OwnerReview> reviews= ownerReviewService.getAllByOwnerId(id);
+        if (reviews == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        List<OwnerReviewDTO> reviewDTOS=new ArrayList<OwnerReviewDTO>();
+        for (OwnerReview n:reviews) {
+            reviewDTOS.add(new OwnerReviewDTO(n));
+        }
+        return new ResponseEntity<>(reviewDTOS, HttpStatus.OK);
+    }
+
+
+
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OwnerReviewDTO> createOwnerReview(@RequestBody OwnerReviewDTO ownerReviewDTO) {
 
         if (ownerReviewDTO.getReviewerId() == null || ownerReviewDTO.getReviewedId() == null) {
