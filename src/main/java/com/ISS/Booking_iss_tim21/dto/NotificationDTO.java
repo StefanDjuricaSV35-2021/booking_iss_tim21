@@ -5,6 +5,8 @@ import com.ISS.Booking_iss_tim21.model.Notification;
 public class NotificationDTO {
 
     private Long id;
+
+
     String message;
 
     public NotificationDTO(Notification notification) {

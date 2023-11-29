@@ -19,9 +19,9 @@ public class AccommodationReview {
     @JoinColumn(name = "user_id")
     private User reviewer;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id")
-//    Accommodation reviewed;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "accommodation_id")
+    Accommodation reviewed;
     
     @Column(name = "comment", nullable = true)
     private String comment;

@@ -9,16 +9,32 @@ public class ReviewReportDTO {
 
 
     private Long id;
-    AccommodationReviewDTO reported;
-    UserDTO reporter;
+    Long reportedAptId;
+    Long reporterId;
     String description;
 
     public ReviewReportDTO(ReviewReport report) {
         this.id=report.getId();
-        this.reported=new AccommodationReviewDTO(report.getReported());
-        this.reporter=new UserDTO(report.getReporter());
+        this.reportedAptId=report.getReported().getId();
+        this.reporterId=report.getReporter().getId();
         this.description=report.getDescription();
 
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getReportedAptId() {
+        return reportedAptId;
+    }
+
+    public Long getReporterId() {
+        return reporterId;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }
 
