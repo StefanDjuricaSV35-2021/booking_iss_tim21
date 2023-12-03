@@ -3,7 +3,11 @@ package com.ISS.Booking_iss_tim21.controller;
 import com.ISS.Booking_iss_tim21.dto.ReservationRequestDTO;
 import com.ISS.Booking_iss_tim21.model.ReservationRequest;
 import com.ISS.Booking_iss_tim21.model.TimeSlot;
+import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationRequestStatus;
+import com.ISS.Booking_iss_tim21.service.ReservationRequestService;
+import com.ISS.Booking_iss_tim21.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,17 +21,13 @@ import java.util.Set;
 @RestController
 @RequestMapping("/reservationRequests")
 public class ReservationRequestController {
-    //    @Autowired
-    //    private ReservationRequestService requestService;
-    private static List<ReservationRequest> reservationRequests = new ArrayList<>();
-
-    static {
-        reservationRequests.add(new ReservationRequest(1L, 1L, 1L, 2, 2.0, new TimeSlot(), ReservationRequestStatus.Accepted));
-        reservationRequests.add(new ReservationRequest(2L, 2L, 2L, 3, 3.5, new TimeSlot(), ReservationRequestStatus.Accepted));
-    }
+    @Autowired
+    private ReservationRequestService requestService;
+    @Autowired
+    private UserService userService;
     @GetMapping
     public ResponseEntity<List<ReservationRequestDTO>> getReservationRequests() {
-        // List<ReservationRequest> reservationRequests = requestService.findAll();
+        List<ReservationRequest> reservationRequests = requestService.getAll();
 
         List<ReservationRequestDTO> reservationRequestDTOs = new ArrayList<>();
         for(ReservationRequest r : reservationRequests) {
@@ -40,8 +40,7 @@ public class ReservationRequestController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<ReservationRequestDTO> getReservationRequest(@PathVariable Long id) {
 
-        //ReservationRequest reservationRequest = requestController.findOne(id);
-        ReservationRequest reservationRequest = findReservationRequestById(id);
+        ReservationRequest reservationRequest = requestService.findOne(id);
 
         if (reservationRequest == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -52,18 +51,23 @@ public class ReservationRequestController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationRequestDTO> createReservationRequest(@RequestBody ReservationRequestDTO reservationRequestDTO) {
-        ReservationRequest reservationRequest = new ReservationRequest(reservationRequestDTO);
+//        if (reservationRequestDTO.getUserId() == null) {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+//        User user = userService.findOne(reservationRequestDTO.getUserId());
+//        if (user == null) {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
 
-        //Long reservationRequestId = requestService.createReservationRequest(reservationRequest);
-        reservationRequests.add(reservationRequest);
+        ReservationRequest reservationRequest = new ReservationRequest(reservationRequestDTO);
+        requestService.save(reservationRequest);
 
         return new ResponseEntity<>(new ReservationRequestDTO(reservationRequest), HttpStatus.CREATED);
     }
 
     @PutMapping(consumes = "application/json")
     public ResponseEntity<ReservationRequestDTO> updateReservationRequest(@RequestBody ReservationRequestDTO reservationRequestDTO) {
-//      ReservationRequest reservationRequest = requestService.findOne(reservationRequestDTO.getId());
-        ReservationRequest reservationRequest = findReservationRequestById(reservationRequestDTO.getId());
+      ReservationRequest reservationRequest = requestService.findOne(reservationRequestDTO.getId());
 
         if (reservationRequest == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -76,19 +80,16 @@ public class ReservationRequestController {
         reservationRequest.setStatus(reservationRequestDTO.getStatus());
 
 
-//        reservationRequest = requestService.save(reservationRequest);
+        requestService.save(reservationRequest);
         return new ResponseEntity<>(new ReservationRequestDTO(reservationRequest), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteReservationRequest(@PathVariable Long id) {
-//        ReservationRequest reservationRequest = requestService.findOne(id);
-        ReservationRequest reservationRequest = findReservationRequestById(id);
+        ReservationRequest reservationRequest = requestService.findOne(id);
 
         if (reservationRequest != null) {
-//            requestService.remove(id);
-            reservationRequests.remove(reservationRequest);
-
+            requestService.remove(id);
             return  new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -97,59 +98,23 @@ public class ReservationRequestController {
 
     @GetMapping(value = "/{userId}/reservationRequests")
     public ResponseEntity<List<ReservationRequestDTO>> getUsersReservationRequests(@PathVariable Long userId) {
-//        Set<ReservationRequest> reservationRequests = requestService.getUsersRequests(userId);
-        Set<ReservationRequest> userReservationRequests = getUsersReservationRequestsById(userId);
+        List<ReservationRequest> reservationRequests = requestService.getUsersReservationRequestsById(userId);
         List<ReservationRequestDTO> reservationRequestDTOs = new ArrayList<>();
-        for (ReservationRequest r : userReservationRequests) {
+        for (ReservationRequest r : reservationRequests) {
             reservationRequestDTOs.add(new ReservationRequestDTO(r));
         }
         return new ResponseEntity<>(reservationRequestDTOs, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{userId}/currentReservationRequests")
-    public ResponseEntity<List<ReservationRequestDTO>> getActiveReservationRequests(@PathVariable Long userId) {
-//        Set<ReservationRequest> reservationRequests = requestService.getUsersRequests(userId);
-        Set<ReservationRequest> reservationRequest = getCurrentReservationRequestsByUserId(userId);
+    public ResponseEntity<List<ReservationRequestDTO>> getCurrentReservationRequests(@PathVariable Long userId) {
+        List<ReservationRequest> reservationRequests = requestService.getCurrentReservationRequestsById(userId);
 
         List<ReservationRequestDTO> reservationRequestDTOs = new ArrayList<>();
-        for (ReservationRequest r : reservationRequest) {
+        for (ReservationRequest r : reservationRequests) {
             reservationRequestDTOs.add(new ReservationRequestDTO(r));
         }
         return new ResponseEntity<>(reservationRequestDTOs, HttpStatus.OK);
 
-    }
-
-
-    // Temporary method
-    private ReservationRequest findReservationRequestById(Long id) {
-        for (ReservationRequest r : reservationRequests) {
-            if (r.getId().equals(id)) {
-                return r;
-            }
-        }
-        return null;
-    }
-
-    // Temporary method
-    private Set<ReservationRequest> getUsersReservationRequestsById(Long userId) {
-        Set<ReservationRequest> userReservationRequests = new HashSet<>();
-        for (ReservationRequest r : reservationRequests) {
-            if (r.getUserId().equals(userId)) {
-                userReservationRequests.add(r);
-            }
-        }
-        return userReservationRequests;
-    }
-
-    // Temporary method
-    private Set<ReservationRequest> getCurrentReservationRequestsByUserId(Long userId) {
-        long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
-        Set<ReservationRequest> currentReservationRequests = new HashSet<>();
-        for (ReservationRequest r : reservationRequests) {
-            if (r.getUserId().equals(userId) && r.getTimeSlot().getStartDate() > currentUnixTimestamp) {
-                currentReservationRequests.add(r);
-            }
-        }
-        return currentReservationRequests;
     }
 }

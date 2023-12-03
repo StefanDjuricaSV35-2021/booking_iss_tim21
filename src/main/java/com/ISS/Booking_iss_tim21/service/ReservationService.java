@@ -32,11 +32,11 @@ public class ReservationService {
     public List<Reservation> getCurrentReservationsById(Long userId) {
         long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
         List<Reservation> allReservations = repository.getUsersReservationsById(userId);
-        List<Reservation> currentreservations = new ArrayList<>();
+        List<Reservation> currentReservations = new ArrayList<>();
         for (Reservation r : allReservations) {
             if (r.getTimeSlot().getStartDate() > currentUnixTimestamp)
-                currentreservations.add(r);
+                currentReservations.add(r);
         }
-        return currentreservations;
+        return currentReservations;
     }
 }

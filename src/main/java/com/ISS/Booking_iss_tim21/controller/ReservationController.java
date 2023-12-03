@@ -4,6 +4,7 @@ import com.ISS.Booking_iss_tim21.dto.ReservationDTO;
 import com.ISS.Booking_iss_tim21.model.Reservation;
 import com.ISS.Booking_iss_tim21.model.ReservationRequest;
 import com.ISS.Booking_iss_tim21.model.TimeSlot;
+import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationRequestStatus;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationStatus;
 import com.ISS.Booking_iss_tim21.service.ReservationService;
@@ -56,7 +57,7 @@ public class ReservationController {
 //        if (reservationDTO.getUserId() == null) {
 //            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 //        }
-//        User user = userService.findOne(accommodationDTO.getOwnerId());
+//        User user = userService.findOne(reservationDTO.getUserId());
 //        if (user == null) {
 //            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 //        }
