@@ -27,12 +27,6 @@ public class AccommodationController {
     private AccommodationService accommodationService;
     @Autowired
     private UserService userService;
-    private static List<Accommodation> accommodations = new ArrayList<>();
-
-    static {
-        accommodations.add(new Accommodation(1L, 1L, "name", AccommodationType.Apartment, 1, 2, "a", new HashSet<Amenity>(), new HashSet<String>(), 2));
-        accommodations.add(new Accommodation(2L, 1L, "name", AccommodationType.Apartment, 1, 2, "a", new HashSet<Amenity>(), new HashSet<String>(), 2));
-    }
 
     @GetMapping
     public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodations() {
@@ -50,7 +44,6 @@ public class AccommodationController {
     public ResponseEntity<AccommodationDetailsDTO> getAccommodation(@PathVariable Long id) {
 
         Accommodation accommodation = accommodationService.findOne(id);
-        //Accommodation accommodation = findAccommodationById(id);
 
         if (accommodation == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -73,7 +66,6 @@ public class AccommodationController {
 
         Accommodation accommodation = new Accommodation(accommodationDTO);
         accommodationService.save(accommodation);
-        //accommodations.add(accommodation);
 
         return new ResponseEntity<>(new AccommodationDetailsDTO(accommodation), HttpStatus.CREATED);
     }
@@ -81,7 +73,6 @@ public class AccommodationController {
     @PutMapping(consumes = "application/json")
     public ResponseEntity<AccommodationDetailsDTO> updateAccommodation(@RequestBody AccommodationDetailsDTO accommodationDTO) {
         Accommodation accommodation = accommodationService.findOne(accommodationDTO.getId());
-        //Accommodation accommodation = findAccommodationById(accommodationDTO.getId());
 
         if (accommodation == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -103,13 +94,9 @@ public class AccommodationController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteAccommodation(@PathVariable Long id) {
         Accommodation accommodation = accommodationService.findOne(id);
-        //Accommodation accommodation = findAccommodationById(id);
 
         if (accommodation != null) {
-
             accommodationService.remove(id);
-//            accommodations.remove(accommodation);
-
             return  new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -119,7 +106,6 @@ public class AccommodationController {
     @GetMapping(value = "/{ownerId}/accommodations")
     public ResponseEntity<List<AccommodationPreviewDTO>> getOwnersAccommodations(@PathVariable Long ownerId) {
         List<Accommodation> ownerAccommodations = accommodationService.getOwnersAccommodations(ownerId);
-        //Set<Accommodation> ownerAccommodations = getOwnerAccommodations(ownerId);
         List<AccommodationPreviewDTO> accommodationsDTO = new ArrayList<>();
         for (Accommodation a : ownerAccommodations) {
             accommodationsDTO.add(new AccommodationPreviewDTO(a));
