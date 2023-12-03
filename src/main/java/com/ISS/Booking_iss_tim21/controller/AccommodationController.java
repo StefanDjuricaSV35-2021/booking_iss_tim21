@@ -3,10 +3,11 @@ package com.ISS.Booking_iss_tim21.controller;
 import com.ISS.Booking_iss_tim21.dto.AccommodationDetailsDTO;
 import com.ISS.Booking_iss_tim21.dto.AccommodationPreviewDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
+import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
 import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
-import org.slf4j.LoggerFactory;
+import com.ISS.Booking_iss_tim21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,8 +23,10 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/accommodations")
 public class AccommodationController {
-//    @Autowired
-//    private AccommodationService accommodationService;
+    @Autowired
+    private AccommodationService accommodationService;
+    @Autowired
+    private UserService userService;
     private static List<Accommodation> accommodations = new ArrayList<>();
 
     static {
@@ -33,7 +36,7 @@ public class AccommodationController {
 
     @GetMapping
     public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodations() {
-        // List<Accommodation> accommodations = accommodationService.findAll();
+         List<Accommodation> accommodations = accommodationService.getAll();
 
         List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
         for(Accommodation a : accommodations) {
@@ -46,8 +49,8 @@ public class AccommodationController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<AccommodationDetailsDTO> getAccommodation(@PathVariable Long id) {
 
-        //Accommodation accommodation = accommodationService.findOne(id);
-        Accommodation accommodation = findAccommodationById(id);
+        Accommodation accommodation = accommodationService.findOne(id);
+        //Accommodation accommodation = findAccommodationById(id);
 
         if (accommodation == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -58,18 +61,27 @@ public class AccommodationController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDetailsDTO> createAccommodation(@RequestBody AccommodationDetailsDTO accommodationDTO) {
-        Accommodation accommodation = new Accommodation(accommodationDTO);
 
-        //Long accommodationId = accommodationService.createAccommodation(accommodation);
-        accommodations.add(accommodation);
+        if (accommodationDTO.getOwnerId() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+//        User owner = userService.findOne(accommodationDTO.getOwnerId());
+//        if (owner == null) {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+
+        Accommodation accommodation = new Accommodation(accommodationDTO);
+        accommodationService.save(accommodation);
+        //accommodations.add(accommodation);
 
         return new ResponseEntity<>(new AccommodationDetailsDTO(accommodation), HttpStatus.CREATED);
     }
 
     @PutMapping(consumes = "application/json")
     public ResponseEntity<AccommodationDetailsDTO> updateAccommodation(@RequestBody AccommodationDetailsDTO accommodationDTO) {
-//      Accommodation accommodation = accommodationService.findOne(accommodationDetailsDTO.getId());
-        Accommodation accommodation = findAccommodationById(accommodationDTO.getId());
+        Accommodation accommodation = accommodationService.findOne(accommodationDTO.getId());
+        //Accommodation accommodation = findAccommodationById(accommodationDTO.getId());
 
         if (accommodation == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -84,19 +96,19 @@ public class AccommodationController {
         accommodation.setPhotos(accommodationDTO.getPhotos());
         accommodation.setDaysForCancellation(accommodationDTO.getDaysForCancellation());
 
-//        accommodation = accommodationService.save(accommodation);
+        accommodationService.save(accommodation);
         return new ResponseEntity<>(new AccommodationDetailsDTO(accommodation), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteAccommodation(@PathVariable Long id) {
-//        Accommodation accommodation = accommodationService.findOne(id);
-        Accommodation accommodation = findAccommodationById(id);
+        Accommodation accommodation = accommodationService.findOne(id);
+        //Accommodation accommodation = findAccommodationById(id);
 
         if (accommodation != null) {
 
-//            accommodationService.remove(id);
-            accommodations.remove(accommodation);
+            accommodationService.remove(id);
+//            accommodations.remove(accommodation);
 
             return  new ResponseEntity<>(HttpStatus.OK);
         } else {
@@ -106,8 +118,8 @@ public class AccommodationController {
 
     @GetMapping(value = "/{ownerId}/accommodations")
     public ResponseEntity<List<AccommodationPreviewDTO>> getOwnersAccommodations(@PathVariable Long ownerId) {
-//        Set<Accommodation> accommodations = accommodationService.getOwnersAccommodations(ownerId);
-        Set<Accommodation> ownerAccommodations = getOwnerAccommodations(ownerId);
+        List<Accommodation> ownerAccommodations = accommodationService.getOwnersAccommodations(ownerId);
+        //Set<Accommodation> ownerAccommodations = getOwnerAccommodations(ownerId);
         List<AccommodationPreviewDTO> accommodationsDTO = new ArrayList<>();
         for (Accommodation a : ownerAccommodations) {
             accommodationsDTO.add(new AccommodationPreviewDTO(a));
@@ -115,20 +127,4 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodationsDTO, HttpStatus.OK);
 
     }
-
-    // Temporary method, will be removed once services are added
-    private Accommodation findAccommodationById(Long id) {
-        return accommodations.stream()
-                .filter(a -> a.getId().equals(id))
-                .findFirst()
-                .orElse(null);
-    }
-
-    // Temporary method, will be removed once services are added
-    private Set<Accommodation> getOwnerAccommodations(Long ownerId) {
-        return accommodations.stream()
-                .filter(a -> a.getOwnerId().equals(ownerId))
-                .collect(Collectors.toSet());
-    }
-
 }
