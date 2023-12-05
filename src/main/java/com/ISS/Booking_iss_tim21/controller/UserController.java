@@ -24,7 +24,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserDTO>> getUsers() {
 
-        List<User> users = userService.getAll();
+        List<User> users = userService.findAll();
 
         // convert courses to DTOs
         List<UserDTO> usersDTO = new ArrayList<>();

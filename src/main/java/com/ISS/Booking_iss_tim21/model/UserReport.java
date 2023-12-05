@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import jakarta.persistence.*;
 
+@Setter
+@Getter
 @Entity
 public class UserReport {
 
@@ -21,35 +23,4 @@ public class UserReport {
 
     private String description;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getReported() {
-        return reported;
-    }
-
-    public void setReported(User reported) {
-        this.reported = reported;
-    }
-
-    public User getReporter() {
-        return reporter;
-    }
-
-    public void setReporter(User reporter) {
-        this.reporter = reporter;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

@@ -1,6 +1,6 @@
 package com.ISS.Booking_iss_tim21.service;
 
-import com.ISS.Booking_iss_tim21.model.OwnerReview;
+import com.ISS.Booking_iss_tim21.model.review.OwnerReview;
 import com.ISS.Booking_iss_tim21.repository.OwnerReviewRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
