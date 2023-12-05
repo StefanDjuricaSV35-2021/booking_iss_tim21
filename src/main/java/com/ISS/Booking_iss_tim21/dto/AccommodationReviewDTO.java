@@ -1,7 +1,6 @@
 package com.ISS.Booking_iss_tim21.dto;
 
-import com.ISS.Booking_iss_tim21.model.AccommodationReview;
-import com.ISS.Booking_iss_tim21.model.OwnerReview;
+import com.ISS.Booking_iss_tim21.model.review.AccommodationReview;
 
 public class AccommodationReviewDTO {
 

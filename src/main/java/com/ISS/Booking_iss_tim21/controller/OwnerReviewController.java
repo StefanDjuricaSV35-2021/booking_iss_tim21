@@ -1,7 +1,7 @@
 package com.ISS.Booking_iss_tim21.controller;
 
 import com.ISS.Booking_iss_tim21.dto.OwnerReviewDTO;
-import com.ISS.Booking_iss_tim21.model.OwnerReview;
+import com.ISS.Booking_iss_tim21.model.review.OwnerReview;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.service.OwnerReviewService;
 import com.ISS.Booking_iss_tim21.service.UserService;
