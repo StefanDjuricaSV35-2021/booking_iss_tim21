@@ -4,6 +4,7 @@ import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -11,6 +12,7 @@ import org.modelmapper.PropertyMap;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserDTO {
     private Long Id;
 
