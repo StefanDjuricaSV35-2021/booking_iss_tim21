@@ -11,6 +11,10 @@ import lombok.Setter;
 
 import jakarta.persistence.*;
 import lombok.experimental.FieldNameConstants;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 
 
 @Getter
@@ -18,8 +22,8 @@ import lombok.experimental.FieldNameConstants;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="`user`")
-public class User {
+@Table(name="`users`")
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
@@ -33,6 +37,7 @@ public class User {
     private String city;
     private String street;
     private String phone;
+    private boolean enabled;
 
     public User(UserDTO userDTO) {
         this.Id = userDTO.getId();
@@ -45,5 +50,32 @@ public class User {
         this.city = userDTO.getCity();
         this.street = userDTO.getStreet();
         this.phone = userDTO.getPhone();
+        this.enabled = userDTO.isEnabled();
+    }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !enabled;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 }

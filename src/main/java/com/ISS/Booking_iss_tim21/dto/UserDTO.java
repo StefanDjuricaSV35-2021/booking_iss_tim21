@@ -25,6 +25,7 @@ public class UserDTO {
     private String city;
     private String street;
     private String phone;
+    private boolean enabled;
 
     public UserDTO(User user) {
         ModelMapper modelMapper = new ModelMapper();
@@ -42,6 +43,7 @@ public class UserDTO {
                 map().setCity(source.getCity());
                 map().setStreet(source.getStreet());
                 map().setPhone(source.getPhone());
+                map().setEnabled(source.isEnabled());
             }
         };
 

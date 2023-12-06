@@ -50,18 +50,7 @@ public class UserController {
 
     @PostMapping(consumes = "application/json")
     public ResponseEntity<UserDTO> saveUser(@RequestBody UserDTO userDTO) {
-        User user = new User();
-
-        user.setId(userDTO.getId());
-        user.setType(userDTO.getType());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
-        user.setName(userDTO.getName());
-        user.setSurname(userDTO.getSurname());
-        user.setCountry(userDTO.getCountry());
-        user.setCity(userDTO.getCity());
-        user.setStreet(userDTO.getStreet());
-        user.setPhone(userDTO.getPhone());
+        User user = new User(userDTO);
 
         user = userService.save(user);
         return new ResponseEntity<>(new UserDTO(user), HttpStatus.CREATED);
@@ -75,17 +64,7 @@ public class UserController {
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-        user.setId(userDTO.getId());
-        user.setType(userDTO.getType());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
-        user.setName(userDTO.getName());
-        user.setSurname(userDTO.getSurname());
-        user.setCountry(userDTO.getCountry());
-        user.setCity(userDTO.getCity());
-        user.setStreet(userDTO.getStreet());
-        user.setPhone(userDTO.getPhone());
+        user = new User(userDTO);
 
         user = userService.save(user);
         return new ResponseEntity<>(new UserDTO(user), HttpStatus.OK);
