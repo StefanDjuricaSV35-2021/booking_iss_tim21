@@ -6,11 +6,15 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import java.io.File;
+
 @SpringBootApplication
 public class BookingIssTim21Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BookingIssTim21Application.class, args);
+
+		SpringApplication.run(BookingIssTim21Application.class, args
+		);
 	}
 
 }

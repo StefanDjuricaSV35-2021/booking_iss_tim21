@@ -4,18 +4,27 @@ import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Base64;
+import java.util.Set;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class AccommodationPreviewDTO {
     private Long id;
-    private Long ownerId;
     private String name;
-    private AccommodationType type;
+    private String location;
+    private String image;
 
     public AccommodationPreviewDTO(Accommodation accommodation) {
         ModelMapper modelMapper = new ModelMapper();
@@ -24,9 +33,9 @@ public class AccommodationPreviewDTO {
         PropertyMap<Accommodation, AccommodationPreviewDTO> propertyMap = new PropertyMap<Accommodation, AccommodationPreviewDTO>() {
             protected void configure() {
                 map().setId(source.getId());
-                map().setOwnerId(source.getOwnerId());
                 map().setName(source.getName());
-                map().setType(source.getType());
+                map().setLocation(source.getLocation());
+
             }
         };
 
@@ -36,3 +45,5 @@ public class AccommodationPreviewDTO {
         modelMapper.map(accommodation, this);
     }
 }
+
+
