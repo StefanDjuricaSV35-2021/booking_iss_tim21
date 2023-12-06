@@ -20,6 +20,7 @@ public class AccommodationDetailsDTO {
     private Long ownerId;
     private String name;
     private AccommodationType type;
+    private String location;
     private int minGuests;
     private int maxGuests;
     private String description;
@@ -43,6 +44,7 @@ public class AccommodationDetailsDTO {
                 map().setAmenities(source.getAmenities());
                 map().setPhotos(source.getPhotos());
                 map().setDaysForCancellation(source.getDaysForCancellation());
+                map().setLocation(source.getLocation());
             }
         };
 

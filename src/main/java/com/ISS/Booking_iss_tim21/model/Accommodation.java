@@ -27,6 +27,7 @@ public class Accommodation {
     private int minGuests;
     private int maxGuests;
     private String description;
+    private String location;
 
     @ElementCollection(targetClass = Amenity.class, fetch = FetchType.LAZY)
     @Enumerated(EnumType.STRING)
@@ -47,5 +48,6 @@ public class Accommodation {
         this.amenities = accommodationDTO.getAmenities();
         this.photos = accommodationDTO.getPhotos();
         this.daysForCancellation = accommodationDTO.getDaysForCancellation();
+        this.location=accommodationDTO.getLocation();
     }
 }

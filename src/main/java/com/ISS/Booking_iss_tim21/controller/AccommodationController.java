@@ -14,10 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -34,7 +34,21 @@ public class AccommodationController {
 
         List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
         for(Accommodation a : accommodations) {
-            accommodationPreviewDTOs.add(new AccommodationPreviewDTO(a));
+            AccommodationPreviewDTO ap=new AccommodationPreviewDTO();
+
+            byte[] bytes=null;
+
+            try {
+                bytes=Files.readAllBytes(new File(a.getPhotos().iterator().next()).toPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            ap.setImage(Base64.getEncoder().encodeToString(bytes));
+            ap.setId(a.getId());
+            ap.setName(a.getName());
+            ap.setLocation(a.getLocation());
+            accommodationPreviewDTOs.add(ap);
         }
 
         return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);

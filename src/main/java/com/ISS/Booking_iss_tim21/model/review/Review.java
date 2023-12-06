@@ -8,13 +8,14 @@ import lombok.Setter;
 
 @Setter
 @Getter
+@Inheritance
 @Entity
-@Inheritance(strategy= InheritanceType.JOINED)
 @DiscriminatorColumn(name="TYPE")
 public class Review {
 
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
 
