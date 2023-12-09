@@ -3,6 +3,7 @@ package com.ISS.Booking_iss_tim21.util;
 
 import java.util.Date;
 
+import com.ISS.Booking_iss_tim21.model.User;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,7 +29,6 @@ public class TokenUtils {
     @Value("Authorization")
     private String AUTH_HEADER;
 
-
     //	private static final String AUDIENCE_UNKNOWN = "unknown";
     //	private static final String AUDIENCE_MOBILE = "mobile";
     //	private static final String AUDIENCE_TABLET = "tablet";
@@ -38,7 +38,6 @@ public class TokenUtils {
     private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 
 
-    // ============= Funkcije za generisanje JWT tokena =============
 
     /**
      * Funkcija za generisanje JWT tokena.
@@ -54,7 +53,6 @@ public class TokenUtils {
                 .setIssuedAt(new Date())
                 .setExpiration(generateExpirationDate())
                 .signWith(SIGNATURE_ALGORITHM, SECRET).compact();
-
     }
 
     /**
@@ -74,7 +72,6 @@ public class TokenUtils {
 
         return AUDIENCE_WEB;
     }
-
     /**
      * Funkcija generiše datum do kog je JWT token validan.
      *
@@ -84,9 +81,6 @@ public class TokenUtils {
         return new Date(new Date().getTime() + EXPIRES_IN);
     }
 
-    // =================================================================
-
-    // ============= Funkcije za citanje informacija iz JWT tokena =============
 
     /**
      * Funkcija za preuzimanje JWT tokena iz zahteva.
@@ -97,8 +91,6 @@ public class TokenUtils {
     public String getToken(HttpServletRequest request) {
         String authHeader = getAuthHeaderFromHeader(request);
 
-        // JWT se prosledjuje kroz header 'Authorization' u formatu:
-        // Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7); // preuzimamo samo token (vrednost tokena je nakon "Bearer " prefiksa)
@@ -203,14 +195,8 @@ public class TokenUtils {
             claims = null;
         }
 
-        // Preuzimanje proizvoljnih podataka je moguce pozivom funkcije claims.get(key)
-
         return claims;
     }
-
-    // =================================================================
-
-    // ============= Funkcije za validaciju JWT tokena =============
 
     /**
      * Funkcija za validaciju JWT tokena.
@@ -220,14 +206,13 @@ public class TokenUtils {
      * @return Informacija da li je token validan ili ne.
      */
     public Boolean validateToken(String token, UserDetails userDetails) {
-//        User user = (User) userDetails;
+        User user = (User) userDetails;
         final String username = getUsernameFromToken(token);
-//        final Date created = getIssuedAtDateFromToken(token);
+        final Date created = getIssuedAtDateFromToken(token);
 
-        // Token je validan kada:
         return (username != null
-                && username.equals(userDetails.getUsername()));
-                //&& !isCreatedBeforeLastPasswordReset(created, user.getLastPasswordResetDate()));
+                && username.equals(userDetails.getUsername())
+                && !isCreatedBeforeLastPasswordReset(created, user.getLastPasswordResetDate()));
     }
 
     /**

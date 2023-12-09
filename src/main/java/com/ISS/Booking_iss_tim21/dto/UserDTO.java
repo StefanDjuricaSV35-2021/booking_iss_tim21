@@ -16,7 +16,6 @@ import org.modelmapper.PropertyMap;
 public class UserDTO {
     private Long Id;
 
-    private UserType type;
     private String email;
     private String password;
     private String name;
@@ -25,7 +24,6 @@ public class UserDTO {
     private String city;
     private String street;
     private String phone;
-    private boolean enabled;
 
     public UserDTO(User user) {
         ModelMapper modelMapper = new ModelMapper();
@@ -34,7 +32,6 @@ public class UserDTO {
         PropertyMap<User, UserDTO> propertyMap = new PropertyMap<User, UserDTO>() {
             protected void configure() {
                 map().setId(source.getId());
-                map().setType(source.getType());
                 map().setEmail(source.getEmail());
                 map().setPassword(source.getPassword());
                 map().setName(source.getName());
@@ -43,7 +40,6 @@ public class UserDTO {
                 map().setCity(source.getCity());
                 map().setStreet(source.getStreet());
                 map().setPhone(source.getPhone());
-                map().setEnabled(source.isEnabled());
             }
         };
 

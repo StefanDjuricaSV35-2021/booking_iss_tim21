@@ -1,8 +1,6 @@
 package com.ISS.Booking_iss_tim21.controller;
 
 import com.ISS.Booking_iss_tim21.dto.ReviewReportDTO;
-import com.ISS.Booking_iss_tim21.dto.ReviewReportDTO;
-import com.ISS.Booking_iss_tim21.model.ReviewReport;
 import com.ISS.Booking_iss_tim21.model.ReviewReport;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.review.Review;
@@ -51,7 +49,7 @@ public class ReviewReportController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        User reporter = userService.findOne(reviewReportDTO.getReporterId());
+        User reporter = userService.findById(reviewReportDTO.getReporterId());
         Review review = reviewService.findOne(reviewReportDTO.getReportedReviewId());
 
         if (reporter == null || review == null) {

@@ -1,9 +1,12 @@
 package com.ISS.Booking_iss_tim21.security.auth;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 
-// Override klasa za autentifikaciju umesto npr. Basic Auth
+@Setter
+@Getter
 public class TokenBasedAuthentication extends AbstractAuthenticationToken {
 
     private static final long serialVersionUID = 1L;
@@ -14,14 +17,6 @@ public class TokenBasedAuthentication extends AbstractAuthenticationToken {
     public TokenBasedAuthentication(UserDetails principle) {
         super(principle.getAuthorities());
         this.principle = principle;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     @Override
@@ -40,4 +35,3 @@ public class TokenBasedAuthentication extends AbstractAuthenticationToken {
     }
 
 }
-

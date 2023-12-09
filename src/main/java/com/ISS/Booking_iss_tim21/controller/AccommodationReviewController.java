@@ -50,7 +50,7 @@ public class AccommodationReviewController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        User reviewer = userService.findOne(accommodationReviewDTO.getReviewerId());
+        User reviewer = userService.findById(accommodationReviewDTO.getReviewerId());
         Accommodation reviewed = accommodationService.findOne(accommodationReviewDTO.getAccommodationId());
 
         if (reviewer == null || reviewed == null) {

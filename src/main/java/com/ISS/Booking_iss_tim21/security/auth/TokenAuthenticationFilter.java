@@ -3,10 +3,6 @@ package com.ISS.Booking_iss_tim21.security.auth;
 import java.io.IOException;
 
 import com.ISS.Booking_iss_tim21.util.TokenUtils;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +11,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.ExpiredJwtException;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
@@ -30,7 +31,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
+
         String username;
 
         String authToken = tokenUtils.getToken(request);
@@ -58,6 +62,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             LOGGER.debug("Token expired!");
         }
 
-        filterChain.doFilter(request, response);
+        chain.doFilter(request, response);
     }
+
 }
