@@ -65,8 +65,8 @@ public class OwnerReviewController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-       User reviewer = userService.findOne(ownerReviewDTO.getReviewerId());
-        User reviewed = userService.findOne(ownerReviewDTO.getReviewedId());
+       User reviewer = userService.findById(ownerReviewDTO.getReviewerId());
+        User reviewed = userService.findById(ownerReviewDTO.getReviewedId());
 
         if (reviewer == null || reviewed == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

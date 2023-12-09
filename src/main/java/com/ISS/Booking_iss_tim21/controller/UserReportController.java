@@ -4,7 +4,6 @@ import com.ISS.Booking_iss_tim21.dto.UserReportDTO;
 import com.ISS.Booking_iss_tim21.model.UserReport;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.service.UserReportService;
-import com.ISS.Booking_iss_tim21.model.UserReport;
 import com.ISS.Booking_iss_tim21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,8 +45,8 @@ public class UserReportController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        User reporter = userService.findOne(userReportDTO.getReporterId());
-        User reported = userService.findOne(userReportDTO.getReportedId());
+        User reporter = userService.findById(userReportDTO.getReporterId());
+        User reported = userService.findById(userReportDTO.getReportedId());
 
         if (reporter == null || reported == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -1,28 +1,32 @@
 package com.ISS.Booking_iss_tim21.service;
 
+import com.ISS.Booking_iss_tim21.dto.UserDTO;
+import com.ISS.Booking_iss_tim21.model.Role;
 import com.ISS.Booking_iss_tim21.model.User;
-import com.ISS.Booking_iss_tim21.model.UserReport;
-import com.ISS.Booking_iss_tim21.model.enumeration.UserType;
-import com.ISS.Booking_iss_tim21.repository.UserReportRepository;
 import com.ISS.Booking_iss_tim21.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService  {
 
     @Autowired
     UserRepository repository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RoleService roleService;
 
     public List<User> findAll(){
         return repository.findAll();
     }
 
-    public User findOne(Long id) {
+    public User findById(Long id) {
         return repository.findById(id).orElseGet(null);
     }
 
@@ -30,17 +34,19 @@ public class UserService {
         repository.deleteById(id);
     }
 
-    public User save(User user) {
-        return repository.save(user);
+    public User save(UserDTO userDTO) {
+        User u = new User(userDTO);
+
+		u.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+		u.setEmail(userDTO.getEmail());
+
+		List<Role> roles = roleService.findByName("GUEST");
+		u.setRoles(roles);
+
+		return this.repository.save(u);
+    }
+    public User findByEmail(String  email){
+        return this.repository.findByEmail(email);
     }
 
-    public List<User> getTypeUsers(UserType type){
-        List<User> users = new ArrayList<>();
-        for (User user : findAll()){
-            if(user.getType().equals(type)){
-                users.add(user);
-            }
-        }
-        return users;
-    }
 }

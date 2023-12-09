@@ -16,7 +16,6 @@ import org.modelmapper.PropertyMap;
 public class UserDTO {
     private Long Id;
 
-    private UserType type;
     private String email;
     private String password;
     private String name;
@@ -33,7 +32,6 @@ public class UserDTO {
         PropertyMap<User, UserDTO> propertyMap = new PropertyMap<User, UserDTO>() {
             protected void configure() {
                 map().setId(source.getId());
-                map().setType(source.getType());
                 map().setEmail(source.getEmail());
                 map().setPassword(source.getPassword());
                 map().setName(source.getName());

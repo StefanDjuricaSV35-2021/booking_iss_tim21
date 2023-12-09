@@ -3,8 +3,6 @@ package com.ISS.Booking_iss_tim21.dto;
 
 import com.ISS.Booking_iss_tim21.model.*;
 
-import javax.persistence.*;
-
 public class ReviewReportDTO {
 
 
