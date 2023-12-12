@@ -2,6 +2,7 @@ package com.ISS.Booking_iss_tim21.dto;
 
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.Role;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,16 +16,25 @@ import org.modelmapper.PropertyMap;
 @NoArgsConstructor
 public class UserDTO {
     private Long Id;
-
+    @Email
     private String email;
+    @Size(min = 5)
     private String password;
+    @NotNull
     private String name;
+    @NotNull
     private String surname;
+    @NotNull
     private String country;
+    @NotNull
     private String city;
+    @NotNull
     private String street;
+    @Digits(integer = 9, fraction = 0)
     private String phone;
+
     private boolean enabled;
+    @NotNull
     private Role role;
 
     public UserDTO(User user) {

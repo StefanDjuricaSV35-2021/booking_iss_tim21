@@ -17,8 +17,8 @@ import java.io.File;
 @SpringBootApplication
 public class BookingIssTim21Application implements CommandLineRunner {
 
-	@Autowired
-	private UserRepository userRepository;
+//	@Autowired
+//	private UserRepository userRepository;
 
 	public static void main(String[] args) {
 
@@ -28,21 +28,21 @@ public class BookingIssTim21Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		User admin = userRepository.findByRole(Role.ADMIN);
-		if(admin == null){
-			User user = new User();
-			user.setEmail("admin@gmail.com");
-			user.setPassword(new BCryptPasswordEncoder().encode("admin"));
-			user.setName("Admin");
-			user.setSurname("Admin");
-			user.setCountry("AdminCountry");
-			user.setCity("AdminCity");
-			user.setStreet("AdminStreet");
-			user.setPhone("AdminPhoneNumber");
-			user.setEnabled(true);
-			user.setRole(Role.ADMIN);
-
-			userRepository.save(user);
-		}
+//		User admin = userRepository.findByRole(Role.ADMIN);
+//		if(admin == null){
+//			User user = new User();
+//			user.setEmail("admin@gmail.com");
+//			user.setPassword(new BCryptPasswordEncoder().encode("admin"));
+//			user.setName("Admin");
+//			user.setSurname("Admin");
+//			user.setCountry("AdminCountry");
+//			user.setCity("AdminCity");
+//			user.setStreet("AdminStreet");
+//			user.setPhone("AdminPhoneNumber");
+//			user.setEnabled(true);
+//			user.setRole(Role.ADMIN);
+//
+//			userRepository.save(user);
+//		}
 	}
 }
