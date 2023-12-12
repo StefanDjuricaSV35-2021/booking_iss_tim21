@@ -1,8 +1,7 @@
 package com.ISS.Booking_iss_tim21.model;
 
-import com.ISS.Booking_iss_tim21.dto.AccommodationDetailsDTO;
 import com.ISS.Booking_iss_tim21.dto.UserDTO;
-import com.ISS.Booking_iss_tim21.model.enumeration.UserType;
+import com.ISS.Booking_iss_tim21.model.enumeration.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,8 +10,8 @@ import lombok.Setter;
 
 
 import jakarta.persistence.*;
-import lombok.experimental.FieldNameConstants;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Timestamp;
@@ -58,14 +57,8 @@ public class User implements UserDetails {
     @Column(name = "enabled")
     private boolean enabled;
 
-    @Column(name = "last_password_reset_date")
-    private Timestamp lastPasswordResetDate;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private List<Role> roles;
+    @Column(name = "role")
+    private Role role;
 
     public User(UserDTO userDTO) {
         this.Id = userDTO.getId();
@@ -77,6 +70,7 @@ public class User implements UserDetails {
         this.city = userDTO.getCity();
         this.street = userDTO.getStreet();
         this.phone = userDTO.getPhone();
+        this.role = userDTO.getRole();
         this.enabled = true;
     }
 
@@ -84,7 +78,7 @@ public class User implements UserDetails {
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles;
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override

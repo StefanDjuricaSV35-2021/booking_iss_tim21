@@ -1,7 +1,7 @@
 package com.ISS.Booking_iss_tim21.dto;
 
 import com.ISS.Booking_iss_tim21.model.User;
-import com.ISS.Booking_iss_tim21.model.enumeration.UserType;
+import com.ISS.Booking_iss_tim21.model.enumeration.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +24,8 @@ public class UserDTO {
     private String city;
     private String street;
     private String phone;
+    private boolean enabled;
+    private Role role;
 
     public UserDTO(User user) {
         ModelMapper modelMapper = new ModelMapper();
@@ -40,6 +42,9 @@ public class UserDTO {
                 map().setCity(source.getCity());
                 map().setStreet(source.getStreet());
                 map().setPhone(source.getPhone());
+                map().setRole(source.getRole());
+                map().setEnabled(source.isEnabled());
+
             }
         };
 
