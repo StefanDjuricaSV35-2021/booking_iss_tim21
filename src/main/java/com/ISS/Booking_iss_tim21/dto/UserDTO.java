@@ -30,7 +30,6 @@ public class UserDTO {
     public UserDTO(User user) {
         ModelMapper modelMapper = new ModelMapper();
 
-        // Explicitly define the mappings
         PropertyMap<User, UserDTO> propertyMap = new PropertyMap<User, UserDTO>() {
             protected void configure() {
                 map().setId(source.getId());
