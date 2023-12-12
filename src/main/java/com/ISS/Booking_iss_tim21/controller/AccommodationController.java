@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/auth/accommodations")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AccommodationController {
     @Autowired
     private AccommodationService accommodationService;
