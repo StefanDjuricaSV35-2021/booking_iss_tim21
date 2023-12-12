@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(value ="reviews/accommodations")
+@RequestMapping(value ="/api/v1/auth/reviews/accommodations")
 public class AccommodationReviewController {
 
     @Autowired

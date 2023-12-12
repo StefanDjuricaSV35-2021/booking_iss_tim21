@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/reservationRequests")
+@RequestMapping("/api/v1/auth/reservationRequests")
 public class ReservationRequestController {
     @Autowired
     private ReservationRequestService requestService;

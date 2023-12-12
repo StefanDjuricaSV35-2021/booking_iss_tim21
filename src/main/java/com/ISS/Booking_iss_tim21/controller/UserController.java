@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/users")
+@RequestMapping(value = "/api/v1/auth/users")
 @CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
@@ -24,8 +24,10 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getUsers() {
 
         List<User> users = userService.findAll();
+        if(users.isEmpty()){
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        }
 
-        // convert courses to DTOs
         List<UserDTO> usersDTO = new ArrayList<>();
         for (User s : users) {
             usersDTO.add(new UserDTO(s));

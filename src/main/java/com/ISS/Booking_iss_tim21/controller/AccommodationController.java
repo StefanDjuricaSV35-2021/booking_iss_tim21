@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/accommodations")
+@RequestMapping("/api/v1/auth/accommodations")
 public class AccommodationController {
     @Autowired
     private AccommodationService accommodationService;

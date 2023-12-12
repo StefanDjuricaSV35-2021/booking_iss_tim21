@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("reports/users")
+@RequestMapping("/api/v1/auth/reports/users")
 public class UserReportController {
 
     @Autowired

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("reports/reviews")
+@RequestMapping("/api/v1/auth/reports/reviews")
 public class ReviewReportController {
     @Autowired
     private ReviewReportService reviewReportService;

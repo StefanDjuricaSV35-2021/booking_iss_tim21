@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "notifications")
+@RequestMapping(value = "/api/v1/auth/notifications")
 public class NotificationController {
 
     @Autowired
