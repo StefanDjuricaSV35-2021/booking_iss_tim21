@@ -1,5 +1,6 @@
 package com.ISS.Booking_iss_tim21.service;
 
+import com.ISS.Booking_iss_tim21.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -10,17 +11,19 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.function.Function;
 
 @Service
 public class JWTService {
 
 
-    private int EXPIRATION_TIME = 1000*64*24;
+    private int EXPIRATION_TIME_TOKEN = 1000*64*24;
+    private int EXPIRATION_TIME_REFRESH_TOKEN = 604800000;
     public String gemerateToken(UserDetails userDetails){
         return Jwts.builder().setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_TOKEN))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -56,5 +59,12 @@ public class JWTService {
         return extractClaim(token, Claims::getExpiration).before(new Date());
     }
 
+    public String generateRefreshToken(HashMap<String, Object> extraClaims, UserDetails userDetails) {
+        return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_REFRESH_TOKEN))
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
 }
 
