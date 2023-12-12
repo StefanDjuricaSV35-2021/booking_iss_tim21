@@ -9,10 +9,7 @@ import com.ISS.Booking_iss_tim21.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -34,6 +31,11 @@ public class AuthenticationController {
     @PostMapping("/refresh")
     public ResponseEntity<JWTAuthenticationResponse> refresh(@RequestBody RefreshTokenRequest refreshTokenRequest){
         return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
+    }
+
+    @PostMapping("/confirm/{email}")
+    public ResponseEntity<User> refresh(@PathVariable String email){
+        return ResponseEntity.ok(authenticationService.confirmUser(email));
     }
 }
 
