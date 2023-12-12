@@ -22,6 +22,7 @@ public class JWTService {
     private int EXPIRATION_TIME_REFRESH_TOKEN = 604800000;
     public String gemerateToken(UserDetails userDetails){
         return Jwts.builder().setSubject(userDetails.getUsername())
+                .claim("roles", userDetails.getAuthorities())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_TOKEN))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
@@ -37,9 +38,6 @@ public class JWTService {
         return  extractClaim(token, Claims::getSubject);
     }
 
-    public String generateToken(UserDetails userDetails){
-        return "";
-    }
 
     private Key getSignKey(){
         byte[] key = Base64.getDecoder().decode("413F4428472B4B6250655368566D5970337336763979244226452948404D6351");
@@ -61,6 +59,7 @@ public class JWTService {
 
     public String generateRefreshToken(HashMap<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
+                .claim("roles", userDetails.getAuthorities())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_REFRESH_TOKEN))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
