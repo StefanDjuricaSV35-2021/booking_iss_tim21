@@ -6,6 +6,7 @@ import com.ISS.Booking_iss_tim21.dto.SignInRequest;
 import com.ISS.Booking_iss_tim21.dto.SignUpRequest;
 import com.ISS.Booking_iss_tim21.exception.UserAlreadyExistsException;
 import com.ISS.Booking_iss_tim21.exception.UserNotEnabledException;
+import com.ISS.Booking_iss_tim21.model.EmailStructure;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.Role;
 import com.ISS.Booking_iss_tim21.repository.UserRepository;
@@ -32,6 +33,9 @@ public class AuthenticationService {
     @Autowired
     private JWTService jwtService;
 
+    @Autowired
+    private EmailService emailService;
+
     public User signUp(SignUpRequest signUpRequest){
 
         User user = userRepository.findByEmail(signUpRequest.getEmail()).orElse(null);
@@ -39,8 +43,6 @@ public class AuthenticationService {
         if(user != null){
             if (user.isEnabled()){
                 throw new UserAlreadyExistsException("User with email: "+user.getEmail()+" already exists.");
-            }else {
-                user.setEnabled(true);
             }
         }else {
             user = new User();
@@ -56,13 +58,13 @@ public class AuthenticationService {
         user.setCity(signUpRequest.getCity());
         user.setStreet(signUpRequest.getStreet());
         user.setPhone(signUpRequest.getPhone());
-        if(user.isEnabled()){
-            //send new email
-        }
+
         user.setEnabled(true);
-//        treba false pa da se pretvori u true kada potvrdi email
+//        enabled should be false and only set to true after the email has been confirmed
 //        user.setEnabled(false);
         user.setRole(role);
+//        send email to user only use when using real emails.
+//        emailService.sendEmail(user.getEmail(),new EmailStructure("John Doe","John Doe"));
 
         userRepository.save(user);
 
@@ -100,6 +102,15 @@ public class AuthenticationService {
             return jwtAuthenticationResponse;
         }
         return null;
+    }
+
+    public User confirmUser(String email) {
+        var user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Invalid email."));
+        user.setEnabled(true);
+
+        userRepository.save(user);
+
+        return user;
     }
 }
 
