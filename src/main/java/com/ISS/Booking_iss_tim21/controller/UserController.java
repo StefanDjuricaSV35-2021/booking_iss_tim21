@@ -9,11 +9,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.ConsoleHandler;
 
 @RestController
 @RequestMapping(value = "/api/v1/auth/users")
@@ -23,6 +23,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @GetMapping
     public ResponseEntity<List<UserDTO>> getUsers() {
 
@@ -54,8 +56,9 @@ public class UserController {
 
     @PostMapping(consumes = "application/json")
     public ResponseEntity<UserDTO> saveUser(@Valid @RequestBody UserDTO userDTO) throws ConstraintViolationException {
-
+        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         User user = userService.save(userDTO);
+
         return new ResponseEntity<>(new UserDTO(user), HttpStatus.CREATED);
     }
 
@@ -63,9 +66,20 @@ public class UserController {
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO) throws ConstraintViolationException {
 
         User user = userService.findById(userDTO.getId());
-
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // if a user that has the same email exists, don't allow save
+        User alreadyExists = userService.findByEmail(userDTO.getEmail());
+        if (alreadyExists != null && alreadyExists.getId() != null && alreadyExists.getId() != userDTO.getId()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (!userDTO.getPassword().equals("")) {
+            userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        } else {
+            userDTO.setPassword(user.getPassword());
         }
 
         user = userService.save(userDTO);
@@ -76,7 +90,6 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 
         User user = userService.findById(id);
-
 
         if (user != null) {
             userService.remove(id);

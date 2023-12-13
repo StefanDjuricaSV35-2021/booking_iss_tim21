@@ -19,8 +19,7 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
 
     public List<User> findAll(){
         return repository.findAll();
@@ -31,19 +30,21 @@ public class UserService {
     }
 
     public void remove(Long id){
-        repository.deleteById(id);
+        User user = findById(id);
+        user.setEnabled(false);
+        repository.save(user);
     }
 
     public User save(UserDTO userDTO) {
         User u = new User(userDTO);
 
-        u.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         u.setEmail(userDTO.getEmail());
 
         return this.repository.save(u);
     }
+
     public User findByEmail(String  email){
-        return this.repository.findByEmail(email).orElseGet(null);
+        return this.repository.findByEmail(email).orElse(null);
     }
 
     public UserDetailsService userDetailService(){

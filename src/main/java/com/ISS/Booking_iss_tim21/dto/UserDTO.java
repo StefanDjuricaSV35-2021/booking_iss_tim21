@@ -18,7 +18,6 @@ public class UserDTO {
     private Long Id;
     @Email
     private String email;
-    @Size(min = 5)
     private String password;
     @NotNull
     private String name;
@@ -30,7 +29,7 @@ public class UserDTO {
     private String city;
     @NotNull
     private String street;
-    @Digits(integer = 9, fraction = 0)
+    @NotNull
     private String phone;
 
     private boolean enabled;

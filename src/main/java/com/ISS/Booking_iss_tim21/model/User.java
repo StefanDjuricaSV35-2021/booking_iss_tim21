@@ -63,6 +63,7 @@ public class User implements UserDetails {
     public User(UserDTO userDTO) {
         this.Id = userDTO.getId();
         this.email = userDTO.getEmail();
+        this.password = userDTO.getPassword();
         this.name = userDTO.getName();
         this.surname = userDTO.getSurname();
         this.country = userDTO.getCountry();
