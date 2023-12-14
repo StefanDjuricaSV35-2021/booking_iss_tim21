@@ -4,21 +4,16 @@ import com.ISS.Booking_iss_tim21.dto.JWTAuthenticationResponse;
 import com.ISS.Booking_iss_tim21.dto.RefreshTokenRequest;
 import com.ISS.Booking_iss_tim21.dto.SignInRequest;
 import com.ISS.Booking_iss_tim21.dto.SignUpRequest;
-import com.ISS.Booking_iss_tim21.exception.BadRequestException;
 import com.ISS.Booking_iss_tim21.exception.UserAlreadyExistsException;
 import com.ISS.Booking_iss_tim21.exception.UserNotEnabledException;
-import com.ISS.Booking_iss_tim21.model.EmailStructure;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.Role;
 import com.ISS.Booking_iss_tim21.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
 
 @Service
 public class AuthenticationService {
