@@ -6,8 +6,11 @@ import com.ISS.Booking_iss_tim21.dto.SignInRequest;
 import com.ISS.Booking_iss_tim21.dto.SignUpRequest;
 import com.ISS.Booking_iss_tim21.exception.UserAlreadyExistsException;
 import com.ISS.Booking_iss_tim21.exception.UserNotEnabledException;
+import com.ISS.Booking_iss_tim21.model.EmailStructure;
 import com.ISS.Booking_iss_tim21.model.User;
+import com.ISS.Booking_iss_tim21.model.UserActivationRequest;
 import com.ISS.Booking_iss_tim21.model.enumeration.Role;
+import com.ISS.Booking_iss_tim21.repository.UserActivationRequestRepository;
 import com.ISS.Booking_iss_tim21.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,11 +18,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class AuthenticationService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserActivationRequestRepository userActivationRequestRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -37,14 +45,20 @@ public class AuthenticationService {
 
         User user = userRepository.findByEmail(signUpRequest.getEmail()).orElse(null);
 
+        UserActivationRequest userActivationRequest = new UserActivationRequest();
+
         if(user != null){
             if (user.isEnabled()){
                 throw new UserAlreadyExistsException("User with email: "+user.getEmail()+" already exists.");
             }
+            userActivationRequest = userActivationRequestRepository.findByEmail(signUpRequest.getEmail());
         }else {
             user = new User();
+            userActivationRequest.setEmail(signUpRequest.getEmail());
         }
 
+        userActivationRequest.setDate(new Date());
+        userActivationRequestRepository.save(userActivationRequest);
 
         Role role = signUpRequest.getIsOwner() ? Role.OWNER : Role.GUEST;
         user.setEmail(signUpRequest.getEmail());
@@ -56,12 +70,13 @@ public class AuthenticationService {
         user.setStreet(signUpRequest.getStreet());
         user.setPhone(signUpRequest.getPhone());
 
-        user.setEnabled(true);
-//        enabled should be false and only set to true after the email has been confirmed
-//        user.setEnabled(false);
+        user.setEnabled(false);
         user.setRole(role);
-//        send email to user only use when using real emails.
-//        emailService.sendEmail(user.getEmail(),new EmailStructure("John Doe","John Doe"));
+
+        emailService.sendEmail(user.getEmail(),new EmailStructure("Welcome to booʞing!!","Dear "+user.getName()+" "+user.getSurname()+
+                ",\nYou have successfully signed up for booʞing services."+
+                "\nAll that's left is to activate your account by clicking the following link in the next 24 hours: http://localhost:4200/activate/"+user.getEmail()+" ."+
+                "\nWe are hoping to see you soon, the booʞing team."));
 
         userRepository.save(user);
 

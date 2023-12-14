@@ -1,6 +1,8 @@
 package com.ISS.Booking_iss_tim21.controller;
 
+import com.ISS.Booking_iss_tim21.dto.SignUpRequest;
 import com.ISS.Booking_iss_tim21.model.EmailStructure;
+import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,4 +20,7 @@ public class EmailController {
         emailService.sendEmail(email,emailStructure);
         return "Email sent!!";
     }
+
+
+
 }
