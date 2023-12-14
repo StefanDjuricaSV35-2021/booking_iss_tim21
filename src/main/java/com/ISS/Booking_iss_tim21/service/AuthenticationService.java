@@ -4,6 +4,7 @@ import com.ISS.Booking_iss_tim21.dto.JWTAuthenticationResponse;
 import com.ISS.Booking_iss_tim21.dto.RefreshTokenRequest;
 import com.ISS.Booking_iss_tim21.dto.SignInRequest;
 import com.ISS.Booking_iss_tim21.dto.SignUpRequest;
+import com.ISS.Booking_iss_tim21.exception.BadRequestException;
 import com.ISS.Booking_iss_tim21.exception.UserAlreadyExistsException;
 import com.ISS.Booking_iss_tim21.exception.UserNotEnabledException;
 import com.ISS.Booking_iss_tim21.model.User;
@@ -12,6 +13,7 @@ import com.ISS.Booking_iss_tim21.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,8 +41,6 @@ public class AuthenticationService {
         if(user != null){
             if (user.isEnabled()){
                 throw new UserAlreadyExistsException("User with email: "+user.getEmail()+" already exists.");
-            }else {
-                user.setEnabled(true);
             }
         }else {
             user = new User();
@@ -56,9 +56,7 @@ public class AuthenticationService {
         user.setCity(signUpRequest.getCity());
         user.setStreet(signUpRequest.getStreet());
         user.setPhone(signUpRequest.getPhone());
-        if(user.isEnabled()){
-            //send new email
-        }
+
         user.setEnabled(true);
 //        treba false pa da se pretvori u true kada potvrdi email
 //        user.setEnabled(false);
@@ -74,16 +72,17 @@ public class AuthenticationService {
                 signInRequest.getPassword()));
 
         var user = userRepository.findByEmail(signInRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+
+
         if(!user.isEnabled()){
             throw new UserNotEnabledException("User account is not enabled.");
         }
-        var jwt = jwtService.gemerateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+
+        var jwt = jwtService.generateToken(user);
 
         JWTAuthenticationResponse jwtAuthenticationResponse = new JWTAuthenticationResponse();
 
         jwtAuthenticationResponse.setToken(jwt);
-        jwtAuthenticationResponse.setRefreshToken(refreshToken);
         return jwtAuthenticationResponse;
     }
 
@@ -91,12 +90,11 @@ public class AuthenticationService {
         String userEmail = jwtService.extractUsername(refreshTokenRequest.getToken());
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         if(jwtService.isTokenValid(refreshTokenRequest.getToken(), user)){
-            var jwt = jwtService.gemerateToken(user);
+            var jwt = jwtService.generateToken(user);
 
             JWTAuthenticationResponse jwtAuthenticationResponse = new JWTAuthenticationResponse();
 
             jwtAuthenticationResponse.setToken(jwt);
-            jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
             return jwtAuthenticationResponse;
         }
         return null;
