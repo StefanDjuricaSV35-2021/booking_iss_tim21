@@ -27,8 +27,8 @@ public class ReservationDTO {
         PropertyMap<Reservation, ReservationDTO> propertyMap = new PropertyMap<Reservation, ReservationDTO>() {
             protected void configure() {
                 map().setId(source.getId());
-                map().setUserId(source.getUserId());
-                map().setAccommodationId(source.getAccommodationId());
+                map().setUserId(source.getUser().getId());
+                map().setAccommodationId(source.getAccommodation().getId());
                 map().setGuestsNumber(source.getGuestsNumber());
                 map().setPrice(source.getPrice());
                 map().setTimeSlot(source.getTimeSlot());

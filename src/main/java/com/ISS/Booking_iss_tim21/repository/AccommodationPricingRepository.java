@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface AccommodationPricingRepository extends JpaRepository<AccommodationPricing, Long> {
-    @Query("select a from AccommodationPricing a where a.accommodationId = ?1")
+    @Query("select a from AccommodationPricing a where a.accommodation.id = ?1")
     public List<AccommodationPricing> getAccommodationPricingsForAccommodation(Long accommodationId);
 }

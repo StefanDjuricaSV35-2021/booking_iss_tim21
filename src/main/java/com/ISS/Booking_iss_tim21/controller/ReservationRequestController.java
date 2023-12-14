@@ -5,6 +5,7 @@ import com.ISS.Booking_iss_tim21.model.ReservationRequest;
 import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationRequestStatus;
+import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import com.ISS.Booking_iss_tim21.service.ReservationRequestService;
 import com.ISS.Booking_iss_tim21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class ReservationRequestController {
     private ReservationRequestService requestService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private AccommodationService accommodationService;
     @GetMapping
     public ResponseEntity<List<ReservationRequestDTO>> getReservationRequests() {
         List<ReservationRequest> reservationRequests = requestService.getAll();
@@ -59,7 +62,17 @@ public class ReservationRequestController {
 //            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 //        }
 
-        ReservationRequest reservationRequest = new ReservationRequest(reservationRequestDTO);
+
+        ReservationRequest reservationRequest = new ReservationRequest();
+        reservationRequest.setId(reservationRequestDTO.getId());
+        reservationRequest.setUser(userService.findById(reservationRequestDTO.getUserId()));
+        reservationRequest.setAccommodation(accommodationService.findOne(reservationRequestDTO.getAccommodationId()));
+        reservationRequest.setGuestsNumber(reservationRequestDTO.getGuestsNumber());
+        reservationRequest.setPrice(reservationRequestDTO.getPrice());
+        reservationRequest.setTimeSlot(reservationRequestDTO.getTimeSlot());
+        reservationRequest.setStatus(reservationRequestDTO.getStatus());
+
+
         requestService.save(reservationRequest);
 
         return new ResponseEntity<>(new ReservationRequestDTO(reservationRequest), HttpStatus.CREATED);
@@ -72,8 +85,8 @@ public class ReservationRequestController {
         if (reservationRequest == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        reservationRequest.setUserId(reservationRequestDTO.getUserId());
-        reservationRequest.setAccommodationId(reservationRequestDTO.getAccommodationId());
+        reservationRequest.setUser(userService.findById(reservationRequestDTO.getUserId()));
+        reservationRequest.setAccommodation(accommodationService.findOne(reservationRequestDTO.getAccommodationId()));
         reservationRequest.setGuestsNumber(reservationRequestDTO.getGuestsNumber());
         reservationRequest.setPrice(reservationRequestDTO.getPrice());
         reservationRequest.setTimeSlot(reservationRequestDTO.getTimeSlot());

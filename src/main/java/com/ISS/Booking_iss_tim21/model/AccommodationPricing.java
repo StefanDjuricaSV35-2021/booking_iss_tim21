@@ -18,15 +18,10 @@ public class AccommodationPricing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long accommodationId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "accommodation_id")
+    private Accommodation accommodation;
     @Embedded
     private TimeSlot timeSlot;
     private double price;
-
-    public AccommodationPricing(AccommodationPricingDTO accommodationPricingDTO) {
-        this.id = accommodationPricingDTO.getId();
-        this.accommodationId = accommodationPricingDTO.getAccommodationId();
-        this.timeSlot = accommodationPricingDTO.getTimeSlot();
-        this.price = accommodationPricingDTO.getPrice();
-    }
 }

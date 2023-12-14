@@ -79,7 +79,19 @@ public class AccommodationController {
 //            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 //        }
 
-        Accommodation accommodation = new Accommodation(accommodationDTO);
+        Accommodation accommodation = new Accommodation();
+        accommodation.setId(accommodationDTO.getId());
+        accommodation.setOwner(userService.findById(accommodationDTO.getOwnerId()));
+        accommodation.setName(accommodationDTO.getName());
+        accommodation.setType(accommodationDTO.getType());
+        accommodation.setMinGuests(accommodationDTO.getMinGuests());
+        accommodation.setMaxGuests(accommodationDTO.getMaxGuests());
+        accommodation.setDescription(accommodationDTO.getDescription());
+        accommodation.setAmenities(accommodationDTO.getAmenities());
+        accommodation.setPhotos(accommodationDTO.getPhotos());
+        accommodation.setDaysForCancellation(accommodationDTO.getDaysForCancellation());
+        accommodation.setLocation(accommodationDTO.getLocation());
+
         accommodationService.save(accommodation);
 
         return new ResponseEntity<>(new AccommodationDetailsDTO(accommodation), HttpStatus.CREATED);
@@ -92,7 +104,7 @@ public class AccommodationController {
         if (accommodation == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        accommodation.setOwnerId(accommodationDTO.getOwnerId());
+        accommodation.setOwner(userService.findById(accommodationDTO.getOwnerId()));
         accommodation.setName(accommodationDTO.getName());
         accommodation.setType(accommodationDTO.getType());
         accommodation.setMinGuests(accommodationDTO.getMinGuests());
@@ -101,6 +113,7 @@ public class AccommodationController {
         accommodation.setAmenities(accommodationDTO.getAmenities());
         accommodation.setPhotos(accommodationDTO.getPhotos());
         accommodation.setDaysForCancellation(accommodationDTO.getDaysForCancellation());
+        accommodation.setLocation(accommodationDTO.getLocation());
 
         accommodationService.save(accommodation);
         return new ResponseEntity<>(new AccommodationDetailsDTO(accommodation), HttpStatus.OK);

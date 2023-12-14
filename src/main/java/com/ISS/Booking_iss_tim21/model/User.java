@@ -2,6 +2,8 @@ package com.ISS.Booking_iss_tim21.model;
 
 import com.ISS.Booking_iss_tim21.dto.UserDTO;
 import com.ISS.Booking_iss_tim21.model.enumeration.Role;
+import com.ISS.Booking_iss_tim21.model.review.OwnerReview;
+import com.ISS.Booking_iss_tim21.model.review.Review;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 
 @Getter
@@ -59,6 +62,27 @@ public class User implements UserDetails {
 
     @Column(name = "role")
     private Role role;
+
+    @OneToMany(mappedBy = "recipient", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Notification> notifications;
+
+    @OneToMany(mappedBy = "reviewed", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    private List<OwnerReview> ownerReviews;
+
+    @OneToMany(mappedBy = "reviewer", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Review> reviews;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Accommodation> accommodations;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Reservation> reservations;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<ReservationRequest> reservationRequests;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<ReviewReport> reviewReports;
 
     public User(UserDTO userDTO) {
         this.Id = userDTO.getId();

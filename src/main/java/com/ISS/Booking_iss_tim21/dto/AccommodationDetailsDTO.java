@@ -35,7 +35,7 @@ public class AccommodationDetailsDTO {
         PropertyMap<Accommodation, AccommodationDetailsDTO> propertyMap = new PropertyMap<Accommodation, AccommodationDetailsDTO>() {
             protected void configure() {
                 map().setId(source.getId());
-                map().setOwnerId(source.getOwnerId());
+                map().setOwnerId(source.getOwner().getId());
                 map().setName(source.getName());
                 map().setType(source.getType());
                 map().setMinGuests(source.getMinGuests());

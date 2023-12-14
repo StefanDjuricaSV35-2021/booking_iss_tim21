@@ -60,7 +60,12 @@ public class AccommodationPricingController {
         }
 
 
-        AccommodationPricing accommodationPricing = new AccommodationPricing(accommodationPricingDTO);
+        AccommodationPricing accommodationPricing = new AccommodationPricing();
+        accommodationPricing.setId(accommodationPricingDTO.getId());
+        accommodationPricing.setAccommodation(accommodationService.findOne(accommodationPricingDTO.getAccommodationId()));
+        accommodationPricing.setTimeSlot(accommodationPricingDTO.getTimeSlot());
+        accommodationPricing.setPrice(accommodationPricingDTO.getPrice());
+
         pricingService.save(accommodationPricing);
         return new ResponseEntity<>(new AccommodationPricingDTO(accommodationPricing), HttpStatus.CREATED);
     }
@@ -73,7 +78,7 @@ public class AccommodationPricingController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        accommodationPricing.setAccommodationId(accommodationPricingDTO.getAccommodationId());
+        accommodationPricing.setAccommodation(accommodationService.findOne(accommodationPricingDTO.getAccommodationId()));
         accommodationPricing.setTimeSlot(accommodationPricingDTO.getTimeSlot());
         accommodationPricing.setPrice(accommodationPricingDTO.getPrice());
 
