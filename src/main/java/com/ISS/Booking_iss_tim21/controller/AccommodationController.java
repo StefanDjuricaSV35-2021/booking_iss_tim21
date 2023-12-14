@@ -6,6 +6,7 @@ import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
 import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
+import com.ISS.Booking_iss_tim21.service.AccommodationPricingService;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +28,12 @@ public class AccommodationController {
     @Autowired
     private AccommodationService accommodationService;
     @Autowired
+    private AccommodationPricingService pricingService;
+    @Autowired
     private UserService userService;
 
-    @GetMapping
-    public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodations() {
+    @GetMapping("/previews")
+    public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodationsPreviews() {
          List<Accommodation> accommodations = accommodationService.getAll();
 
         List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
@@ -50,6 +53,40 @@ public class AccommodationController {
             ap.setName(a.getName());
             ap.setLocation(a.getLocation());
             accommodationPreviewDTOs.add(ap);
+        }
+
+        return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);
+    }
+
+    @GetMapping("/previews/search")
+    public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodationsPreviewBySearchParams(
+            @RequestParam(value="dateFrom",required = false) Long dateFrom,
+            @RequestParam(value="dateTo",required=false) Long dateTo,
+            @RequestParam(value="noGuests",required=false) Integer noGuests,
+            @RequestParam(value="location",required=false) String location
+            ) {
+
+        List<Accommodation> validAccommodations = accommodationService.getAccommodationBySearchParams(location,noGuests,dateFrom,dateTo);
+
+        List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
+
+        for(Accommodation a : validAccommodations) {
+            AccommodationPreviewDTO accommodationPreviewDTO=new AccommodationPreviewDTO();
+
+            byte[] bytes=null;
+
+            try {
+                bytes=Files.readAllBytes(new File(a.getPhotos().iterator().next()).toPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            accommodationPreviewDTO.setImage(Base64.getEncoder().encodeToString(bytes));
+            accommodationPreviewDTO.setId(a.getId());
+            accommodationPreviewDTO.setName(a.getName());
+            accommodationPreviewDTO.setLocation(a.getLocation());
+            accommodationPreviewDTOs.add(accommodationPreviewDTO);
+            accommodationPreviewDTO.setPrice(pricingService.getAccommodationDateRangePrice(dateFrom,dateTo,a.getId()));
         }
 
         return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);

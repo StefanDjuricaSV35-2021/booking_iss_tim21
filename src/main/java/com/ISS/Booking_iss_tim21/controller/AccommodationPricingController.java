@@ -3,20 +3,16 @@ package com.ISS.Booking_iss_tim21.controller;
 import com.ISS.Booking_iss_tim21.dto.AccommodationPricingDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.AccommodationPricing;
-import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.service.AccommodationPricingService;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
+import jakarta.persistence.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/auth/pricings")
@@ -36,8 +32,8 @@ public class AccommodationPricingController {
         return new ResponseEntity<>(accommodationPricingDTOs, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<AccommodationPricingDTO> getAccommodationPricing(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<AccommodationPricingDTO> getAccommodationPricingug(@PathVariable Long id) {
 
         AccommodationPricing accommodationPricing = pricingService.findOne(id);
 
@@ -46,6 +42,13 @@ public class AccommodationPricingController {
         }
 
         return new ResponseEntity<>(new AccommodationPricingDTO(accommodationPricing), HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/test", method = RequestMethod.GET)
+    public @ResponseBody
+    void getAllAccommodationPrices(@RequestParam(value="dateFrom",required = false) Long dateFrom,@RequestParam(value="dateTo",required=false) Long dateTo) {
+
+
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -97,7 +100,7 @@ public class AccommodationPricingController {
 
     @GetMapping(value = "/{accommodationId}/accommodationPricings")
     public ResponseEntity<List<AccommodationPricingDTO>> getPricingsForAccommodation(@PathVariable Long accommodationId) {
-        List<AccommodationPricing> accommodationPricings = pricingService.getAccommodationPricingsForAccommodation(accommodationId);
+        List<AccommodationPricing> accommodationPricings = pricingService.getAccommodationPricingForAccommodation(accommodationId);
 
         List<AccommodationPricingDTO> accommodationPricingDTOS = new ArrayList<>();
         for (AccommodationPricing a : accommodationPricings) {

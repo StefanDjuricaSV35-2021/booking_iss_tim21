@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class AccommodationPricingService {
@@ -29,11 +27,16 @@ public class AccommodationPricingService {
         repository.deleteById(id);
     }
 
-    public List<AccommodationPricing> getAccommodationPricingsForAccommodation(Long accommodationId) { return repository.getAccommodationPricingsForAccommodation(accommodationId); }
+    public List<AccommodationPricing> getAccommodationPricingForAccommodation(Long accommodationId) { return repository.getAccommodationPricingForAccommodation(accommodationId); }
+
+    public List<Long> getAvailableAccommodationsIds(Long dateFrom, Long dateTo){ return repository.getAvailableAccommodations(dateFrom,dateTo);}
+
+    public Double getAccommodationDateRangePrice(Long dateFrom, Long dateTo,Long id){ return repository.getAccommodationDateRangePrice(dateFrom,dateTo,id);}
+
 
     public List<AccommodationPricing> getActiveAccommodationPricings(Long accommodationId) {
         long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
-        List<AccommodationPricing> allPricings = repository.getAccommodationPricingsForAccommodation(accommodationId);
+        List<AccommodationPricing> allPricings = repository.getAccommodationPricingForAccommodation(accommodationId);
         List<AccommodationPricing> currentPricings = new ArrayList<>();
         for (AccommodationPricing a : allPricings) {
             if (a.getTimeSlot().getEndDate() > currentUnixTimestamp)
