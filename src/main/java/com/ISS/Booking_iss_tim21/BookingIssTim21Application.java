@@ -23,7 +23,6 @@ public class BookingIssTim21Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-
 		User admin = userRepository.findByRole(Role.ADMIN);
 		if(admin == null){
 			User user = new User();
