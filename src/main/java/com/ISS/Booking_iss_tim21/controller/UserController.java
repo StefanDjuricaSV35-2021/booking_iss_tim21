@@ -187,6 +187,9 @@ public class UserController {
 
         user.setEnabled(true);
 
+        UserActivationRequest userActivationRequest = userActivationRequestRepository.findByEmail(email);
+        userActivationRequestRepository.delete(userActivationRequest);
+
         user = userService.save(user);
 
         return new ResponseEntity<>(new UserDTO(user) , HttpStatus.OK);

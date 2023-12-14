@@ -46,7 +46,6 @@ public class AuthenticationService {
         User user = userRepository.findByEmail(signUpRequest.getEmail()).orElse(null);
 
         UserActivationRequest userActivationRequest = new UserActivationRequest();
-
         if(user != null){
             if (user.isEnabled()){
                 throw new UserAlreadyExistsException("User with email: "+user.getEmail()+" already exists.");
