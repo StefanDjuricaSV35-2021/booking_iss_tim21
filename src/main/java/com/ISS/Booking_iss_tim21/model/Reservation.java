@@ -19,21 +19,15 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long userId;
-    private Long accommodationId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "accommodation_id")
+    private Accommodation accommodation;
     private int guestsNumber;
     private double price;
     @Embedded
     private TimeSlot timeSlot;
     private ReservationStatus status;
-
-    public Reservation(ReservationDTO reservationDTO) {
-        this.id = reservationDTO.getId();
-        this.userId = reservationDTO.getUserId();
-        this.accommodationId = reservationDTO.getAccommodationId();
-        this.guestsNumber = reservationDTO.getGuestsNumber();
-        this.price = reservationDTO.getPrice();
-        this.timeSlot = reservationDTO.getTimeSlot();
-        this.status = reservationDTO.getStatus();
-    }
 }

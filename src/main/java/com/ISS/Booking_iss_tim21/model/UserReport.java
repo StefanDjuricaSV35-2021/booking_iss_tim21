@@ -18,7 +18,7 @@ public class UserReport {
     @JoinColumn(name = "reported_id")
     private User reported;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "reporter_id")
     private User reporter;
 

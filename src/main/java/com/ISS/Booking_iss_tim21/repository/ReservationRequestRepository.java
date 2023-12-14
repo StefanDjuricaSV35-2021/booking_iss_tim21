@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ReservationRequestRepository extends JpaRepository<ReservationRequest, Long> {
-    @Query("select r from ReservationRequest r where r.userId = ?1")
+    @Query("select r from ReservationRequest r where r.user.Id = ?1")
     public List<ReservationRequest> getUsersReservationRequestsById(Long userId);
 }

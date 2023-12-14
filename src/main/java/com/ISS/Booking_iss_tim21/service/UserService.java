@@ -19,8 +19,6 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-
-
     public List<User> findAll(){
         return repository.findAll();
     }
@@ -31,8 +29,7 @@ public class UserService {
 
     public void remove(Long id){
         User user = findById(id);
-        user.setEnabled(false);
-        repository.save(user);
+        repository.deleteById(user.getId());
     }
 
     public User save(UserDTO userDTO) {
@@ -46,6 +43,7 @@ public class UserService {
     public User findByEmail(String  email){
         return this.repository.findByEmail(email).orElse(null);
     }
+
 
     public UserDetailsService userDetailService(){
         return new UserDetailsService(){

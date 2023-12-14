@@ -25,7 +25,7 @@ public class AccommodationPricingDTO {
         PropertyMap<AccommodationPricing, AccommodationPricingDTO> propertyMap = new PropertyMap<AccommodationPricing, AccommodationPricingDTO>() {
             protected void configure() {
                 map().setId(source.getId());
-                map().setAccommodationId(source.getAccommodationId());
+                map().setAccommodationId(source.getAccommodation().getId());
                 map().setTimeSlot(source.getTimeSlot());
                 map().setPrice(source.getPrice());
             }
