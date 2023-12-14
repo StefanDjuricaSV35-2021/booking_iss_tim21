@@ -7,6 +7,7 @@ import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationRequestStatus;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationStatus;
+import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import com.ISS.Booking_iss_tim21.service.ReservationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,12 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/v1/auth/reservations")
 public class ReservationController {
-        @Autowired
-        private ReservationService reservationService;
-        @Autowired
-        private UserService userService;
+    @Autowired
+    private ReservationService reservationService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private AccommodationService accommodationService;
 
 
     @GetMapping
@@ -62,7 +65,17 @@ public class ReservationController {
 //            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 //        }
 
-        Reservation reservation = new Reservation(reservationDTO);
+
+        Reservation reservation = new Reservation();
+        reservation.setId(reservationDTO.getId());
+        reservation.setUser(userService.findById(reservationDTO.getUserId()));
+        reservation.setAccommodation(accommodationService.findOne(reservationDTO.getAccommodationId()));
+        reservation.setGuestsNumber(reservationDTO.getGuestsNumber());
+        reservation.setPrice(reservationDTO.getPrice());
+        reservation.setTimeSlot(reservationDTO.getTimeSlot());
+        reservation.setStatus(reservationDTO.getStatus());
+
+
         reservationService.save(reservation);
 
         return new ResponseEntity<>(new ReservationDTO(reservation), HttpStatus.CREATED);
@@ -75,8 +88,8 @@ public class ReservationController {
         if (reservation == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        reservation.setUserId(reservationDTO.getUserId());
-        reservation.setAccommodationId(reservationDTO.getAccommodationId());
+        reservation.setUser(userService.findById(reservationDTO.getUserId()));
+        reservation.setAccommodation(accommodationService.findOne(reservationDTO.getAccommodationId()));
         reservation.setGuestsNumber(reservationDTO.getGuestsNumber());
         reservation.setPrice(reservationDTO.getPrice());
         reservation.setTimeSlot(reservationDTO.getTimeSlot());

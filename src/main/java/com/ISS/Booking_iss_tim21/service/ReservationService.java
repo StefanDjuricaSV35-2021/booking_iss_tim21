@@ -29,6 +29,29 @@ public class ReservationService {
 
     public List<Reservation> getUsersReservationsById(Long userId) { return repository.getUsersReservationsById(userId); }
 
+    public List<Reservation> getActiveUsersReservationsById(Long userId) { return repository.getActiveUsersReservationsById(userId); }
+
+    public List<Reservation> getCurrentActiveReservationsForAccommodation(Long accommodationId) {
+        long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
+        List<Reservation> allReservations = repository.getActiveReservationsForAccommodation(accommodationId);
+        List<Reservation> currentReservations = new ArrayList<>();
+        for (Reservation r : allReservations) {
+            if (r.getTimeSlot().getStartDate() > currentUnixTimestamp)
+                currentReservations.add(r);
+        }
+        return currentReservations;
+    }
+
+    public List<Reservation> getCurrentActiveReservationsById(Long userId) {
+        long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
+        List<Reservation> allReservations = repository.getActiveUsersReservationsById(userId);
+        List<Reservation> currentReservations = new ArrayList<>();
+        for (Reservation r : allReservations) {
+            if (r.getTimeSlot().getStartDate() > currentUnixTimestamp)
+                currentReservations.add(r);
+        }
+        return currentReservations;
+    }
     public List<Reservation> getCurrentReservationsById(Long userId) {
         long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
         List<Reservation> allReservations = repository.getUsersReservationsById(userId);

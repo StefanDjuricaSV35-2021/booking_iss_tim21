@@ -1,10 +1,14 @@
 package com.ISS.Booking_iss_tim21.model.review;
 
+import com.ISS.Booking_iss_tim21.model.ReservationRequest;
+import com.ISS.Booking_iss_tim21.model.ReviewReport;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReviewType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Setter
 @Getter
@@ -29,6 +33,7 @@ public class Review {
     @Column(name = "rating", nullable = true)
     private int rating;
 
-
+    @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<ReviewReport> reviewReports;
 
 }

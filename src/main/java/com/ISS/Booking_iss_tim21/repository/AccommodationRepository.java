@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface AccommodationRepository extends JpaRepository<Accommodation, Long> {
-    @Query("select a from Accommodation a where a.ownerId = ?1")
+    @Query("select a from Accommodation a where a.owner.Id = ?1")
     public List<Accommodation> getOwnersAccommodations(Long ownerId);
 }
