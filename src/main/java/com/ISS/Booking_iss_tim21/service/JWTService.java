@@ -48,7 +48,6 @@ public class JWTService {
         return  extractClaim(token, Claims::getExpiration);
     }
 
-
     private Key getSignKey(){
         byte[] key = Base64.getDecoder().decode(this.secret);
         return Keys.hmacShaKeyFor(key);

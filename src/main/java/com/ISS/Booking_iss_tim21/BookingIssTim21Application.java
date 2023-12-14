@@ -7,12 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import java.io.File;
 
 @SpringBootApplication
 public class BookingIssTim21Application implements CommandLineRunner {
@@ -28,6 +23,7 @@ public class BookingIssTim21Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+
 		User admin = userRepository.findByRole(Role.ADMIN);
 		if(admin == null){
 			User user = new User();
