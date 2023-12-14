@@ -35,9 +35,11 @@ public class UserService {
     public User save(UserDTO userDTO) {
         User u = new User(userDTO);
 
-        u.setEmail(userDTO.getEmail());
-
         return this.repository.save(u);
+    }
+
+    public User save(User user) {
+        return this.repository.save(user);
     }
 
     public User findByEmail(String  email){

@@ -1,10 +1,13 @@
 package com.ISS.Booking_iss_tim21.controller;
 
 
+import com.ISS.Booking_iss_tim21.dto.UserActivationRequestDTO;
 import com.ISS.Booking_iss_tim21.dto.UserDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.Reservation;
 import com.ISS.Booking_iss_tim21.model.User;
+import com.ISS.Booking_iss_tim21.model.UserActivationRequest;
+import com.ISS.Booking_iss_tim21.repository.UserActivationRequestRepository;
 import com.ISS.Booking_iss_tim21.model.enumeration.Role;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import com.ISS.Booking_iss_tim21.service.ReservationService;
@@ -32,13 +35,18 @@ public class UserController {
     private UserService userService;
 
     @Autowired
+    private UserActivationRequestRepository userActivationRequestRepository;
+    
+    @Autowired
     private ReservationService reservationService;
 
     @Autowired
     private AccommodationService accommodationService;
 
+
     @Autowired
     private PasswordEncoder passwordEncoder;
+  
     @GetMapping
     public ResponseEntity<List<UserDTO>> getUsers() {
 
@@ -59,8 +67,6 @@ public class UserController {
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
         User user = userService.findById(id);
 
-
-        // course must exist
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -150,6 +156,40 @@ public class UserController {
         }
 
         return new ResponseEntity<>(new UserDTO(user), HttpStatus.OK);
+    }
+
+    @GetMapping("/activate/{email}")
+    public ResponseEntity<UserActivationRequestDTO> isValidActivationRequest(@PathVariable String email){
+        UserActivationRequest userActivationRequest = userActivationRequestRepository.findByEmail(email);
+
+        if (userActivationRequest == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (userActivationRequest.isExpired()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(new UserActivationRequestDTO(userActivationRequest.getEmail()) , HttpStatus.OK);
+    }
+
+    @GetMapping ("/activate/account/{email}")
+    public ResponseEntity<UserDTO> activateAccount(@PathVariable String email){
+        User user = userService.findByEmail(email);
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (user.isEnabled()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        user.setEnabled(true);
+
+        user = userService.save(user);
+
+        return new ResponseEntity<>(new UserDTO(user) , HttpStatus.OK);
     }
 }
 
