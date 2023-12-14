@@ -4,6 +4,7 @@ import com.ISS.Booking_iss_tim21.dto.JWTAuthenticationResponse;
 import com.ISS.Booking_iss_tim21.dto.RefreshTokenRequest;
 import com.ISS.Booking_iss_tim21.dto.SignInRequest;
 import com.ISS.Booking_iss_tim21.dto.SignUpRequest;
+import com.ISS.Booking_iss_tim21.exception.BadRequestException;
 import com.ISS.Booking_iss_tim21.exception.UserAlreadyExistsException;
 import com.ISS.Booking_iss_tim21.exception.UserNotEnabledException;
 import com.ISS.Booking_iss_tim21.model.EmailStructure;
@@ -13,6 +14,7 @@ import com.ISS.Booking_iss_tim21.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -76,16 +78,17 @@ public class AuthenticationService {
                 signInRequest.getPassword()));
 
         var user = userRepository.findByEmail(signInRequest.getEmail()).orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+
+
         if(!user.isEnabled()){
             throw new UserNotEnabledException("User account is not enabled.");
         }
-        var jwt = jwtService.gemerateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+
+        var jwt = jwtService.generateToken(user);
 
         JWTAuthenticationResponse jwtAuthenticationResponse = new JWTAuthenticationResponse();
 
         jwtAuthenticationResponse.setToken(jwt);
-        jwtAuthenticationResponse.setRefreshToken(refreshToken);
         return jwtAuthenticationResponse;
     }
 
@@ -93,12 +96,11 @@ public class AuthenticationService {
         String userEmail = jwtService.extractUsername(refreshTokenRequest.getToken());
         User user = userRepository.findByEmail(userEmail).orElseThrow();
         if(jwtService.isTokenValid(refreshTokenRequest.getToken(), user)){
-            var jwt = jwtService.gemerateToken(user);
+            var jwt = jwtService.generateToken(user);
 
             JWTAuthenticationResponse jwtAuthenticationResponse = new JWTAuthenticationResponse();
 
             jwtAuthenticationResponse.setToken(jwt);
-            jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
             return jwtAuthenticationResponse;
         }
         return null;

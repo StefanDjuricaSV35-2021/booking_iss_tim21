@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -12,19 +13,24 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @Service
 public class JWTService {
 
+    @Value("${token.secret}")
+    private String secret;
 
-    private int EXPIRATION_TIME_TOKEN = 1000*64*24;
-    private int EXPIRATION_TIME_REFRESH_TOKEN = 604800000;
-    public String gemerateToken(UserDetails userDetails){
+    @Value("${token.expiration}")
+    private Long expiration;
+
+    public String generateToken(UserDetails userDetails){
+
         return Jwts.builder().setSubject(userDetails.getUsername())
-                .claim("roles", userDetails.getAuthorities())
+                .setClaims(getClaims(userDetails))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_TOKEN))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -38,9 +44,12 @@ public class JWTService {
         return  extractClaim(token, Claims::getSubject);
     }
 
+    public Date extractExpirationDate(String token) {
+        return  extractClaim(token, Claims::getExpiration);
+    }
 
     private Key getSignKey(){
-        byte[] key = Base64.getDecoder().decode("413F4428472B4B6250655368566D5970337336763979244226452948404D6351");
+        byte[] key = Base64.getDecoder().decode(this.secret);
         return Keys.hmacShaKeyFor(key);
     }
 
@@ -57,13 +66,14 @@ public class JWTService {
         return extractClaim(token, Claims::getExpiration).before(new Date());
     }
 
-    public String generateRefreshToken(HashMap<String, Object> extraClaims, UserDetails userDetails) {
-        return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
-                .claim("roles", userDetails.getAuthorities())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_REFRESH_TOKEN))
-                .signWith(getSignKey(), SignatureAlgorithm.HS256)
-                .compact();
+    public Map<String, Object> getClaims(UserDetails userDetails){
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("sub", userDetails.getUsername());
+        claims.put("role", userDetails.getAuthorities());
+        claims.put("created", new Date(System.currentTimeMillis()));
+        return claims;
     }
+
+
 }
 
