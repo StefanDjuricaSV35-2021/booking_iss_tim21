@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DateManipulationTools {
-    static String datePattern="dd-MM-yyyy";
+    static String datePattern="yyyy-MM-dd";
 
     public static Long dateStringToUnix(String date){
         DateFormat dateFormater = new SimpleDateFormat(datePattern);

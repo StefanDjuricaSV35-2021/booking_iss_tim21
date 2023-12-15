@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ISS.Booking_iss_tim21.utility.DateManipulationTools.dateStringToUnix;
+
 @Service
 public class AccommodationPricingService {
     @Autowired
@@ -27,16 +29,22 @@ public class AccommodationPricingService {
         repository.deleteById(id);
     }
 
-    public List<AccommodationPricing> getAccommodationPricingForAccommodation(Long accommodationId) { return repository.getAccommodationPricingForAccommodation(accommodationId); }
+    public List<AccommodationPricing> getAccommodationPricingForAccommodation(Long accommodationId) { return repository.getAccommodationPricing(accommodationId); }
 
-    public List<Long> getAvailableAccommodationsIds(Long dateFrom, Long dateTo){ return repository.getAvailableAccommodations(dateFrom,dateTo);}
+    public List<Long> getAvailableAccommodationsIds(Long dateFrom, Long dateTo){ return repository.getAccommodationIdsWithPrices(dateFrom,dateTo);}
 
-    public Double getAccommodationDateRangePrice(Long dateFrom, Long dateTo,Long id){ return repository.getAccommodationDateRangePrice(dateFrom,dateTo,id);}
+    public Double getAccommodationDateRangePrice(String dateFrom, String dateTo,Long id){
+
+        Long unixDateFrom=dateStringToUnix(dateFrom);
+        Long unixDateTo=dateStringToUnix(dateTo);
+
+        return repository.getAccommodationTotalPrice(unixDateFrom,unixDateTo,id);
+    }
 
 
     public List<AccommodationPricing> getActiveAccommodationPricings(Long accommodationId) {
         long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
-        List<AccommodationPricing> allPricings = repository.getAccommodationPricingForAccommodation(accommodationId);
+        List<AccommodationPricing> allPricings = repository.getAccommodationPricing(accommodationId);
         List<AccommodationPricing> currentPricings = new ArrayList<>();
         for (AccommodationPricing a : allPricings) {
             if (a.getTimeSlot().getEndDate() > currentUnixTimestamp)

@@ -1,17 +1,15 @@
 package com.ISS.Booking_iss_tim21.repository;
 
 import com.ISS.Booking_iss_tim21.model.AccommodationPricing;
-import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Map;
 
 public interface AccommodationPricingRepository extends JpaRepository<AccommodationPricing, Long> {
-    @Query("select a from AccommodationPricing a where a.accommodationId = ?1")
-    public List<AccommodationPricing> getAccommodationPricingForAccommodation(Long accommodationId);
+    @Query("select a from AccommodationPricing a where a.accommodation = ?1")
+    public List<AccommodationPricing> getAccommodationPricing(Long accommodationId);
 
     @Query(value="with recursive rec as " +
             "(select distinct accommodation_id as idd,:dateFrom as fr,price from accommodation_pricing ac " +
@@ -23,7 +21,7 @@ public interface AccommodationPricingRepository extends JpaRepository<Accommodat
             "as foo " +
             "on foo.idd=r.idd and foo.start_date<=r.fr+86400 and foo.end_date>r.fr+86400 and :dateTo!=(fr+86400)) " +
             "select idd from rec group by(idd) having(count(*)=(:dateTo-:dateFrom)/86400);",nativeQuery = true)
-    public List<Long> getAvailableAccommodations(@Param("dateFrom") Long dateFrom, @Param("dateTo") Long dateTo);
+    public List<Long> getAccommodationIdsWithPrices(@Param("dateFrom") Long dateFrom, @Param("dateTo") Long dateTo);
 
     @Query(value="with recursive rec as " +
             "(select distinct accommodation_id as idd,:dateFrom as fr,price from accommodation_pricing ac " +
@@ -36,7 +34,7 @@ public interface AccommodationPricingRepository extends JpaRepository<Accommodat
             "as foo " +
             "on foo.idd=r.idd and foo.start_date<=r.fr+86400 and foo.end_date>r.fr+86400 and :dateTo!=(fr+86400)) " +
             "select SUM(price) from rec group by(idd) having(count(*)=(:dateTo-:dateFrom)/86400);",nativeQuery = true)
-    public Double getAccommodationDateRangePrice(@Param("dateFrom") Long dateFrom, @Param("dateTo") Long dateTo,@Param("id") Long id);
+    public Double getAccommodationTotalPrice(@Param("dateFrom") Long dateFrom, @Param("dateTo") Long dateTo, @Param("id") Long id);
 
 
 

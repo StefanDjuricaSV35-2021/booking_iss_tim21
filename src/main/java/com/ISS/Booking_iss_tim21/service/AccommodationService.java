@@ -14,6 +14,8 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.ISS.Booking_iss_tim21.utility.DateManipulationTools.dateStringToUnix;
+
 @Service
 public class AccommodationService {
     @Autowired
@@ -42,9 +44,12 @@ public class AccommodationService {
 
     public List<Accommodation>getAccommodationsByNOGuests(int noGuests){return repository.getAccommodationsByNOGuests(noGuests);}
 
-    public List<Accommodation> getAccommodationBySearchParams(String location,Integer noGuests,Long dateFrom,Long dateTo ){
+    public List<Accommodation> getAccommodationBySearchParams(String location,Integer noGuests,String dateFrom,String dateTo ){
 
-        List<Accommodation> availableAccommodations=getAvailableAccommodations(dateFrom,dateTo);
+        Long unixDateFrom=dateStringToUnix(dateFrom);
+        Long unixDateTo=dateStringToUnix(dateTo);
+
+        List<Accommodation> availableAccommodations=getAvailableAccommodations(unixDateFrom,unixDateTo);
         List<Accommodation> accommodationAtLocation=getAccommodationsByLocation(location);
         List<Accommodation> accommodationsWithGuestRange=getAccommodationsByNOGuests(noGuests);
 
