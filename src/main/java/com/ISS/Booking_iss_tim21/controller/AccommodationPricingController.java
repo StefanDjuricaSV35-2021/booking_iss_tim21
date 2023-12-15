@@ -101,7 +101,7 @@ public class AccommodationPricingController {
 
     @GetMapping(value = "/{accommodationId}/accommodationPricings")
     public ResponseEntity<List<AccommodationPricingDTO>> getPricingsForAccommodation(@PathVariable Long accommodationId) {
-        List<AccommodationPricing> accommodationPricings = pricingService.getAccommodationPricingsForAccommodation(accommodationId);
+        List<AccommodationPricing> accommodationPricings = pricingService.getActiveAccommodationPricings(accommodationId);
 
         List<AccommodationPricingDTO> accommodationPricingDTOS = new ArrayList<>();
         for (AccommodationPricing a : accommodationPricings) {
