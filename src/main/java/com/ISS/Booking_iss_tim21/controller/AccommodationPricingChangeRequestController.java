@@ -30,7 +30,7 @@ public class AccommodationPricingChangeRequestController {
     AccommodationChangeRequestService accommodationChangeRequestService;
 
     //get all pricing requests for accommodation that is being changed
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/all/{id}")
     public ResponseEntity<List<AccommodationPricingChangeRequestDTO>> getAllAccommodationPricingChangeRequests(@PathVariable Long accommodationChangeRequestId) {
         List<AccommodationPricingChangeRequest> pricingChangeRequests = pricingChangeRequestService.getAllForAccommodation(accommodationChangeRequestId);
         if (pricingChangeRequests.isEmpty()) {
