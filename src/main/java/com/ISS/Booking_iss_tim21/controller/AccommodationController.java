@@ -2,10 +2,14 @@ package com.ISS.Booking_iss_tim21.controller;
 
 import com.ISS.Booking_iss_tim21.dto.AccommodationDetailsDTO;
 import com.ISS.Booking_iss_tim21.dto.AccommodationPreviewDTO;
+import com.ISS.Booking_iss_tim21.dto.AccommodationPricingDTO;
+import com.ISS.Booking_iss_tim21.dto.SignUpRequest;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
+import com.ISS.Booking_iss_tim21.model.AccommodationPricing;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
 import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
+import com.ISS.Booking_iss_tim21.service.AccommodationPricingService;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,10 @@ import java.util.stream.Collectors;
 public class AccommodationController {
     @Autowired
     private AccommodationService accommodationService;
+
+    @Autowired
+    private AccommodationPricingService accommodationPricingService;
+
     @Autowired
     private UserService userService;
 
@@ -74,23 +82,24 @@ public class AccommodationController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-//        User owner = userService.findOne(accommodationDTO.getOwnerId());
-//        if (owner == null) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
+        User owner = userService.findById(accommodationDTO.getOwnerId());
+        if (owner == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         Accommodation accommodation = new Accommodation();
-        accommodation.setId(accommodationDTO.getId());
-        accommodation.setOwner(userService.findById(accommodationDTO.getOwnerId()));
+        accommodation.setOwner(owner);
         accommodation.setName(accommodationDTO.getName());
         accommodation.setType(accommodationDTO.getType());
         accommodation.setMinGuests(accommodationDTO.getMinGuests());
         accommodation.setMaxGuests(accommodationDTO.getMaxGuests());
         accommodation.setDescription(accommodationDTO.getDescription());
+        accommodation.setLocation(accommodationDTO.getLocation());
         accommodation.setAmenities(accommodationDTO.getAmenities());
         accommodation.setPhotos(accommodationDTO.getPhotos());
         accommodation.setDaysForCancellation(accommodationDTO.getDaysForCancellation());
-        accommodation.setLocation(accommodationDTO.getLocation());
+        accommodation.setPerNight(accommodationDTO.isPerNight());
+        accommodation.setEnabled(accommodationDTO.isEnabled());
 
         accommodationService.save(accommodation);
 
@@ -141,4 +150,5 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodationsDTO, HttpStatus.OK);
 
     }
+
 }

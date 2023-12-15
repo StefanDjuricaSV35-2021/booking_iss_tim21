@@ -20,13 +20,15 @@ public class AccommodationDetailsDTO {
     private Long ownerId;
     private String name;
     private AccommodationType type;
-    private String location;
     private int minGuests;
     private int maxGuests;
     private String description;
+    private String location;
     private Set<Amenity> amenities;
     private Set<String> photos;
     private int daysForCancellation;
+    private boolean perNight;
+    private boolean enabled;
 
     public AccommodationDetailsDTO(Accommodation accommodation) {
         ModelMapper modelMapper = new ModelMapper();
@@ -45,6 +47,7 @@ public class AccommodationDetailsDTO {
                 map().setPhotos(source.getPhotos());
                 map().setDaysForCancellation(source.getDaysForCancellation());
                 map().setLocation(source.getLocation());
+                map().setEnabled(source.isEnabled());
             }
         };
 

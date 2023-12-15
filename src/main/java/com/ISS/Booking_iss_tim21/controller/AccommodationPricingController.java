@@ -61,8 +61,7 @@ public class AccommodationPricingController {
 
 
         AccommodationPricing accommodationPricing = new AccommodationPricing();
-        accommodationPricing.setId(accommodationPricingDTO.getId());
-        accommodationPricing.setAccommodation(accommodationService.findOne(accommodationPricingDTO.getAccommodationId()));
+        accommodationPricing.setAccommodation(accommodation);
         accommodationPricing.setTimeSlot(accommodationPricingDTO.getTimeSlot());
         accommodationPricing.setPrice(accommodationPricingDTO.getPrice());
 
