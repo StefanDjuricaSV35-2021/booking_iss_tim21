@@ -22,7 +22,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static com.ISS.Booking_iss_tim21.utility.ImageManipulationTools.ImagePathSetToBase64;
+import static com.ISS.Booking_iss_tim21.utility.ImageManipulationTools.ImagePathToBase64;
 
 @RestController
 @RequestMapping("/api/v1/auth/accommodations")
@@ -35,10 +37,12 @@ public class AccommodationController {
     private AccommodationPricingService accommodationPricingService;
 
     @Autowired
+    private AccommodationPricingService pricingService;
+    @Autowired
     private UserService userService;
 
-    @GetMapping
-    public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodations() {
+    @GetMapping("/previews")
+    public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodationsPreviews() {
          List<Accommodation> accommodations = accommodationService.getAll();
 
         List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
@@ -63,6 +67,33 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodationsPreviewBySearchParams(
+            @RequestParam(value="dateFrom",required = false) String dateFrom,
+            @RequestParam(value="dateTo",required=false) String dateTo,
+            @RequestParam(value="noGuests",required=false) Integer noGuests,
+            @RequestParam(value="location",required=false) String location
+            ) {
+
+        List<Accommodation> validAccommodations = accommodationService.getAccommodationBySearchParams(location,noGuests,dateFrom,dateTo);
+
+        List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
+
+        for(Accommodation a : validAccommodations) {
+
+            AccommodationPreviewDTO accommodationPreviewDTO=new AccommodationPreviewDTO();
+
+            accommodationPreviewDTO.setImage(ImagePathToBase64(a.getPhotos().iterator().next()));
+            accommodationPreviewDTO.setId(a.getId());
+            accommodationPreviewDTO.setName(a.getName());
+            accommodationPreviewDTO.setLocation(a.getLocation());
+            accommodationPreviewDTOs.add(accommodationPreviewDTO);
+            accommodationPreviewDTO.setPrice(pricingService.getAccommodationDateRangePrice(dateFrom,dateTo,a.getId()));
+        }
+
+        return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/{id}")
     public ResponseEntity<AccommodationDetailsDTO> getAccommodation(@PathVariable Long id) {
 
@@ -72,7 +103,21 @@ public class AccommodationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(new AccommodationDetailsDTO(accommodation), HttpStatus.OK);
+        AccommodationDetailsDTO accDTO=new AccommodationDetailsDTO();
+
+        accDTO.setId(accommodation.getId());
+        accDTO.setOwnerId(accommodation.getOwner().getId());
+        accDTO.setName(accommodation.getName());
+        accDTO.setType(accommodation.getType());
+        accDTO.setMinGuests(accommodation.getMinGuests());
+        accDTO.setMaxGuests(accommodation.getMaxGuests());
+        accDTO.setDescription(accommodation.getDescription());
+        accDTO.setAmenities(accommodation.getAmenities());
+        accDTO.setPhotos(ImagePathSetToBase64(accommodation.getPhotos()));
+        accDTO.setDaysForCancellation(accommodation.getDaysForCancellation());
+        accDTO.setLocation(accommodation.getLocation());
+
+        return new ResponseEntity<>(accDTO, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
