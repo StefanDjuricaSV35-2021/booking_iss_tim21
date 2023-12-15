@@ -3,6 +3,7 @@ package com.ISS.Booking_iss_tim21.controller;
 import com.ISS.Booking_iss_tim21.dto.AccommodationPricingDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.AccommodationPricing;
+import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.service.AccommodationPricingService;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/auth/pricings")
 public class AccommodationPricingController {
-
-    private static final Logger logger = LoggerFactory.getLogger(AccommodationPricingController.class);
-
     @Autowired
     private AccommodationPricingService pricingService;
     @Autowired
@@ -65,8 +64,6 @@ public class AccommodationPricingController {
         accommodationPricing.setAccommodation(accommodation);
         accommodationPricing.setTimeSlot(accommodationPricingDTO.getTimeSlot());
         accommodationPricing.setPrice(accommodationPricingDTO.getPrice());
-
-        logger.info("Timeslot:"+ accommodationPricingDTO.getTimeSlot());
 
         pricingService.save(accommodationPricing);
         return new ResponseEntity<>(new AccommodationPricingDTO(accommodationPricing), HttpStatus.CREATED);
