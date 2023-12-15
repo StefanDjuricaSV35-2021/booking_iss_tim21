@@ -32,6 +32,8 @@ public class Accommodation {
     private int maxGuests;
     private String description;
     private String location;
+    private boolean enabled;
+    private boolean perNight;
 
     //@OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
 
@@ -50,10 +52,10 @@ public class Accommodation {
 
     @ElementCollection(targetClass = Amenity.class, fetch = FetchType.LAZY)
     @Enumerated(EnumType.STRING)
-    private Set<Amenity> amenities;
+    private List<Amenity> amenities;
 
     @ElementCollection
-    private Set<String> photos;
+    private List<String> photos;
     private int daysForCancellation;
 
 }
