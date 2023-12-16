@@ -32,13 +32,16 @@ public class Accommodation {
     private int maxGuests;
     private String description;
     private String location;
-
+    private boolean enabled;
+    private boolean perNight;
+  
     @ElementCollection(targetClass = Amenity.class, fetch = FetchType.LAZY)
     @Enumerated(EnumType.STRING)
-    private Set<Amenity> amenities;
+    private List<Amenity> amenities;
 
     @ElementCollection
-    private Set<String> photos;
+    private List<String> photos;
+    private int daysForCancellation;
 
     private int daysForCancellation;
     private boolean perNight;
@@ -59,6 +62,5 @@ public class Accommodation {
 
     @OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ReservationRequest> reservationRequests;
-
 
 }
