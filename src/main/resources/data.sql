@@ -1,3 +1,59 @@
+-- Inserting users with adjusted ids
+INSERT INTO "users" (id, city, country, email, name, password, phone, street, surname, role, enabled)
+VALUES (7, 'New York', 'USA', 'john.doe@example.com', 'John', 'hashed_password_1', '+1 123 456 7890', '123 Main St', 'Doe', 0, true);
+
+INSERT INTO "users" (id, city, country, email, name, password, phone, street, surname, role, enabled)
+VALUES (8, 'London', 'UK', 'jane.smith@example.com', 'Jane', 'hashed_password_2', '+44 20 1234 5678', '456 Park Ave', 'Smith', 0, true);
+
+INSERT INTO "users" (id, city, country, email, name, password, phone, street, surname, role, enabled)
+VALUES (9, 'Berlin', 'Germany', 'bob.jones@example.com', 'Bob', 'hashed_password_3', '+49 30 9876 5432', '789 Oak St', 'Jones', 2, true);
+
+-- Inserting additional users with adjusted ids
+INSERT INTO "users" (id, city, country, email, name, password, phone, street, surname, role, enabled)
+VALUES (10, 'New York', 'USA', 'user102@example.com', 'User', 'hashed_password_user102', '+1 987 654 3210', '456 Oak St', 'Lastname', 0, true);
+
+INSERT INTO "users" (id, city, country, email, name, password, phone, street, surname, role, enabled)
+VALUES (11, 'London', 'UK', 'user103@example.com', 'Another', 'hashed_password_user103', '+44 20 9876 5432', '789 Elm St', 'Person', 0, true);
+
+INSERT INTO "users" (id, city, country, email, name, password, phone, street, surname, role, enabled)
+VALUES (12, 'Berlin', 'Germany', 'admin@example.com', 'Admin', 'hashed_password_admin', '+49 30 1234 5678', '101 Maple St', 'Administrator', 2, true);
+
+
+-- Inserting data into the accommodation table
+INSERT INTO accommodation (per_night,enabled,id, owner_id, name, type, min_guests, max_guests, description, days_for_cancellation,location)
+VALUES (true,true,1, 9, 'Cozy Cottage', 0, 2, 4, 'A lovely cottage in the woods', 7,'Beograd');
+
+INSERT INTO accommodation (per_night,enabled,id, owner_id, name, type, min_guests, max_guests, description, days_for_cancellation,location)
+VALUES (false,true,2, 12, 'Modern Apartment', 1, 1, 2, 'A sleek apartment in the city center', 14,'Novi Sad');
+
+INSERT INTO accommodation (per_night,enabled,id, owner_id, name, type, min_guests, max_guests, description, days_for_cancellation,location)
+VALUES (true,true,3, 12, 'Seaside Villa', 2, 6, 10, 'A luxurious villa with a view of the ocean', 30,'Nis');
+
+
+-- Inserting amenities for the Cozy Cottage (accommodation_id = 1)
+INSERT INTO accommodation_amenities (accommodation_id, amenities)
+VALUES (1, 'WiFi');
+
+INSERT INTO accommodation_amenities (accommodation_id, amenities)
+VALUES (1, 'Parking');
+
+-- Inserting amenities for the Modern Apartment (accommodation_id = 2)
+INSERT INTO accommodation_amenities (accommodation_id, amenities)
+VALUES (2, 'WiFi');
+
+INSERT INTO accommodation_amenities (accommodation_id, amenities)
+VALUES (2, 'TV');
+
+-- Inserting amenities for the Seaside Villa (accommodation_id = 3)
+INSERT INTO accommodation_amenities (accommodation_id, amenities)
+VALUES (3, 'WiFi');
+
+INSERT INTO accommodation_amenities (accommodation_id, amenities)
+VALUES (3, 'Parking');
+
+INSERT INTO accommodation_amenities (accommodation_id, amenities)
+VALUES (3, 'TV');
+
 
 -- Inserting photos for the Cozy Cottage (accommodation_id = 1)
 INSERT INTO accommodation_photos (accommodation_id, photos)
