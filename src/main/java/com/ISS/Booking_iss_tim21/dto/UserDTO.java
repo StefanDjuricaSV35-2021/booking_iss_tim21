@@ -33,6 +33,7 @@ public class UserDTO {
     private String phone;
 
     private boolean enabled;
+
     @NotNull
     private Role role;
 
@@ -52,7 +53,6 @@ public class UserDTO {
                 map().setPhone(source.getPhone());
                 map().setRole(source.getRole());
                 map().setEnabled(source.isEnabled());
-
             }
         };
 

@@ -61,8 +61,7 @@ public class AccommodationPricingController {
 
 
         AccommodationPricing accommodationPricing = new AccommodationPricing();
-        accommodationPricing.setId(accommodationPricingDTO.getId());
-        accommodationPricing.setAccommodation(accommodationService.findOne(accommodationPricingDTO.getAccommodationId()));
+        accommodationPricing.setAccommodation(accommodation);
         accommodationPricing.setTimeSlot(accommodationPricingDTO.getTimeSlot());
         accommodationPricing.setPrice(accommodationPricingDTO.getPrice());
 
@@ -102,7 +101,7 @@ public class AccommodationPricingController {
 
     @GetMapping(value = "/{accommodationId}/accommodationPricings")
     public ResponseEntity<List<AccommodationPricingDTO>> getPricingsForAccommodation(@PathVariable Long accommodationId) {
-        List<AccommodationPricing> accommodationPricings = pricingService.getAccommodationPricingsForAccommodation(accommodationId);
+        List<AccommodationPricing> accommodationPricings = pricingService.getActiveAccommodationPricings(accommodationId);
 
         List<AccommodationPricingDTO> accommodationPricingDTOS = new ArrayList<>();
         for (AccommodationPricing a : accommodationPricings) {

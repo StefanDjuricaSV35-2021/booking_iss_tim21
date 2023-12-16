@@ -38,18 +38,18 @@ public class Accommodation {
     private Set<Amenity> amenities;
 
     @ElementCollection
-    private Set<String> photos;
-    private int daysForCancellation;
+    private Set<String> photos;    priate int daysForCancellation;
+    private boolean perNight;
+    private boolean enabled;
 
     //@OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
 
-
-    @OneToMany(mappedBy = "reviewed", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OnToMany(mappedBy = "reviewed", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<AccommodationReview> accommodationReviews;
+ 
+    // 
 
-    @OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<AccommodationPricing> accommodationPricings;
-
+    
     @OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Reservation> reservations;
 
@@ -59,8 +59,9 @@ public class Accommodation {
     @OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<AccommodationChangeRequest> accommodationChangeRequests;
 
-    @OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<AccommodationPricingChangeRequest> accommodationPricingChangeRequests;
+    @OneToMany(mappedBy = "accommodation", fetch = FetchT
+
+     
 
 
-}
+    

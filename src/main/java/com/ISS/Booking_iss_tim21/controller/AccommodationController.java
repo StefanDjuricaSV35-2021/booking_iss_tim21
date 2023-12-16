@@ -2,10 +2,14 @@ package com.ISS.Booking_iss_tim21.controller;
 
 import com.ISS.Booking_iss_tim21.dto.AccommodationDetailsDTO;
 import com.ISS.Booking_iss_tim21.dto.AccommodationPreviewDTO;
+import com.ISS.Booking_iss_tim21.dto.AccommodationPricingDTO;
+import com.ISS.Booking_iss_tim21.dto.SignUpRequest;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
+import com.ISS.Booking_iss_tim21.model.AccommodationPricing;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
 import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
+import com.ISS.Booking_iss_tim21.service.AccommodationPricingService;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +22,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static com.ISS.Booking_iss_tim21.utility.ImageManipulationTools.ImagePathSetToBase64;
+import static com.ISS.Booking_iss_tim21.utility.ImageManipulationTools.ImagePathToBase64;
 
 @RestController
 @RequestMapping("/api/v1/auth/accommodations")
@@ -26,11 +32,17 @@ import java.util.stream.Collectors;
 public class AccommodationController {
     @Autowired
     private AccommodationService accommodationService;
+
+    @Autowired
+    private AccommodationPricingService accommodationPricingService;
+
+    @Autowired
+    private AccommodationPricingService pricingService;
     @Autowired
     private UserService userService;
 
-    @GetMapping
-    public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodations() {
+    @GetMapping("/previews")
+    public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodationsPreviews() {
          List<Accommodation> accommodations = accommodationService.getAll();
 
         List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
@@ -55,6 +67,33 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodationsPreviewBySearchParams(
+            @RequestParam(value="dateFrom",required = false) String dateFrom,
+            @RequestParam(value="dateTo",required=false) String dateTo,
+            @RequestParam(value="noGuests",required=false) Integer noGuests,
+            @RequestParam(value="location",required=false) String location
+            ) {
+
+        List<Accommodation> validAccommodations = accommodationService.getAccommodationBySearchParams(location,noGuests,dateFrom,dateTo);
+
+        List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
+
+        for(Accommodation a : validAccommodations) {
+
+            AccommodationPreviewDTO accommodationPreviewDTO=new AccommodationPreviewDTO();
+
+            accommodationPreviewDTO.setImage(ImagePathToBase64(a.getPhotos().iterator().next()));
+            accommodationPreviewDTO.setId(a.getId());
+            accommodationPreviewDTO.setName(a.getName());
+            accommodationPreviewDTO.setLocation(a.getLocation());
+            accommodationPreviewDTOs.add(accommodationPreviewDTO);
+            accommodationPreviewDTO.setPrice(pricingService.getAccommodationDateRangePrice(dateFrom,dateTo,a.getId()));
+        }
+
+        return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/{id}")
     public ResponseEntity<AccommodationDetailsDTO> getAccommodation(@PathVariable Long id) {
 
@@ -64,7 +103,21 @@ public class AccommodationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(new AccommodationDetailsDTO(accommodation), HttpStatus.OK);
+        AccommodationDetailsDTO accDTO=new AccommodationDetailsDTO();
+
+        accDTO.setId(accommodation.getId());
+        accDTO.setOwnerId(accommodation.getOwner().getId());
+        accDTO.setName(accommodation.getName());
+        accDTO.setType(accommodation.getType());
+        accDTO.setMinGuests(accommodation.getMinGuests());
+        accDTO.setMaxGuests(accommodation.getMaxGuests());
+        accDTO.setDescription(accommodation.getDescription());
+        accDTO.setAmenities(accommodation.getAmenities());
+        accDTO.setPhotos(ImagePathSetToBase64(accommodation.getPhotos()));
+        accDTO.setDaysForCancellation(accommodation.getDaysForCancellation());
+        accDTO.setLocation(accommodation.getLocation());
+
+        return new ResponseEntity<>(accDTO, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -74,23 +127,24 @@ public class AccommodationController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-//        User owner = userService.findOne(accommodationDTO.getOwnerId());
-//        if (owner == null) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
+        User owner = userService.findById(accommodationDTO.getOwnerId());
+        if (owner == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         Accommodation accommodation = new Accommodation();
-        accommodation.setId(accommodationDTO.getId());
-        accommodation.setOwner(userService.findById(accommodationDTO.getOwnerId()));
+        accommodation.setOwner(owner);
         accommodation.setName(accommodationDTO.getName());
         accommodation.setType(accommodationDTO.getType());
         accommodation.setMinGuests(accommodationDTO.getMinGuests());
         accommodation.setMaxGuests(accommodationDTO.getMaxGuests());
         accommodation.setDescription(accommodationDTO.getDescription());
+        accommodation.setLocation(accommodationDTO.getLocation());
         accommodation.setAmenities(accommodationDTO.getAmenities());
         accommodation.setPhotos(accommodationDTO.getPhotos());
         accommodation.setDaysForCancellation(accommodationDTO.getDaysForCancellation());
-        accommodation.setLocation(accommodationDTO.getLocation());
+        accommodation.setPerNight(accommodationDTO.isPerNight());
+        accommodation.setEnabled(accommodationDTO.isEnabled());
 
         accommodationService.save(accommodation);
 
@@ -141,4 +195,5 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodationsDTO, HttpStatus.OK);
 
     }
+
 }
