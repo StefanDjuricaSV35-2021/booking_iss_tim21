@@ -2,13 +2,8 @@ package com.ISS.Booking_iss_tim21.controller;
 
 import com.ISS.Booking_iss_tim21.dto.AccommodationDetailsDTO;
 import com.ISS.Booking_iss_tim21.dto.AccommodationPreviewDTO;
-import com.ISS.Booking_iss_tim21.dto.AccommodationPricingDTO;
-import com.ISS.Booking_iss_tim21.dto.SignUpRequest;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
-import com.ISS.Booking_iss_tim21.model.AccommodationPricing;
 import com.ISS.Booking_iss_tim21.model.User;
-import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
-import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
 import com.ISS.Booking_iss_tim21.service.AccommodationPricingService;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
@@ -113,7 +108,7 @@ public class AccommodationController {
         accDTO.setMaxGuests(accommodation.getMaxGuests());
         accDTO.setDescription(accommodation.getDescription());
         accDTO.setAmenities(accommodation.getAmenities());
-        accDTO.setPhotos(ImagePathSetToBase64(accommodation.getPhotos()));
+        accDTO.setPhotos(new ArrayList<>(ImagePathSetToBase64(new HashSet<>(accommodation.getPhotos()))));
         accDTO.setDaysForCancellation(accommodation.getDaysForCancellation());
         accDTO.setLocation(accommodation.getLocation());
 
