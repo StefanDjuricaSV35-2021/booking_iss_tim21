@@ -43,13 +43,6 @@ public class Accommodation {
     private List<String> photos;
     private int daysForCancellation;
 
-    private int daysForCancellation;
-    private boolean perNight;
-
-    private boolean enabled;
-
-    //@OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
-
 
     @OneToMany(mappedBy = "reviewed", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<AccommodationReview> accommodationReviews;
