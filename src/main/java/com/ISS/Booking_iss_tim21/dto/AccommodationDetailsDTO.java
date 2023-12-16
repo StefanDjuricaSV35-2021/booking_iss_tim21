@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -25,12 +26,12 @@ public class AccommodationDetailsDTO {
     private int minGuests;
     private int maxGuests;
     private String description;
-    private String location;
-    private Set<Amenity> amenities;
-    private Set<String> photos;
+    private List<Amenity> amenities;
+    private List<String> photos;
     private int daysForCancellation;
-    private boolean perNight;
     private boolean enabled;
+    private boolean perNight;
+    private String location;
 
     public AccommodationDetailsDTO(Accommodation accommodation) {
         ModelMapper modelMapper = new ModelMapper();
@@ -51,6 +52,7 @@ public class AccommodationDetailsDTO {
                 map().setLocation(source.getLocation());
                 map().setPerNight(source.isPerNight());
                 map().setEnabled(source.isEnabled());
+                map().setPerNight(source.isPerNight());
             }
         };
 

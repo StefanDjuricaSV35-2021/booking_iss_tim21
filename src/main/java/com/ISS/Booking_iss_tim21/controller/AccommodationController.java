@@ -2,13 +2,8 @@ package com.ISS.Booking_iss_tim21.controller;
 
 import com.ISS.Booking_iss_tim21.dto.AccommodationDetailsDTO;
 import com.ISS.Booking_iss_tim21.dto.AccommodationPreviewDTO;
-import com.ISS.Booking_iss_tim21.dto.AccommodationPricingDTO;
-import com.ISS.Booking_iss_tim21.dto.SignUpRequest;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
-import com.ISS.Booking_iss_tim21.model.AccommodationPricing;
 import com.ISS.Booking_iss_tim21.model.User;
-import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
-import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
 import com.ISS.Booking_iss_tim21.service.AccommodationPricingService;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
@@ -43,16 +38,16 @@ public class AccommodationController {
 
     @GetMapping("/previews")
     public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodationsPreviews() {
-         List<Accommodation> accommodations = accommodationService.getAllEnabled();
+        List<Accommodation> accommodations = accommodationService.getAllEnabled();
 
         List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
-        for(Accommodation a : accommodations) {
-            AccommodationPreviewDTO ap=new AccommodationPreviewDTO();
+        for (Accommodation a : accommodations) {
+            AccommodationPreviewDTO ap = new AccommodationPreviewDTO();
 
-            byte[] bytes=null;
+            byte[] bytes = null;
 
             try {
-                bytes=Files.readAllBytes(new File(a.getPhotos().iterator().next()).toPath());
+                bytes = Files.readAllBytes(new File(a.getPhotos().iterator().next()).toPath());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -69,26 +64,27 @@ public class AccommodationController {
 
     @GetMapping("/search")
     public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodationsPreviewBySearchParams(
-            @RequestParam(value="dateFrom",required = false) String dateFrom,
-            @RequestParam(value="dateTo",required=false) String dateTo,
-            @RequestParam(value="noGuests",required=false) Integer noGuests,
-            @RequestParam(value="location",required=false) String location
-            ) {
+            @RequestParam(value = "dateFrom", required = false) String dateFrom,
+            @RequestParam(value = "dateTo", required = false) String dateTo,
+            @RequestParam(value = "noGuests", required = false) Integer noGuests,
+            @RequestParam(value = "location", required = false) String location) {
 
-        List<Accommodation> validAccommodations = accommodationService.getAccommodationBySearchParams(location,noGuests,dateFrom,dateTo);
+        List<Accommodation> validAccommodations = accommodationService.getAccommodationBySearchParams(location,
+                noGuests, dateFrom, dateTo);
 
         List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
 
-        for(Accommodation a : validAccommodations) {
+        for (Accommodation a : validAccommodations) {
 
-            AccommodationPreviewDTO accommodationPreviewDTO=new AccommodationPreviewDTO();
+            AccommodationPreviewDTO accommodationPreviewDTO = new AccommodationPreviewDTO();
 
             accommodationPreviewDTO.setImage(ImagePathToBase64(a.getPhotos().iterator().next()));
             accommodationPreviewDTO.setId(a.getId());
             accommodationPreviewDTO.setName(a.getName());
             accommodationPreviewDTO.setLocation(a.getLocation());
             accommodationPreviewDTOs.add(accommodationPreviewDTO);
-            accommodationPreviewDTO.setPrice(pricingService.getAccommodationDateRangePrice(dateFrom,dateTo,a.getId()));
+            accommodationPreviewDTO
+                    .setPrice(pricingService.getAccommodationDateRangePrice(dateFrom, dateTo, a.getId()));
         }
 
         return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);
@@ -103,7 +99,7 @@ public class AccommodationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        AccommodationDetailsDTO accDTO=new AccommodationDetailsDTO();
+        AccommodationDetailsDTO accDTO = new AccommodationDetailsDTO();
 
         accDTO.setId(accommodation.getId());
         accDTO.setOwnerId(accommodation.getOwner().getId());
@@ -113,7 +109,7 @@ public class AccommodationController {
         accDTO.setMaxGuests(accommodation.getMaxGuests());
         accDTO.setDescription(accommodation.getDescription());
         accDTO.setAmenities(accommodation.getAmenities());
-        accDTO.setPhotos(ImagePathSetToBase64(accommodation.getPhotos()));
+        accDTO.setPhotos(new ArrayList<>(ImagePathSetToBase64(new HashSet<>(accommodation.getPhotos()))));
         accDTO.setDaysForCancellation(accommodation.getDaysForCancellation());
         accDTO.setLocation(accommodation.getLocation());
         accDTO.setPerNight(accommodation.isPerNight());
@@ -123,7 +119,8 @@ public class AccommodationController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationDetailsDTO> createAccommodation(@RequestBody AccommodationDetailsDTO accommodationDTO) {
+    public ResponseEntity<AccommodationDetailsDTO> createAccommodation(
+            @RequestBody AccommodationDetailsDTO accommodationDTO) {
 
         if (accommodationDTO.getOwnerId() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -145,8 +142,9 @@ public class AccommodationController {
         accommodation.setAmenities(accommodationDTO.getAmenities());
         accommodation.setPhotos(accommodationDTO.getPhotos());
         accommodation.setDaysForCancellation(accommodationDTO.getDaysForCancellation());
-        accommodation.setPerNight(accommodationDTO.isPerNight());
+        accommodation.setLocation(accommodationDTO.getLocation());
         accommodation.setEnabled(accommodationDTO.isEnabled());
+        accommodation.setPerNight(accommodationDTO.isPerNight());
 
         accommodationService.save(accommodation);
 
@@ -154,13 +152,20 @@ public class AccommodationController {
     }
 
     @PutMapping(consumes = "application/json")
-    public ResponseEntity<AccommodationDetailsDTO> updateAccommodation(@RequestBody AccommodationDetailsDTO accommodationDTO) {
+    public ResponseEntity<AccommodationDetailsDTO> updateAccommodation(
+            @RequestBody AccommodationDetailsDTO accommodationDTO) {
         Accommodation accommodation = accommodationService.findOne(accommodationDTO.getId());
 
         if (accommodation == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        accommodation.setOwner(userService.findById(accommodationDTO.getOwnerId()));
+
+        User owner = userService.findById(accommodationDTO.getOwnerId());
+        if (owner == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        accommodation.setOwner(owner);
         accommodation.setName(accommodationDTO.getName());
         accommodation.setType(accommodationDTO.getType());
         accommodation.setMinGuests(accommodationDTO.getMinGuests());
@@ -170,8 +175,8 @@ public class AccommodationController {
         accommodation.setPhotos(accommodationDTO.getPhotos());
         accommodation.setDaysForCancellation(accommodationDTO.getDaysForCancellation());
         accommodation.setLocation(accommodationDTO.getLocation());
-        accommodation.setPerNight(accommodationDTO.isPerNight());
         accommodation.setEnabled(accommodationDTO.isEnabled());
+        accommodation.setPerNight(accommodationDTO.isPerNight());
 
         accommodationService.save(accommodation);
         return new ResponseEntity<>(new AccommodationDetailsDTO(accommodation), HttpStatus.OK);
@@ -183,7 +188,7 @@ public class AccommodationController {
 
         if (accommodation != null) {
             accommodationService.remove(id);
-            return  new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

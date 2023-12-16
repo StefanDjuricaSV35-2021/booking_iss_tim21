@@ -2,17 +2,10 @@ package com.ISS.Booking_iss_tim21.service;
 
 import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.repository.AccommodationRepository;
-import com.ISS.Booking_iss_tim21.utility.DateManipulationTools;
-import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.ISS.Booking_iss_tim21.utility.DateManipulationTools.dateStringToUnix;
 

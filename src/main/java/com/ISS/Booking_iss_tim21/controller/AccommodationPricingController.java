@@ -3,7 +3,6 @@ package com.ISS.Booking_iss_tim21.controller;
 import com.ISS.Booking_iss_tim21.dto.AccommodationPricingDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.AccommodationPricing;
-import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.service.AccommodationPricingService;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/auth/pricings")
