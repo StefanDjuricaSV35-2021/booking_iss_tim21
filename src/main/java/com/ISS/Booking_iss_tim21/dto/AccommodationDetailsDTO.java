@@ -5,6 +5,7 @@ import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
 import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -16,12 +17,12 @@ import java.util.Set;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class AccommodationDetailsDTO {
     private Long id;
     private Long ownerId;
     private String name;
     private AccommodationType type;
-    private String location;
     private int minGuests;
     private int maxGuests;
     private String description;
@@ -30,6 +31,7 @@ public class AccommodationDetailsDTO {
     private int daysForCancellation;
     private boolean enabled;
     private boolean perNight;
+    private String location;
 
     public AccommodationDetailsDTO(Accommodation accommodation) {
         ModelMapper modelMapper = new ModelMapper();

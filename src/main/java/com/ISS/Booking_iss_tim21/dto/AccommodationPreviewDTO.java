@@ -25,6 +25,7 @@ public class AccommodationPreviewDTO {
     private String name;
     private String location;
     private String image;
+    private Double price;
 
     public AccommodationPreviewDTO(Accommodation accommodation) {
         ModelMapper modelMapper = new ModelMapper();

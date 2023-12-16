@@ -34,6 +34,19 @@ public class Accommodation {
     private String location;
     private boolean enabled;
     private boolean perNight;
+  
+    @ElementCollection(targetClass = Amenity.class, fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
+    private List<Amenity> amenities;
+
+    @ElementCollection
+    private List<String> photos;
+    private int daysForCancellation;
+
+    private int daysForCancellation;
+    private boolean perNight;
+
+    private boolean enabled;
 
     //@OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
 
@@ -49,13 +62,5 @@ public class Accommodation {
 
     @OneToMany(mappedBy = "accommodation", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ReservationRequest> reservationRequests;
-
-    @ElementCollection(targetClass = Amenity.class, fetch = FetchType.LAZY)
-    @Enumerated(EnumType.STRING)
-    private List<Amenity> amenities;
-
-    @ElementCollection
-    private List<String> photos;
-    private int daysForCancellation;
 
 }
