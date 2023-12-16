@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/auth/pricings")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AccommodationPricingController {
     @Autowired
     private AccommodationPricingService pricingService;

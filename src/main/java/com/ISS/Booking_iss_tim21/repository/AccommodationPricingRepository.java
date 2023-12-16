@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface AccommodationPricingRepository extends JpaRepository<AccommodationPricing, Long> {
-    @Query("select a from AccommodationPricing a where a.accommodation = ?1")
+    @Query("select a from AccommodationPricing a where a.accommodation.id = ?1")
     public List<AccommodationPricing> getAccommodationPricing(Long accommodationId);
 
     @Query(value="with recursive rec as " +

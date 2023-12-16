@@ -27,6 +27,9 @@ public class AccommodationService {
     public List<Accommodation> getAll(){
         return repository.findAll();
     }
+    public List<Accommodation> getAllEnabled(){
+        return repository.findAllEnabled();
+    }
 
 
     public Accommodation findOne(Long id) {

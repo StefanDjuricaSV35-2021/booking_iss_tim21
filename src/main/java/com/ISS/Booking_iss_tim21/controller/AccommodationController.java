@@ -43,7 +43,7 @@ public class AccommodationController {
 
     @GetMapping("/previews")
     public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodationsPreviews() {
-         List<Accommodation> accommodations = accommodationService.getAll();
+         List<Accommodation> accommodations = accommodationService.getAllEnabled();
 
         List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
         for(Accommodation a : accommodations) {
@@ -116,6 +116,8 @@ public class AccommodationController {
         accDTO.setPhotos(ImagePathSetToBase64(accommodation.getPhotos()));
         accDTO.setDaysForCancellation(accommodation.getDaysForCancellation());
         accDTO.setLocation(accommodation.getLocation());
+        accDTO.setPerNight(accommodation.isPerNight());
+        accDTO.setEnabled(accommodation.isEnabled());
 
         return new ResponseEntity<>(accDTO, HttpStatus.OK);
     }
@@ -168,6 +170,8 @@ public class AccommodationController {
         accommodation.setPhotos(accommodationDTO.getPhotos());
         accommodation.setDaysForCancellation(accommodationDTO.getDaysForCancellation());
         accommodation.setLocation(accommodationDTO.getLocation());
+        accommodation.setPerNight(accommodationDTO.isPerNight());
+        accommodation.setEnabled(accommodationDTO.isEnabled());
 
         accommodationService.save(accommodation);
         return new ResponseEntity<>(new AccommodationDetailsDTO(accommodation), HttpStatus.OK);

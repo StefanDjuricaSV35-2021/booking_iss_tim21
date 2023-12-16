@@ -43,6 +43,8 @@ public class AccommodationChangeRequest {
     @ElementCollection
     private Set<String> photos;
     private int daysForCancellation;
+    private boolean perNight;
+    private boolean enabled;
 
 
     @OneToMany(mappedBy = "accommodationChangeRequest", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)

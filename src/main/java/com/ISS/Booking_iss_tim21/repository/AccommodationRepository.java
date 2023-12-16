@@ -10,6 +10,8 @@ public interface AccommodationRepository extends JpaRepository<Accommodation, Lo
     @Query("select a from Accommodation a where a.owner.Id = ?1")
     public List<Accommodation> getOwnersAccommodations(Long ownerId);
 
+    @Query("select a from Accommodation a where a.enabled = true")
+    public List<Accommodation> findAllEnabled();
     public List<Accommodation> getAccommodationsByLocation(String location);
 
     @Query("select a from Accommodation a where a.minGuests <= ?1 and a.maxGuests >= ?1")

@@ -68,7 +68,6 @@ public class AccommodationChangeRequestController {
         }
 
         AccommodationChangeRequest accommodationChangeRequest = new AccommodationChangeRequest();
-        accommodationChangeRequest.setId(accommodationChangeRequestDTO.getId());
         accommodationChangeRequest.setRequestCreationDate(accommodationChangeRequestDTO.getRequestCreationDate());
         accommodationChangeRequest.setStatus(accommodationChangeRequestDTO.getStatus());
         accommodationChangeRequest.setAccommodation(accommodation);
@@ -82,7 +81,8 @@ public class AccommodationChangeRequestController {
         accommodationChangeRequest.setAmenities(accommodationChangeRequestDTO.getAmenities());
         accommodationChangeRequest.setPhotos(accommodationChangeRequestDTO.getPhotos());
         accommodationChangeRequest.setDaysForCancellation(accommodationChangeRequestDTO.getDaysForCancellation());
-
+        accommodationChangeRequest.setPerNight(accommodationChangeRequestDTO.isPerNight());
+        accommodationChangeRequest.setEnabled(accommodationChangeRequest.isEnabled());
 
         accommodationChangeRequestService.save(accommodationChangeRequest);
 
@@ -117,6 +117,8 @@ public class AccommodationChangeRequestController {
         accommodationChangeRequest.setAmenities(accommodationChangeRequestDTO.getAmenities());
         accommodationChangeRequest.setPhotos(accommodationChangeRequestDTO.getPhotos());
         accommodationChangeRequest.setDaysForCancellation(accommodationChangeRequestDTO.getDaysForCancellation());
+        accommodationChangeRequest.setPerNight(accommodationChangeRequestDTO.isPerNight());
+        accommodationChangeRequest.setEnabled(accommodationChangeRequest.isEnabled());
 
         accommodationChangeRequestService.save(accommodationChangeRequest);
 

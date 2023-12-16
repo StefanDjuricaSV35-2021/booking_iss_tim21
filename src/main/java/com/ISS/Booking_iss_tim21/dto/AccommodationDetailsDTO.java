@@ -49,6 +49,7 @@ public class AccommodationDetailsDTO {
                 map().setPhotos(source.getPhotos());
                 map().setDaysForCancellation(source.getDaysForCancellation());
                 map().setLocation(source.getLocation());
+                map().setPerNight(source.isPerNight());
                 map().setEnabled(source.isEnabled());
             }
         };

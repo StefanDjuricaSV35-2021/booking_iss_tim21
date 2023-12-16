@@ -38,6 +38,8 @@ public class AccommodationChangeRequestDTO {
     private Set<Amenity> amenities;
     private Set<String> photos;
     private int daysForCancellation;
+    private boolean perNight;
+    private boolean enabled;
 
     public AccommodationChangeRequestDTO(AccommodationChangeRequest accommodationChangeRequest) {
         ModelMapper modelMapper = new ModelMapper();
@@ -59,6 +61,8 @@ public class AccommodationChangeRequestDTO {
                         map().setAmenities(source.getAmenities());
                         map().setPhotos(source.getPhotos());
                         map().setDaysForCancellation(source.getDaysForCancellation());
+                        map().setPerNight(source.isPerNight());
+                        map().setEnabled(source.isEnabled());
                     }
                 };
 

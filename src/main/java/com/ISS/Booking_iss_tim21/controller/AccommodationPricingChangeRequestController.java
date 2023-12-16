@@ -74,7 +74,6 @@ public class AccommodationPricingChangeRequestController {
         }
 
         AccommodationPricingChangeRequest pricingChangeRequest = new AccommodationPricingChangeRequest();
-        pricingChangeRequest.setId(pricingChangeRequestDTO.getId());
         pricingChangeRequest.setAccommodationChangeRequest(accommodationChangeRequest);
         pricingChangeRequest.setStatus(pricingChangeRequestDTO.getStatus());
         pricingChangeRequest.setAccommodation(accommodation);
