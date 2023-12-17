@@ -62,6 +62,14 @@ public class AccommodationChangeRequestController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        //Delete any previous change requests for that accommodation
+        List<AccommodationChangeRequest> accommodationChangeRequests = accommodationChangeRequestService.getAllPending();
+        for (AccommodationChangeRequest a : accommodationChangeRequests) {
+            if (a.getAccommodation().getId() == accommodationChangeRequestDTO.getAccommodationId()) {
+                accommodationChangeRequestService.remove(a.getId());
+            }
+        }
+
         Accommodation accommodation = accommodationService.findOne(accommodationChangeRequestDTO.getAccommodationId());
         if (accommodation == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

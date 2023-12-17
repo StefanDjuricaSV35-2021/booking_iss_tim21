@@ -1,12 +1,8 @@
 package com.ISS.Booking_iss_tim21.controller;
 
 import com.ISS.Booking_iss_tim21.dto.AccommodationPricingChangeRequestDTO;
-import com.ISS.Booking_iss_tim21.model.Accommodation;
-import com.ISS.Booking_iss_tim21.model.AccommodationChangeRequest;
-import com.ISS.Booking_iss_tim21.model.AccommodationPricingChangeRequest;
-import com.ISS.Booking_iss_tim21.service.AccommodationChangeRequestService;
-import com.ISS.Booking_iss_tim21.service.AccommodationPricingChangeRequestService;
-import com.ISS.Booking_iss_tim21.service.AccommodationService;
+import com.ISS.Booking_iss_tim21.model.*;
+import com.ISS.Booking_iss_tim21.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,8 +25,14 @@ public class AccommodationPricingChangeRequestController {
     @Autowired
     AccommodationChangeRequestService accommodationChangeRequestService;
 
+    @Autowired
+    AccommodationPricingService accommodationPricingService;
+
+    @Autowired
+    ReservationService reservationService;
+
     //get all pricing requests for accommodation that is being changed
-    @GetMapping(value = "/all/{id}")
+    @GetMapping(value = "/all/{accommodationChangeRequestId}")
     public ResponseEntity<List<AccommodationPricingChangeRequestDTO>> getAllAccommodationPricingChangeRequests(@PathVariable Long accommodationChangeRequestId) {
         List<AccommodationPricingChangeRequest> pricingChangeRequests = pricingChangeRequestService.getAllForAccommodation(accommodationChangeRequestId);
         if (pricingChangeRequests.isEmpty()) {
@@ -125,5 +127,19 @@ public class AccommodationPricingChangeRequestController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    //TODO overlapping checking needs to be tested, when reservations are added
+    @DeleteMapping(value = "/update/{accommodationId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> updateAccommodationPricings(@PathVariable Long accommodationId, @RequestBody List<AccommodationPricingChangeRequestDTO> accommodationPricingChangeRequestDTOS) {
+        accommodationPricingService.deleteAllPricingsForAccommodation(accommodationId);
+        if (accommodationPricingChangeRequestDTOS.isEmpty()) return new ResponseEntity<>(HttpStatus.OK);
+
+        List<Reservation> reservations = reservationService.getCurrentActiveReservationsForAccommodation(accommodationId);
+        for(AccommodationPricingChangeRequestDTO accommodationPricingChangeRequestDTO : accommodationPricingChangeRequestDTOS) {
+            pricingChangeRequestService.checkOverlapAndAdjustTimeSlots(reservations, accommodationPricingChangeRequestDTO);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

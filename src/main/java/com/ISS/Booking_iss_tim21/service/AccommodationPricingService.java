@@ -1,5 +1,7 @@
 package com.ISS.Booking_iss_tim21.service;
 
+import com.ISS.Booking_iss_tim21.dto.AccommodationPricingChangeRequestDTO;
+import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.AccommodationPricing;
 import com.ISS.Booking_iss_tim21.repository.AccommodationPricingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,15 @@ public class AccommodationPricingService {
         return repository.getAccommodationTotalPrice(unixDateFrom,unixDateTo,id);
     }
 
+    public void deleteAllPricingsForAccommodation(Long accommodationId) {
+        List<AccommodationPricing> pricings = repository.getAccommodationPricing(accommodationId);
+        if (pricings.isEmpty()) return;
+
+        for (AccommodationPricing p : pricings) {
+            repository.deleteById(p.getId());
+        }
+    }
+
 
     public List<AccommodationPricing> getActiveAccommodationPricings(Long accommodationId) {
         long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
@@ -51,5 +62,13 @@ public class AccommodationPricingService {
                 currentPricings.add(a);
         }
         return currentPricings;
+    }
+
+    public void savePricingFromRequest(AccommodationPricingChangeRequestDTO accommodationPricingChangeRequestDTO, Accommodation accommodation) {
+        AccommodationPricing newPricing = new AccommodationPricing();
+        newPricing.setAccommodation(accommodation);
+        newPricing.setTimeSlot(accommodationPricingChangeRequestDTO.getTimeSlot());
+        newPricing.setPrice(accommodationPricingChangeRequestDTO.getPrice());
+        repository.save(newPricing);
     }
 }
