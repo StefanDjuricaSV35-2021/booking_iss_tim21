@@ -12,6 +12,9 @@ public interface AccommodationRepository extends JpaRepository<Accommodation, Lo
 
     @Query("select a from Accommodation a where a.enabled = true")
     public List<Accommodation> findAllEnabled();
+
+    @Query("select a from Accommodation a where a.enabled = false")
+    public List<Accommodation> findAllNotEnabled();
     public List<Accommodation> getAccommodationsByLocation(String location);
 
     @Query("select a from Accommodation a where a.minGuests <= ?1 and a.maxGuests >= ?1")

@@ -62,6 +62,32 @@ public class AccommodationController {
         return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);
     }
 
+    @GetMapping("/previews/notEnabled")
+    public ResponseEntity<List<AccommodationPreviewDTO>> getNotEnabledAccommodationsPreviews() {
+        List<Accommodation> accommodations = accommodationService.getAllNotEnabled();
+
+        List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
+        for (Accommodation a : accommodations) {
+            AccommodationPreviewDTO ap = new AccommodationPreviewDTO();
+
+            byte[] bytes = null;
+
+            try {
+                bytes = Files.readAllBytes(new File(a.getPhotos().iterator().next()).toPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            ap.setImage(Base64.getEncoder().encodeToString(bytes));
+            ap.setId(a.getId());
+            ap.setName(a.getName());
+            ap.setLocation(a.getLocation());
+            accommodationPreviewDTOs.add(ap);
+        }
+
+        return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodationsPreviewBySearchParams(
             @RequestParam(value = "dateFrom", required = false) String dateFrom,

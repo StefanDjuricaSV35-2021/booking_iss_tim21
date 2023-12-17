@@ -24,6 +24,10 @@ public class AccommodationService {
         return repository.findAllEnabled();
     }
 
+    public List<Accommodation> getAllNotEnabled(){
+        return repository.findAllNotEnabled();
+    }
+
 
     public Accommodation findOne(Long id) {
         return repository.findById(id).orElseGet(null);
