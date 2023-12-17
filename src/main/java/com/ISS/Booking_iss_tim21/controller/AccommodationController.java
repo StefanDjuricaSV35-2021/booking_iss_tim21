@@ -4,6 +4,7 @@ import com.ISS.Booking_iss_tim21.dto.AccommodationDetailsDTO;
 import com.ISS.Booking_iss_tim21.dto.AccommodationPreviewDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.User;
+import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
 import com.ISS.Booking_iss_tim21.service.AccommodationPricingService;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
@@ -64,13 +65,19 @@ public class AccommodationController {
 
     @GetMapping("/search")
     public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodationsPreviewBySearchParams(
-            @RequestParam(value="dateFrom",required = false) String dateFrom,
-            @RequestParam(value="dateTo",required=false) String dateTo,
-            @RequestParam(value="noGuests",required=false) Integer noGuests,
-            @RequestParam(value="location",required=false) String location
-            ) {
+            @RequestParam(value="dateFrom",required = true) String dateFrom,
+            @RequestParam(value="dateTo",required=true) String dateTo,
+            @RequestParam(value="noGuests",required=true) Integer noGuests,
+            @RequestParam(value="location",required=true) String location,
+            @RequestParam(value="filters",required=false) String filters
+
+    ) {
 
         List<Accommodation> validAccommodations = accommodationService.getAccommodationBySearchParams(location,noGuests,dateFrom,dateTo);
+
+        if (filters!=null){
+            validAccommodations=accommodationService.filterAccommodations(validAccommodations,filters);
+        }
 
         List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
 
