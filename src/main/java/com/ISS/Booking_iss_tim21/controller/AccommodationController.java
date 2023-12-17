@@ -65,7 +65,9 @@ public class AccommodationController {
     @GetMapping("/previews/notEnabled")
     public ResponseEntity<List<AccommodationPreviewDTO>> getNotEnabledAccommodationsPreviews() {
         List<Accommodation> accommodations = accommodationService.getAllNotEnabled();
-
+        if (accommodations.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
         for (Accommodation a : accommodations) {
             AccommodationPreviewDTO ap = new AccommodationPreviewDTO();
@@ -166,7 +168,7 @@ public class AccommodationController {
         accommodation.setDescription(accommodationDTO.getDescription());
         accommodation.setLocation(accommodationDTO.getLocation());
         accommodation.setAmenities(accommodationDTO.getAmenities());
-        accommodation.setPhotos(accommodationDTO.getPhotos());
+        accommodation.setPhotos(new ArrayList<>(ImagePathSetToBase64(new HashSet<>(accommodationDTO.getPhotos()))));
         accommodation.setDaysForCancellation(accommodationDTO.getDaysForCancellation());
         accommodation.setLocation(accommodationDTO.getLocation());
         accommodation.setEnabled(accommodationDTO.isEnabled());
@@ -177,7 +179,7 @@ public class AccommodationController {
         return new ResponseEntity<>(new AccommodationDetailsDTO(accommodation), HttpStatus.CREATED);
     }
 
-    @PutMapping(consumes = "application/json")
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccommodationDetailsDTO> updateAccommodation(
             @RequestBody AccommodationDetailsDTO accommodationDTO) {
         Accommodation accommodation = accommodationService.findOne(accommodationDTO.getId());
@@ -198,7 +200,7 @@ public class AccommodationController {
         accommodation.setMaxGuests(accommodationDTO.getMaxGuests());
         accommodation.setDescription(accommodationDTO.getDescription());
         accommodation.setAmenities(accommodationDTO.getAmenities());
-        accommodation.setPhotos(accommodationDTO.getPhotos());
+       // accommodation.setPhotos(new ArrayList<>(ImagePathSetToBase64(new HashSet<>(accommodationDTO.getPhotos()))));
         accommodation.setDaysForCancellation(accommodationDTO.getDaysForCancellation());
         accommodation.setLocation(accommodationDTO.getLocation());
         accommodation.setEnabled(accommodationDTO.isEnabled());
@@ -223,11 +225,25 @@ public class AccommodationController {
     @GetMapping(value = "/{ownerId}/accommodations")
     public ResponseEntity<List<AccommodationPreviewDTO>> getOwnersAccommodations(@PathVariable Long ownerId) {
         List<Accommodation> ownerAccommodations = accommodationService.getOwnersAccommodations(ownerId);
-        List<AccommodationPreviewDTO> accommodationsDTO = new ArrayList<>();
+        List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
         for (Accommodation a : ownerAccommodations) {
-            accommodationsDTO.add(new AccommodationPreviewDTO(a));
+            AccommodationPreviewDTO ap = new AccommodationPreviewDTO();
+
+            byte[] bytes = null;
+
+            try {
+                bytes = Files.readAllBytes(new File(a.getPhotos().iterator().next()).toPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            ap.setImage(Base64.getEncoder().encodeToString(bytes));
+            ap.setId(a.getId());
+            ap.setName(a.getName());
+            ap.setLocation(a.getLocation());
+            accommodationPreviewDTOs.add(ap);
         }
-        return new ResponseEntity<>(accommodationsDTO, HttpStatus.OK);
+        return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);
 
     }
 

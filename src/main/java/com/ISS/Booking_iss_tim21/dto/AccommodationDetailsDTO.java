@@ -52,7 +52,6 @@ public class AccommodationDetailsDTO {
                 map().setLocation(source.getLocation());
                 map().setPerNight(source.isPerNight());
                 map().setEnabled(source.isEnabled());
-                map().setPerNight(source.isPerNight());
             }
         };
 
