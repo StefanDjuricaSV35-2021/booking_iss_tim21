@@ -4,11 +4,12 @@ import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
 import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
 import com.ISS.Booking_iss_tim21.repository.AccommodationRepository;
-import org.hibernate.validator.cfg.context.PropertyTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.ISS.Booking_iss_tim21.utility.DateManipulationTools.dateStringToUnix;
 
@@ -36,7 +37,7 @@ public class AccommodationService {
     public List<Accommodation>getAccommodationsByLocation(String location){return repository.getAccommodationsByLocation(location);}
     public List<Accommodation>getAccommodationsByNOGuests(int noGuests){return repository.getAccommodationsByNOGuests(noGuests);}
     public List<Accommodation>getAccommodationsWithAmenities(List<Amenity> amenities){return repository.getAccommodationsByAmenitiesIn(amenities,amenities.size());}
-    public List<Accommodation>getAccommodationsByTypes(List<AccommodationType> types){return repository.getAccommodationsByTypeIn(types);}
+    public List<Accommodation>getAccommodationsByType(AccommodationType type){return repository.getAccommodationsByType(type);}
 
 
     public List<Accommodation> getAccommodationBySearchParams(String location,Integer noGuests,String dateFrom,String dateTo ){
@@ -76,15 +77,15 @@ public class AccommodationService {
         String[] filterParams=filterUrlParam.split(";");
 
         List<Amenity> amenities=extractAmenities(filterParams);
-        List<AccommodationType> types=extractTypes(filterParams);
+        AccommodationType type=extractType(filterParams);
 
         if(!amenities.isEmpty()){
             List<Accommodation> accommodationsWithAmenities=getAccommodationsWithAmenities(amenities);
             accommodations.retainAll(accommodationsWithAmenities);
         }
 
-        if(!types.isEmpty()){
-            List<Accommodation> accommodationsWithType=getAccommodationsByTypes(types);
+        if(type!=null){
+            List<Accommodation> accommodationsWithType=getAccommodationsByType(type);
             accommodations.retainAll(accommodationsWithType);
         }
 
@@ -111,24 +112,25 @@ public class AccommodationService {
         return amenities;
     }
 
-    List<AccommodationType> extractTypes(String[] filterParams){
+    AccommodationType extractType(String[] filterParams){
 
-        List<AccommodationType> types=new ArrayList<AccommodationType>();
+        AccommodationType type = null;
 
         for (String param:filterParams) {
 
             String[] typeAndVal=param.split("=");
 
-            if(typeAndVal[0].equals("PropertyType")){
+            if(typeAndVal[0].equals("AccommodationType")){
 
                 int typeValue=Integer.parseInt(typeAndVal[1]);
-                AccommodationType type=AccommodationType.values()[typeValue];
-                types.add(type);
+                type=AccommodationType.values()[typeValue];
 
+                return type;
             }
 
         }
-        return types;
+
+        return type;
     }
 
 

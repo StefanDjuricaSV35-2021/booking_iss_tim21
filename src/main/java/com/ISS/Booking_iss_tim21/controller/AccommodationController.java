@@ -30,9 +30,6 @@ public class AccommodationController {
     private AccommodationService accommodationService;
 
     @Autowired
-    private AccommodationPricingService accommodationPricingService;
-
-    @Autowired
     private AccommodationPricingService pricingService;
     @Autowired
     private UserService userService;

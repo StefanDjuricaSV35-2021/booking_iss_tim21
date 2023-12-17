@@ -20,5 +20,6 @@ public interface AccommodationRepository extends JpaRepository<Accommodation, Lo
 
     @Query("select distinct a from Accommodation a join a.amenities as am where am in (:amenities) group by a.id having count(am) = :size")
     public List<Accommodation> getAccommodationsByAmenitiesIn(Collection<Amenity> amenities,int size);
-    public List<Accommodation> getAccommodationsByTypeIn(List<AccommodationType> type);
+
+    public List<Accommodation> getAccommodationsByType(AccommodationType type);
 }
