@@ -16,6 +16,8 @@ import java.nio.file.Files;
 import java.util.Base64;
 import java.util.Set;
 
+import static com.ISS.Booking_iss_tim21.utility.ImageManipulationTools.ImagePathToBase64;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -27,24 +29,17 @@ public class AccommodationPreviewDTO {
     private String image;
     private Double price;
 
-    public AccommodationPreviewDTO(Accommodation accommodation) {
-        ModelMapper modelMapper = new ModelMapper();
+    public AccommodationPreviewDTO(Accommodation a) {
 
-        // Explicitly define the mappings
-        PropertyMap<Accommodation, AccommodationPreviewDTO> propertyMap = new PropertyMap<Accommodation, AccommodationPreviewDTO>() {
-            protected void configure() {
-                map().setId(source.getId());
-                map().setName(source.getName());
-                map().setLocation(source.getLocation());
+        setId(a.getId());
+        setLocation(a.getLocation());
+        setName(a.getName());
+        setImage(ImagePathToBase64(a.getPhotos().iterator().next()));
+        setPrice(a.getPrice());
 
-            }
-        };
-
-        modelMapper.addMappings(propertyMap);
-
-        // Perform the mapping
-        modelMapper.map(accommodation, this);
     }
+
+
 }
 
 

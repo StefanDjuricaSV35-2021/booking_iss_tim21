@@ -15,6 +15,7 @@ public interface AccommodationRepository extends JpaRepository<Accommodation, Lo
 
     public List<Accommodation> getAccommodationsByLocation(String location);
 
+
     @Query("select a from Accommodation a where a.minGuests <= ?1 and a.maxGuests >= ?1")
     public List<Accommodation> getAccommodationsByNOGuests(int noGuests);
 
