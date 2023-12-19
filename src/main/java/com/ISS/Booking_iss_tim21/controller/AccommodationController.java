@@ -4,22 +4,18 @@ import com.ISS.Booking_iss_tim21.dto.AccommodationDetailsDTO;
 import com.ISS.Booking_iss_tim21.dto.AccommodationPreviewDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.User;
+import com.ISS.Booking_iss_tim21.service.AccommodationFilterService;
 import com.ISS.Booking_iss_tim21.service.AccommodationPricingService;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
+import com.ISS.Booking_iss_tim21.utility.ImageManipulationTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.*;
-
-import static com.ISS.Booking_iss_tim21.utility.ImageManipulationTools.ImagePathSetToBase64;
-import static com.ISS.Booking_iss_tim21.utility.ImageManipulationTools.ImagePathToBase64;
 
 @RestController
 @RequestMapping("/api/v1/auth/accommodations")
@@ -27,10 +23,8 @@ import static com.ISS.Booking_iss_tim21.utility.ImageManipulationTools.ImagePath
 public class AccommodationController {
     @Autowired
     private AccommodationService accommodationService;
-
     @Autowired
-    private AccommodationPricingService accommodationPricingService;
-
+    private AccommodationFilterService accommodationFilterService;
     @Autowired
     private AccommodationPricingService pricingService;
 
@@ -77,27 +71,23 @@ public class AccommodationController {
 
     @GetMapping("/search")
     public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodationsPreviewBySearchParams(
-            @RequestParam(value = "dateFrom", required = false) String dateFrom,
-            @RequestParam(value = "dateTo", required = false) String dateTo,
-            @RequestParam(value = "noGuests", required = false) Integer noGuests,
-            @RequestParam(value = "location", required = false) String location) {
+            @RequestParam(value="dateFrom",required = true) String dateFrom,
+            @RequestParam(value="dateTo",required=true) String dateTo,
+            @RequestParam(value="noGuests",required=true) Integer noGuests,
+            @RequestParam(value="location",required=true) String location,
+            @RequestParam(value="filters",required=false) String filters
 
-        List<Accommodation> validAccommodations = accommodationService.getAccommodationBySearchParams(location,
-                noGuests, dateFrom, dateTo);
+    ) {
+        List<Accommodation> validAccommodations = accommodationService.getAccommodationBySearchParams(location,noGuests,dateFrom,dateTo);
+
+        validAccommodations=accommodationService.setPrices(validAccommodations,dateFrom,dateTo,noGuests);
+
+        validAccommodations=accommodationFilterService.filterAccommodations(validAccommodations,filters);
 
         List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
+        for(Accommodation a : validAccommodations) {
 
-        for (Accommodation a : validAccommodations) {
-
-            AccommodationPreviewDTO accommodationPreviewDTO = new AccommodationPreviewDTO();
-
-            accommodationPreviewDTO.setImage(a.getPhotos().isEmpty() ? null : a.getPhotos().get(0));
-            accommodationPreviewDTO.setId(a.getId());
-            accommodationPreviewDTO.setName(a.getName());
-            accommodationPreviewDTO.setLocation(a.getLocation());
-            accommodationPreviewDTOs.add(accommodationPreviewDTO);
-            accommodationPreviewDTO
-                    .setPrice(pricingService.getAccommodationDateRangePrice(dateFrom, dateTo, a.getId()));
+            accommodationPreviewDTOs.add(new AccommodationPreviewDTO(a));
         }
 
         return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);
@@ -112,23 +102,23 @@ public class AccommodationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        AccommodationDetailsDTO accDTO = new AccommodationDetailsDTO();
+        AccommodationDetailsDTO accDTO=new AccommodationDetailsDTO(accommodation);
 
-        accDTO.setId(accommodation.getId());
-        accDTO.setOwnerId(accommodation.getOwner().getId());
-        accDTO.setName(accommodation.getName());
-        accDTO.setType(accommodation.getType());
-        accDTO.setMinGuests(accommodation.getMinGuests());
-        accDTO.setMaxGuests(accommodation.getMaxGuests());
-        accDTO.setDescription(accommodation.getDescription());
-        accDTO.setAmenities(accommodation.getAmenities());
-        accDTO.setPhotos(accommodation.getPhotos());
-        accDTO.setDaysForCancellation(accommodation.getDaysForCancellation());
-        accDTO.setLocation(accommodation.getLocation());
-        accDTO.setPerNight(accommodation.isPerNight());
-        accDTO.setEnabled(accommodation.isEnabled());
+        List<String> accDates=accommodationService.getAccommodationAvaiableDates(accDTO.getId());
+        accDTO.setDates(accDates.toArray(new String[0]));
 
         return new ResponseEntity<>(accDTO, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/price")
+    public ResponseEntity<Double> getAccommodationPrice(
+            @RequestParam(value="dateFrom",required = true) String dateFrom,
+            @RequestParam(value="dateTo",required=true) String dateTo,
+            @RequestParam(value="noGuests",required=true) Integer noGuests,
+            @RequestParam(value="id",required=true) Long id) {
+
+        double price=accommodationService.getAccommodationPrice(dateFrom,dateTo,noGuests,id);
+        return new ResponseEntity<>(price, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

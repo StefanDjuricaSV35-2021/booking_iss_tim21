@@ -4,6 +4,7 @@ import com.ISS.Booking_iss_tim21.dto.AccommodationDetailsDTO;
 import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
 import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
 import com.ISS.Booking_iss_tim21.model.review.AccommodationReview;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +36,9 @@ public class Accommodation {
     private boolean enabled;
     private boolean perNight;
 
+    @JsonIgnore
+    private Double price=null;
+  
     @ElementCollection(targetClass = Amenity.class, fetch = FetchType.LAZY)
     @Enumerated(EnumType.STRING)
     private List<Amenity> amenities;

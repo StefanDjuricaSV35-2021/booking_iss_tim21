@@ -10,9 +10,12 @@ import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.ISS.Booking_iss_tim21.utility.ImageManipulationTools.ImagePathSetToBase64;
 
 @Getter
 @Setter
@@ -32,32 +35,19 @@ public class AccommodationDetailsDTO {
     private boolean enabled;
     private boolean perNight;
     private String location;
+    private String[] dates;
 
     public AccommodationDetailsDTO(Accommodation accommodation) {
-        ModelMapper modelMapper = new ModelMapper();
-
-        // Explicitly define the mappings
-        PropertyMap<Accommodation, AccommodationDetailsDTO> propertyMap = new PropertyMap<Accommodation, AccommodationDetailsDTO>() {
-            protected void configure() {
-                map().setId(source.getId());
-                map().setOwnerId(source.getOwner().getId());
-                map().setName(source.getName());
-                map().setType(source.getType());
-                map().setMinGuests(source.getMinGuests());
-                map().setMaxGuests(source.getMaxGuests());
-                map().setDescription(source.getDescription());
-                map().setAmenities(source.getAmenities());
-                map().setPhotos(source.getPhotos());
-                map().setDaysForCancellation(source.getDaysForCancellation());
-                map().setLocation(source.getLocation());
-                map().setPerNight(source.isPerNight());
-                map().setEnabled(source.isEnabled());
-            }
-        };
-
-        modelMapper.addMappings(propertyMap);
-
-        // Perform the mapping
-        modelMapper.map(accommodation, this);
+        setId(accommodation.getId());
+        setOwnerId(accommodation.getOwner().getId());
+        setName(accommodation.getName());
+        setType(accommodation.getType());
+        setMinGuests(accommodation.getMinGuests());
+        setMaxGuests(accommodation.getMaxGuests());
+        setDescription(accommodation.getDescription());
+        setAmenities(accommodation.getAmenities());
+        setPhotos(new ArrayList<>(ImagePathSetToBase64(new HashSet<>(accommodation.getPhotos()))));
+        setDaysForCancellation(accommodation.getDaysForCancellation());
+        setLocation(accommodation.getLocation());
     }
 }
