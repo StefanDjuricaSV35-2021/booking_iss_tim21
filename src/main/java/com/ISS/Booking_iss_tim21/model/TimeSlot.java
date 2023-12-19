@@ -19,4 +19,9 @@ import java.util.Date;
 public class TimeSlot {
     private long startDate;
     private long endDate;
+
+    @Override
+    public String toString() {
+        return startDate +";"+ endDate;
+    }
 }

@@ -1,10 +1,10 @@
 package com.ISS.Booking_iss_tim21.service;
 
 import com.ISS.Booking_iss_tim21.model.Accommodation;
+import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
 import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
 import com.ISS.Booking_iss_tim21.repository.AccommodationRepository;
-import com.ISS.Booking_iss_tim21.utility.UrlFilterParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,10 +41,36 @@ public class AccommodationService {
     public List<Accommodation>getAccommodationsWithAmenities(List<Amenity> amenities){return repository.getAccommodationsByAmenitiesIn(amenities,amenities.size());}
     public List<Accommodation>getAccommodationsByType(AccommodationType type){return repository.getAccommodationsByType(type);}
 
-    public List<Accommodation> setPrices(List<Accommodation> accs,String dateFrom,String dateTo){
+    public Double getAccommodationPrice(String dateFrom,String dateTo,Integer noGuests,Long id){
+
+        Accommodation ac=findOne(id);
+
+        if(ac.isPerNight()){
+            return pricingService.getAccommodationDateRangePrice(dateFrom,dateTo,id);
+        }else{
+            return pricingService.getAccommodationDateRangePrice(dateFrom,dateTo,noGuests,id);
+        }
+
+    }
+
+    public List<String> getAccommodationAvaiableDates(Long id){
+
+        List<TimeSlot> timeSlots =pricingService.getAccommodationTimeSlots(id);
+        List<String> dateRanges=new ArrayList<>();
+
+        for(TimeSlot ts : timeSlots){
+            dateRanges.add(ts.toString());
+        }
+
+        return dateRanges;
+
+    }
+
+
+    public List<Accommodation> setPrices(List<Accommodation> accs,String dateFrom,String dateTo,Integer noGuests){
 
         for (Accommodation ac:accs){
-            ac.setPrice(pricingService.getAccommodationDateRangePrice(dateFrom,dateTo,ac.getId()));
+            ac.setPrice(getAccommodationPrice(dateFrom,dateTo,noGuests,ac.getId()));
         }
         return accs;
     }

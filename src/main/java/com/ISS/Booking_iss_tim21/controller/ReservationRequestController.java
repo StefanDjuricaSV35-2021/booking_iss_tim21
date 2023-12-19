@@ -54,6 +54,7 @@ public class ReservationRequestController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReservationRequestDTO> createReservationRequest(@RequestBody ReservationRequestDTO reservationRequestDTO) {
+
 //        if (reservationRequestDTO.getUserId() == null) {
 //            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 //        }
