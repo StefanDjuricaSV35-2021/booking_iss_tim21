@@ -33,6 +33,7 @@ public class AccommodationController {
 
     @Autowired
     private AccommodationPricingService pricingService;
+
     @Autowired
     private UserService userService;
 
@@ -44,15 +45,7 @@ public class AccommodationController {
         for (Accommodation a : accommodations) {
             AccommodationPreviewDTO ap = new AccommodationPreviewDTO();
 
-            byte[] bytes = null;
-
-            try {
-                bytes = Files.readAllBytes(new File(a.getPhotos().iterator().next()).toPath());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            ap.setImage(Base64.getEncoder().encodeToString(bytes));
+            ap.setImage(a.getPhotos().isEmpty() ? null : a.getPhotos().get(0));
             ap.setId(a.getId());
             ap.setName(a.getName());
             ap.setLocation(a.getLocation());
@@ -72,15 +65,7 @@ public class AccommodationController {
         for (Accommodation a : accommodations) {
             AccommodationPreviewDTO ap = new AccommodationPreviewDTO();
 
-            byte[] bytes = null;
-
-            try {
-                bytes = Files.readAllBytes(new File(a.getPhotos().iterator().next()).toPath());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            ap.setImage(Base64.getEncoder().encodeToString(bytes));
+            ap.setImage(a.getPhotos().isEmpty() ? null : a.getPhotos().get(0));
             ap.setId(a.getId());
             ap.setName(a.getName());
             ap.setLocation(a.getLocation());
@@ -106,7 +91,7 @@ public class AccommodationController {
 
             AccommodationPreviewDTO accommodationPreviewDTO = new AccommodationPreviewDTO();
 
-            accommodationPreviewDTO.setImage(ImagePathToBase64(a.getPhotos().iterator().next()));
+            accommodationPreviewDTO.setImage(a.getPhotos().isEmpty() ? null : a.getPhotos().get(0));
             accommodationPreviewDTO.setId(a.getId());
             accommodationPreviewDTO.setName(a.getName());
             accommodationPreviewDTO.setLocation(a.getLocation());
@@ -137,7 +122,7 @@ public class AccommodationController {
         accDTO.setMaxGuests(accommodation.getMaxGuests());
         accDTO.setDescription(accommodation.getDescription());
         accDTO.setAmenities(accommodation.getAmenities());
-        accDTO.setPhotos(new ArrayList<>(ImagePathSetToBase64(new HashSet<>(accommodation.getPhotos()))));
+        accDTO.setPhotos(accommodation.getPhotos());
         accDTO.setDaysForCancellation(accommodation.getDaysForCancellation());
         accDTO.setLocation(accommodation.getLocation());
         accDTO.setPerNight(accommodation.isPerNight());
@@ -168,7 +153,7 @@ public class AccommodationController {
         accommodation.setDescription(accommodationDTO.getDescription());
         accommodation.setLocation(accommodationDTO.getLocation());
         accommodation.setAmenities(accommodationDTO.getAmenities());
-        accommodation.setPhotos(new ArrayList<>(ImagePathSetToBase64(new HashSet<>(accommodationDTO.getPhotos()))));
+        accommodation.setPhotos(accommodationDTO.getPhotos());
         accommodation.setDaysForCancellation(accommodationDTO.getDaysForCancellation());
         accommodation.setLocation(accommodationDTO.getLocation());
         accommodation.setEnabled(accommodationDTO.isEnabled());
@@ -200,7 +185,6 @@ public class AccommodationController {
         accommodation.setMaxGuests(accommodationDTO.getMaxGuests());
         accommodation.setDescription(accommodationDTO.getDescription());
         accommodation.setAmenities(accommodationDTO.getAmenities());
-       // accommodation.setPhotos(new ArrayList<>(ImagePathSetToBase64(new HashSet<>(accommodationDTO.getPhotos()))));
         accommodation.setDaysForCancellation(accommodationDTO.getDaysForCancellation());
         accommodation.setLocation(accommodationDTO.getLocation());
         accommodation.setEnabled(accommodationDTO.isEnabled());
@@ -225,19 +209,12 @@ public class AccommodationController {
     @GetMapping(value = "/{ownerId}/accommodations")
     public ResponseEntity<List<AccommodationPreviewDTO>> getOwnersAccommodations(@PathVariable Long ownerId) {
         List<Accommodation> ownerAccommodations = accommodationService.getOwnersAccommodations(ownerId);
+
         List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
         for (Accommodation a : ownerAccommodations) {
             AccommodationPreviewDTO ap = new AccommodationPreviewDTO();
 
-            byte[] bytes = null;
-
-            try {
-                bytes = Files.readAllBytes(new File(a.getPhotos().iterator().next()).toPath());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            ap.setImage(Base64.getEncoder().encodeToString(bytes));
+            ap.setImage(a.getPhotos().isEmpty() ? null : a.getPhotos().get(0));
             ap.setId(a.getId());
             ap.setName(a.getName());
             ap.setLocation(a.getLocation());
