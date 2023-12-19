@@ -21,6 +21,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.security.Security;
 
@@ -46,11 +48,12 @@ public class SecurityConfiguration {
                             corsConfiguration.setAllowCredentials(true);
                             return corsConfiguration;
                         }))
-                .authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**")
-                        .permitAll()
-                        .requestMatchers("api/v1/admin").hasAnyAuthority(Role.ADMIN.name())
-                        .requestMatchers("api/v1/guest").hasAnyAuthority(Role.GUEST.name())
-                        .requestMatchers("api/v1/owner").hasAnyAuthority(Role.OWNER.name())
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/images/**").permitAll()
+                        .requestMatchers("/api/v1/admin").hasAnyAuthority(Role.ADMIN.name())
+                        .requestMatchers("/api/v1/guest").hasAnyAuthority(Role.GUEST.name())
+                        .requestMatchers("/api/v1/owner").hasAnyAuthority(Role.OWNER.name())
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
