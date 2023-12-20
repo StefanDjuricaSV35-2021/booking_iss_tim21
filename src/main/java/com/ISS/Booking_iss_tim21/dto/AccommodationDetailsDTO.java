@@ -8,15 +8,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import static com.ISS.Booking_iss_tim21.utility.ImageManipulationTools.ImagePathSetToBase64;
 
 @Getter
 @Setter
@@ -47,7 +43,7 @@ public class AccommodationDetailsDTO {
         setMaxGuests(accommodation.getMaxGuests());
         setDescription(accommodation.getDescription());
         setAmenities(accommodation.getAmenities());
-        setPhotos(new ArrayList<>(ImagePathSetToBase64(new HashSet<>(accommodation.getPhotos()))));
+        setPhotos(accommodation.getPhotos());
         setDaysForCancellation(accommodation.getDaysForCancellation());
         setLocation(accommodation.getLocation());
     }

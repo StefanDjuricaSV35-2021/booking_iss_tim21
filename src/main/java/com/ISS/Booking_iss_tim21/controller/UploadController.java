@@ -19,7 +19,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 @RequestMapping("/api/v1/auth/images")
 public class UploadController {
 
-    public static String UPLOAD_DIRECTORY = File.listRoots()[0].getAbsolutePath() + "ImageDatabase";
+    public static String UPLOAD_DIRECTORY = "./src/main/resources/images/";
 
     @PostMapping("/upload")
     public ResponseEntity<List<String>> uploadFiles(@RequestParam("images") List<MultipartFile> files) throws IOException {
