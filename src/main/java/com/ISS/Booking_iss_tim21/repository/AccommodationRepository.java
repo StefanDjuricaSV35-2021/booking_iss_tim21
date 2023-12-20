@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface AccommodationRepository extends JpaRepository<Accommodation, Long> {
-    @Query("select a from Accommodation a where a.owner.Id = ?1")
+    @Query("select a from Accommodation a where a.owner.Id = ?1 and a.enabled = true")
     public List<Accommodation> getOwnersAccommodations(Long ownerId);
 
     @Query("select a from Accommodation a where a.enabled = true")
