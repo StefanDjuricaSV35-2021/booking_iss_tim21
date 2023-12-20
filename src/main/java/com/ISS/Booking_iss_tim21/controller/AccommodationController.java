@@ -9,7 +9,6 @@ import com.ISS.Booking_iss_tim21.service.AccommodationFilterService;
 import com.ISS.Booking_iss_tim21.service.AccommodationPricingService;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
-import com.ISS.Booking_iss_tim21.utility.ImageManipulationTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -177,6 +176,7 @@ public class AccommodationController {
         accommodation.setDescription(accommodationDTO.getDescription());
         accommodation.setPhotos(accommodationDTO.getPhotos());
         accommodation.setAmenities(accommodationDTO.getAmenities());
+        accommodation.setPhotos(accommodationDTO.getPhotos());
         accommodation.setDaysForCancellation(accommodationDTO.getDaysForCancellation());
         accommodation.setLocation(accommodationDTO.getLocation());
         accommodation.setEnabled(accommodationDTO.isEnabled());
