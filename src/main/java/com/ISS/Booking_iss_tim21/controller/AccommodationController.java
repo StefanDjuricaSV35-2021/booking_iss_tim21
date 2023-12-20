@@ -118,7 +118,9 @@ public class AccommodationController {
             @RequestParam(value="dateTo",required=true) String dateTo,
             @RequestParam(value="noGuests",required=true) Integer noGuests,
             @RequestParam(value="id",required=true) Long id) {
-
+        System.out.println(dateFrom);
+        System.out.println(dateTo);
+        System.out.println(id);
         double price=accommodationService.getAccommodationPrice(dateFrom,dateTo,noGuests,id);
         return new ResponseEntity<>(price, HttpStatus.OK);
     }
