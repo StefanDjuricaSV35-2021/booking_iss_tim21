@@ -53,7 +53,7 @@ public interface AccommodationPricingRepository extends JpaRepository<Accommodat
 
 
 
-    @Query("select timeSlot from AccommodationPricing where id=:id")
+    @Query("select timeSlot from AccommodationPricing where accommodation.id=:id")
     public List<TimeSlot> getAccommodationTimeSlots(@Param("id") Long id);
 
 
