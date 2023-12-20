@@ -135,7 +135,6 @@ public class AccommodationPricingChangeRequestController {
         }
     }
 
-    //TODO overlapping checking needs to be tested, when reservations are added
     @DeleteMapping(value = "/update/{accommodationId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> updateAccommodationPricings(@PathVariable Long accommodationId, @RequestBody List<AccommodationPricingChangeRequestDTO> accommodationPricingChangeRequestDTOS) {

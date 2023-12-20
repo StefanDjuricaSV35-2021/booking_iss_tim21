@@ -87,6 +87,7 @@ public class AccommodationPricingController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteAccommodationPricing(@PathVariable Long id) {
         AccommodationPricing accommodationPricing = pricingService.findOne(id);
 
@@ -100,6 +101,7 @@ public class AccommodationPricingController {
     }
 
     @GetMapping(value = "/{accommodationId}/accommodationPricings")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<AccommodationPricingDTO>> getPricingsForAccommodation(@PathVariable Long accommodationId) {
         List<AccommodationPricing> accommodationPricings = pricingService.getActiveAccommodationPricings(accommodationId);
 
@@ -111,6 +113,7 @@ public class AccommodationPricingController {
     }
 
     @GetMapping(value = "/{accommodationId}/activeAccommodationPricings")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<AccommodationPricingDTO>> getActivePricingsForAccommodation(@PathVariable Long accommodationId) {
         List<AccommodationPricing> accommodationPricings = pricingService.getActiveAccommodationPricings(accommodationId);
 
