@@ -1,6 +1,7 @@
 package com.ISS.Booking_iss_tim21.dto;
 
 import com.ISS.Booking_iss_tim21.model.Accommodation;
+import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
 import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
 import lombok.AllArgsConstructor;
@@ -35,7 +36,7 @@ public class AccommodationDetailsDTO {
     private boolean enabled;
     private boolean perNight;
     private String location;
-    private String[] dates;
+    private List<TimeSlot> dates;
 
     public AccommodationDetailsDTO(Accommodation accommodation) {
         setId(accommodation.getId());

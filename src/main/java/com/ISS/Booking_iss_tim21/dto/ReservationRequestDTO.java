@@ -6,6 +6,7 @@ import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationRequestStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -13,6 +14,7 @@ import org.modelmapper.PropertyMap;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ReservationRequestDTO {
     private Long id;
     private Long userId;

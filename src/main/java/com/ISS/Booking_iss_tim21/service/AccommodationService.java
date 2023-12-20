@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,16 +63,9 @@ public class AccommodationService {
 
     }
 
-    public List<String> getAccommodationAvaiableDates(Long id){
+    public List<TimeSlot> getAccommodationAvaiableDates(Long id){
 
-        List<TimeSlot> timeSlots =pricingService.getAccommodationTimeSlots(id);
-        List<String> dateRanges=new ArrayList<>();
-
-        for(TimeSlot ts : timeSlots){
-            dateRanges.add(ts.toString());
-        }
-
-        return dateRanges;
+        return pricingService.getAccommodationTimeSlots(id);
 
     }
 

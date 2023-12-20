@@ -3,6 +3,7 @@ package com.ISS.Booking_iss_tim21.controller;
 import com.ISS.Booking_iss_tim21.dto.AccommodationDetailsDTO;
 import com.ISS.Booking_iss_tim21.dto.AccommodationPreviewDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
+import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.service.AccommodationFilterService;
 import com.ISS.Booking_iss_tim21.service.AccommodationPricingService;
@@ -104,8 +105,8 @@ public class AccommodationController {
 
         AccommodationDetailsDTO accDTO=new AccommodationDetailsDTO(accommodation);
 
-        List<String> accDates=accommodationService.getAccommodationAvaiableDates(accDTO.getId());
-        accDTO.setDates(accDates.toArray(new String[0]));
+        List<TimeSlot> accDates=accommodationService.getAccommodationAvaiableDates(accDTO.getId());
+        accDTO.setDates(accDates);
 
         return new ResponseEntity<>(accDTO, HttpStatus.OK);
     }
