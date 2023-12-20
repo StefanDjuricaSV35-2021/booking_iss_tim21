@@ -20,7 +20,7 @@ public interface AccommodationPricingRepository extends JpaRepository<Accommodat
             "inner join " +
             "(select accommodation_id as idd,price,start_date, end_date from accommodation_pricing) " +
             "as foo " +
-            "on foo.idd=r.idd and foo.start_date<=r.fr+:dayVal and foo.end_date>r.fr+:dayVal and :dateTo!=(fr+:dayVal)) " +
+            "on foo.idd=r.idd and foo.start_date<=r.fr+:dayVal and foo.end_date>r.fr+:dayVal and :dateTo>=(fr+:dayVal)) " +
             "select idd from rec group by(idd) having(count(*)=(:dateTo-:dateFrom)/:dayVal);",nativeQuery = true)
     public List<Long> getAccommodationIdsWithPrices(@Param("dateFrom") Long dateFrom, @Param("dateTo") Long dateTo,@Param("dayVal") Long dayVal);
 
@@ -33,7 +33,7 @@ public interface AccommodationPricingRepository extends JpaRepository<Accommodat
             "(select accommodation_id as idd, price,start_date,end_date from accommodation_pricing ac " +
             "where ac.accommodation_id=:id) " +
             "as foo " +
-            "on foo.idd=r.idd and foo.start_date<=r.fr+:dayVal and foo.end_date>r.fr+:dayVal and :dateTo!=(fr+:dayVal)) " +
+            "on foo.idd=r.idd and foo.start_date<=r.fr+:dayVal and foo.end_date>r.fr+:dayVal and :dateTo>=(fr+:dayVal)) " +
             "select SUM(price) from rec group by(idd) having(count(*)=(:dateTo-:dateFrom)/:dayVal);",nativeQuery = true)
     public Double getAccommodationTotalPriceDays(@Param("dateFrom") Long dateFrom, @Param("dateTo") Long dateTo, @Param("id") Long id,@Param("dayVal") Long dayVal);
 
@@ -47,7 +47,7 @@ public interface AccommodationPricingRepository extends JpaRepository<Accommodat
             "(select accommodation_id as idd,(price * :noGuests) as price,start_date,end_date from accommodation_pricing ac " +
             "where ac.accommodation_id=:id) " +
             "as foo " +
-            "on foo.idd=r.idd and foo.start_date<=r.fr+:dayVal and foo.end_date>r.fr+:dayVal and :dateTo!=(fr+:dayVal)) " +
+            "on foo.idd=r.idd and foo.start_date<=r.fr+:dayVal and foo.end_date>r.fr+:dayVal and :dateTo>=(fr+:dayVal)) " +
             "select SUM(price) from rec group by(idd) having(count(*)=(:dateTo-:dateFrom)/:dayVal);",nativeQuery = true)
     public Double getAccommodationTotalPriceGuests(@Param("dateFrom") Long dateFrom, @Param("dateTo") Long dateTo, @Param("id") Long id,@Param("noGuests") Integer noGuests,@Param("dayVal") Long dayVal);
 
