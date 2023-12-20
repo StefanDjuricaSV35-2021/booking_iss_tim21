@@ -1,6 +1,6 @@
 package com.ISS.Booking_iss_tim21.dto;
 
-import com.ISS.Booking_iss_tim21.model.OwnerReview;
+import com.ISS.Booking_iss_tim21.model.review.OwnerReview;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor

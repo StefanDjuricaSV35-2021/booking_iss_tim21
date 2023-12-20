@@ -3,40 +3,92 @@ package com.ISS.Booking_iss_tim21.controller;
 import com.ISS.Booking_iss_tim21.dto.AccommodationDetailsDTO;
 import com.ISS.Booking_iss_tim21.dto.AccommodationPreviewDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
-import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
-import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
+import com.ISS.Booking_iss_tim21.model.TimeSlot;
+import com.ISS.Booking_iss_tim21.model.User;
+import com.ISS.Booking_iss_tim21.service.AccommodationFilterService;
+import com.ISS.Booking_iss_tim21.service.AccommodationPricingService;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
-import org.slf4j.LoggerFactory;
+import com.ISS.Booking_iss_tim21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @RestController
-@RequestMapping("/accommodations")
+@RequestMapping("/api/v1/auth/accommodations")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AccommodationController {
-//    @Autowired
-//    private AccommodationService accommodationService;
-    private static List<Accommodation> accommodations = new ArrayList<>();
+    @Autowired
+    private AccommodationService accommodationService;
+    @Autowired
+    private AccommodationFilterService accommodationFilterService;
+    @Autowired
+    private AccommodationPricingService pricingService;
 
-    static {
-        accommodations.add(new Accommodation(1L, 1L, "name", AccommodationType.Apartment, 1, 2, "a", new HashSet<Amenity>(), new HashSet<String>(), 2));
-        accommodations.add(new Accommodation(2L, 1L, "name", AccommodationType.Apartment, 1, 2, "a", new HashSet<Amenity>(), new HashSet<String>(), 2));
-    }
+    @Autowired
+    private UserService userService;
 
-    @GetMapping
-    public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodations() {
-        // List<Accommodation> accommodations = accommodationService.findAll();
+    @GetMapping("/previews")
+    public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodationsPreviews() {
+        List<Accommodation> accommodations = accommodationService.getAllEnabled();
 
         List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
-        for(Accommodation a : accommodations) {
+        for (Accommodation a : accommodations) {
+            AccommodationPreviewDTO ap = new AccommodationPreviewDTO();
+
+            ap.setImage(a.getPhotos().isEmpty() ? null : a.getPhotos().get(0));
+            ap.setId(a.getId());
+            ap.setName(a.getName());
+            ap.setLocation(a.getLocation());
+            accommodationPreviewDTOs.add(ap);
+        }
+
+        return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);
+    }
+
+    @GetMapping("/previews/notEnabled")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
+    public ResponseEntity<List<AccommodationPreviewDTO>> getNotEnabledAccommodationsPreviews() {
+        List<Accommodation> accommodations = accommodationService.getAllNotEnabled();
+        if (accommodations.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
+        for (Accommodation a : accommodations) {
+            AccommodationPreviewDTO ap = new AccommodationPreviewDTO();
+
+            ap.setImage(a.getPhotos().isEmpty() ? null : a.getPhotos().get(0));
+            ap.setId(a.getId());
+            ap.setName(a.getName());
+            ap.setLocation(a.getLocation());
+            accommodationPreviewDTOs.add(ap);
+        }
+
+        return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<AccommodationPreviewDTO>> getAccommodationsPreviewBySearchParams(
+            @RequestParam(value="dateFrom",required = true) String dateFrom,
+            @RequestParam(value="dateTo",required=true) String dateTo,
+            @RequestParam(value="noGuests",required=true) Integer noGuests,
+            @RequestParam(value="location",required=true) String location,
+            @RequestParam(value="filters",required=false) String filters
+
+    ) {
+        List<Accommodation> validAccommodations = accommodationService.getAccommodationBySearchParams(location,noGuests,dateFrom,dateTo);
+
+        validAccommodations=accommodationService.setPrices(validAccommodations,dateFrom,dateTo,noGuests);
+
+        validAccommodations=accommodationFilterService.filterAccommodations(validAccommodations,filters);
+
+        List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
+        for(Accommodation a : validAccommodations) {
+
             accommodationPreviewDTOs.add(new AccommodationPreviewDTO(a));
         }
 
@@ -46,59 +98,108 @@ public class AccommodationController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<AccommodationDetailsDTO> getAccommodation(@PathVariable Long id) {
 
-        //Accommodation accommodation = accommodationService.findOne(id);
-        Accommodation accommodation = findAccommodationById(id);
+        Accommodation accommodation = accommodationService.findOne(id);
 
         if (accommodation == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(new AccommodationDetailsDTO(accommodation), HttpStatus.OK);
+        AccommodationDetailsDTO accDTO=new AccommodationDetailsDTO(accommodation);
+
+        List<TimeSlot> accDates=accommodationService.getAccommodationAvaiableDates(accDTO.getId());
+        accDTO.setDates(accDates);
+
+        return new ResponseEntity<>(accDTO, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/price")
+    public ResponseEntity<Double> getAccommodationPrice(
+            @RequestParam(value="dateFrom",required = true) String dateFrom,
+            @RequestParam(value="dateTo",required=true) String dateTo,
+            @RequestParam(value="noGuests",required=true) Integer noGuests,
+            @RequestParam(value="id",required=true) Long id) {
+        System.out.println(dateFrom);
+        System.out.println(dateTo);
+        System.out.println(id);
+        double price=accommodationService.getAccommodationPrice(dateFrom,dateTo,noGuests,id);
+        return new ResponseEntity<>(price, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AccommodationDetailsDTO> createAccommodation(@RequestBody AccommodationDetailsDTO accommodationDTO) {
-        Accommodation accommodation = new Accommodation(accommodationDTO);
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
+    public ResponseEntity<AccommodationDetailsDTO> createAccommodation(
+            @RequestBody AccommodationDetailsDTO accommodationDTO) {
 
-        //Long accommodationId = accommodationService.createAccommodation(accommodation);
-        accommodations.add(accommodation);
-
-        return new ResponseEntity<>(new AccommodationDetailsDTO(accommodation), HttpStatus.CREATED);
-    }
-
-    @PutMapping(consumes = "application/json")
-    public ResponseEntity<AccommodationDetailsDTO> updateAccommodation(@RequestBody AccommodationDetailsDTO accommodationDTO) {
-//      Accommodation accommodation = accommodationService.findOne(accommodationDetailsDTO.getId());
-        Accommodation accommodation = findAccommodationById(accommodationDTO.getId());
-
-        if (accommodation == null) {
+        if (accommodationDTO.getOwnerId() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        accommodation.setOwnerId(accommodationDTO.getOwnerId());
+
+        User owner = userService.findById(accommodationDTO.getOwnerId());
+        if (owner == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Accommodation accommodation = new Accommodation();
+        accommodation.setOwner(owner);
         accommodation.setName(accommodationDTO.getName());
         accommodation.setType(accommodationDTO.getType());
         accommodation.setMinGuests(accommodationDTO.getMinGuests());
         accommodation.setMaxGuests(accommodationDTO.getMaxGuests());
         accommodation.setDescription(accommodationDTO.getDescription());
+        accommodation.setLocation(accommodationDTO.getLocation());
         accommodation.setAmenities(accommodationDTO.getAmenities());
         accommodation.setPhotos(accommodationDTO.getPhotos());
         accommodation.setDaysForCancellation(accommodationDTO.getDaysForCancellation());
+        accommodation.setLocation(accommodationDTO.getLocation());
+        accommodation.setEnabled(accommodationDTO.isEnabled());
+        accommodation.setPerNight(accommodationDTO.isPerNight());
 
-//        accommodation = accommodationService.save(accommodation);
+        accommodationService.save(accommodation);
+
+        return new ResponseEntity<>(new AccommodationDetailsDTO(accommodation), HttpStatus.CREATED);
+    }
+
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public ResponseEntity<AccommodationDetailsDTO> updateAccommodation(
+            @RequestBody AccommodationDetailsDTO accommodationDTO) {
+        Accommodation accommodation = accommodationService.findOne(accommodationDTO.getId());
+
+        if (accommodation == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        User owner = userService.findById(accommodationDTO.getOwnerId());
+        if (owner == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        accommodation.setOwner(owner);
+        accommodation.setName(accommodationDTO.getName());
+        accommodation.setType(accommodationDTO.getType());
+        accommodation.setMinGuests(accommodationDTO.getMinGuests());
+        accommodation.setMaxGuests(accommodationDTO.getMaxGuests());
+        accommodation.setDescription(accommodationDTO.getDescription());
+        accommodation.setPhotos(accommodationDTO.getPhotos());
+        accommodation.setAmenities(accommodationDTO.getAmenities());
+        accommodation.setPhotos(accommodationDTO.getPhotos());
+        accommodation.setDaysForCancellation(accommodationDTO.getDaysForCancellation());
+        accommodation.setLocation(accommodationDTO.getLocation());
+        accommodation.setEnabled(accommodationDTO.isEnabled());
+        accommodation.setPerNight(accommodationDTO.isPerNight());
+
+        accommodationService.save(accommodation);
         return new ResponseEntity<>(new AccommodationDetailsDTO(accommodation), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
     public ResponseEntity<Void> deleteAccommodation(@PathVariable Long id) {
-//        Accommodation accommodation = accommodationService.findOne(id);
-        Accommodation accommodation = findAccommodationById(id);
+        Accommodation accommodation = accommodationService.findOne(id);
 
         if (accommodation != null) {
-
-//            accommodationService.remove(id);
-            accommodations.remove(accommodation);
-
-            return  new ResponseEntity<>(HttpStatus.OK);
+            accommodationService.remove(id);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -106,29 +207,20 @@ public class AccommodationController {
 
     @GetMapping(value = "/{ownerId}/accommodations")
     public ResponseEntity<List<AccommodationPreviewDTO>> getOwnersAccommodations(@PathVariable Long ownerId) {
-//        Set<Accommodation> accommodations = accommodationService.getOwnersAccommodations(ownerId);
-        Set<Accommodation> ownerAccommodations = getOwnerAccommodations(ownerId);
-        List<AccommodationPreviewDTO> accommodationsDTO = new ArrayList<>();
+        List<Accommodation> ownerAccommodations = accommodationService.getOwnersAccommodations(ownerId);
+
+        List<AccommodationPreviewDTO> accommodationPreviewDTOs = new ArrayList<>();
         for (Accommodation a : ownerAccommodations) {
-            accommodationsDTO.add(new AccommodationPreviewDTO(a));
+            AccommodationPreviewDTO ap = new AccommodationPreviewDTO();
+
+            ap.setImage(a.getPhotos().isEmpty() ? null : a.getPhotos().get(0));
+            ap.setId(a.getId());
+            ap.setName(a.getName());
+            ap.setLocation(a.getLocation());
+            accommodationPreviewDTOs.add(ap);
         }
-        return new ResponseEntity<>(accommodationsDTO, HttpStatus.OK);
+        return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);
 
-    }
-
-    // Temporary method, will be removed once services are added
-    private Accommodation findAccommodationById(Long id) {
-        return accommodations.stream()
-                .filter(a -> a.getId().equals(id))
-                .findFirst()
-                .orElse(null);
-    }
-
-    // Temporary method, will be removed once services are added
-    private Set<Accommodation> getOwnerAccommodations(Long ownerId) {
-        return accommodations.stream()
-                .filter(a -> a.getOwnerId().equals(ownerId))
-                .collect(Collectors.toSet());
     }
 
 }

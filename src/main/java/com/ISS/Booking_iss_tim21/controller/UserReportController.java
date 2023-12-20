@@ -4,19 +4,19 @@ import com.ISS.Booking_iss_tim21.dto.UserReportDTO;
 import com.ISS.Booking_iss_tim21.model.UserReport;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.service.UserReportService;
-import com.ISS.Booking_iss_tim21.model.UserReport;
 import com.ISS.Booking_iss_tim21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("reports/users")
+@RequestMapping("/api/v1/auth/reports/users")
 public class UserReportController {
 
     @Autowired
@@ -26,6 +26,7 @@ public class UserReportController {
     UserService userService;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<UserReportDTO>> getUserReports() {
 
         List<UserReport> reports = userReportService.getAll();
@@ -40,14 +41,15 @@ public class UserReportController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserReportDTO> createOwnerReview(@RequestBody UserReportDTO userReportDTO) {
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")
+    public ResponseEntity<UserReportDTO> createUserReport(@RequestBody UserReportDTO userReportDTO) {
 
         if (userReportDTO.getReportedId() == null || userReportDTO.getReporterId() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        User reporter = userService.findOne(userReportDTO.getReporterId());
-        User reported = userService.findOne(userReportDTO.getReportedId());
+        User reporter = userService.findById(userReportDTO.getReporterId());
+        User reported = userService.findById(userReportDTO.getReportedId());
 
         if (reporter == null || reported == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -69,6 +71,7 @@ public class UserReportController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
     public ResponseEntity<Void> deleteUserReport(@PathVariable Long id) {
 
         UserReport report = userReportService.findOne(id);

@@ -3,8 +3,6 @@ package com.ISS.Booking_iss_tim21.dto;
 
 import com.ISS.Booking_iss_tim21.model.*;
 
-import javax.persistence.*;
-
 public class ReviewReportDTO {
 
 
@@ -15,10 +13,9 @@ public class ReviewReportDTO {
 
     public ReviewReportDTO(ReviewReport report) {
         this.id=report.getId();
-        this.reportedReviewId=report.getReported().getId();
-        this.reporterId=report.getReporter().getId();
+        this.reportedReviewId=report.getReview().getId();
+        this.reporterId=report.getUser().getId();
         this.description=report.getDescription();
-
     }
 
     public Long getId() {

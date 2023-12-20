@@ -28,5 +28,7 @@ public class ReviewReportService {
         repository.deleteById(id);
     }
 
+    public void save(ReviewReport rr){repository.save(rr);}
+
 
 }

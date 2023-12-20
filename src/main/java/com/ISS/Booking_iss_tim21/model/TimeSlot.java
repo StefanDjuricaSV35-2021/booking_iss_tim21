@@ -14,8 +14,14 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Embeddable
 public class TimeSlot {
     private long startDate;
     private long endDate;
+
+    @Override
+    public String toString() {
+        return startDate +";"+ endDate;
+    }
 }

@@ -6,6 +6,7 @@ import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationRequestStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -13,6 +14,7 @@ import org.modelmapper.PropertyMap;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ReservationRequestDTO {
     private Long id;
     private Long userId;
@@ -29,8 +31,8 @@ public class ReservationRequestDTO {
         PropertyMap<ReservationRequest, ReservationRequestDTO> propertyMap = new PropertyMap<ReservationRequest, ReservationRequestDTO>() {
             protected void configure() {
                 map().setId(source.getId());
-                map().setUserId(source.getUserId());
-                map().setAccommodationId(source.getAccommodationId());
+                map().setUserId(source.getUser().getId());
+                map().setAccommodationId(source.getAccommodation().getId());
                 map().setGuestsNumber(source.getGuestsNumber());
                 map().setPrice(source.getPrice());
                 map().setTimeSlot(source.getTimeSlot());
