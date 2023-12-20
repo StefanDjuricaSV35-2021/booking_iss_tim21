@@ -34,7 +34,7 @@ public class AccommodationPreviewDTO {
         setId(a.getId());
         setLocation(a.getLocation());
         setName(a.getName());
-        setImage(ImagePathToBase64(a.getPhotos().iterator().next()));
+        setImage(a.getPhotos().isEmpty() ? null : a.getPhotos().get(0));
         setPrice(a.getPrice());
 
     }
