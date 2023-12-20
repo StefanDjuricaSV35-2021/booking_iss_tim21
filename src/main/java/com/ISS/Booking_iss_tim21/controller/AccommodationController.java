@@ -175,6 +175,7 @@ public class AccommodationController {
         accommodation.setMinGuests(accommodationDTO.getMinGuests());
         accommodation.setMaxGuests(accommodationDTO.getMaxGuests());
         accommodation.setDescription(accommodationDTO.getDescription());
+        accommodation.setPhotos(accommodationDTO.getPhotos());
         accommodation.setAmenities(accommodationDTO.getAmenities());
         accommodation.setDaysForCancellation(accommodationDTO.getDaysForCancellation());
         accommodation.setLocation(accommodationDTO.getLocation());
