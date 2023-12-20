@@ -1,5 +1,6 @@
 package com.ISS.Booking_iss_tim21.utility;
 
+import com.ISS.Booking_iss_tim21.config.AppConfig;
 import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import org.springframework.cglib.core.Local;
 
@@ -27,7 +28,7 @@ public class DateManipulationTools {
             throw new RuntimeException(e);
         }
 
-        return temp.getTime()/1000;
+        return temp.getTime()/ AppConfig.UNIX_DIFF;
 
     }
 
@@ -35,7 +36,7 @@ public class DateManipulationTools {
         DateFormat dateFormatter = new SimpleDateFormat(datePattern);
         dateFormatter.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-        Date temp= new Date((date*1000));
+        Date temp= new Date((date*AppConfig.UNIX_DIFF));
 
         return dateFormatter.format(temp);
 
