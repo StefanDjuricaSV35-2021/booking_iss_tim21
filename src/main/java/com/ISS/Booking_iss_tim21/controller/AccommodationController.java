@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -50,6 +51,7 @@ public class AccommodationController {
     }
 
     @GetMapping("/previews/notEnabled")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
     public ResponseEntity<List<AccommodationPreviewDTO>> getNotEnabledAccommodationsPreviews() {
         List<Accommodation> accommodations = accommodationService.getAllNotEnabled();
         if (accommodations.isEmpty()) {
@@ -122,6 +124,7 @@ public class AccommodationController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
     public ResponseEntity<AccommodationDetailsDTO> createAccommodation(
             @RequestBody AccommodationDetailsDTO accommodationDTO) {
 
@@ -155,6 +158,7 @@ public class AccommodationController {
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<AccommodationDetailsDTO> updateAccommodation(
             @RequestBody AccommodationDetailsDTO accommodationDTO) {
         Accommodation accommodation = accommodationService.findOne(accommodationDTO.getId());
@@ -187,6 +191,7 @@ public class AccommodationController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
     public ResponseEntity<Void> deleteAccommodation(@PathVariable Long id) {
         Accommodation accommodation = accommodationService.findOne(id);
 
