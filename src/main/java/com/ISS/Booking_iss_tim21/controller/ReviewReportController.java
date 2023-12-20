@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class ReviewReportController {
     ReviewService reviewService;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<ReviewReportDTO>> getReviewReports() {
 
         List<ReviewReport> reports = reviewReportService.getAll();
@@ -43,6 +45,7 @@ public class ReviewReportController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
     public ResponseEntity<ReviewReportDTO> createOwnerReview(@RequestBody ReviewReportDTO reviewReportDTO) {
 
         if (reviewReportDTO.getReportedReviewId() == null || reviewReportDTO.getReporterId() == null) {
@@ -70,6 +73,7 @@ public class ReviewReportController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_GUEST')")
     public ResponseEntity<Void> deleteReviewReport(@PathVariable Long id) {
 
         ReviewReport report = reviewReportService.findOne(id);

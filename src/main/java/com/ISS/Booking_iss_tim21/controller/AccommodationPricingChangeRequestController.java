@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class AccommodationPricingChangeRequestController {
 
     //get all pricing requests for accommodation that is being changed
     @GetMapping(value = "/all/{accommodationChangeRequestId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<AccommodationPricingChangeRequestDTO>> getAllAccommodationPricingChangeRequests(@PathVariable Long accommodationChangeRequestId) {
         List<AccommodationPricingChangeRequest> pricingChangeRequests = pricingChangeRequestService.getAllForAccommodation(accommodationChangeRequestId);
         if (pricingChangeRequests.isEmpty()) {
@@ -48,6 +50,7 @@ public class AccommodationPricingChangeRequestController {
     }
 
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<AccommodationPricingChangeRequestDTO> getAccommodationPricingChangeRequest(@PathVariable Long id) {
         AccommodationPricingChangeRequest pricingChangeRequest = pricingChangeRequestService.findOne(id);
 
@@ -60,6 +63,7 @@ public class AccommodationPricingChangeRequestController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")
     public ResponseEntity<AccommodationPricingChangeRequestDTO> createAccommodationPricingChangeRequest(@RequestBody AccommodationPricingChangeRequestDTO pricingChangeRequestDTO) {
         if (pricingChangeRequestDTO.getAccommodationChangeRequestId() == null || pricingChangeRequestDTO.getAccommodationId() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -89,6 +93,7 @@ public class AccommodationPricingChangeRequestController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<AccommodationPricingChangeRequestDTO> updateAccommodationPricingChangeRequest(@PathVariable Long id, @RequestBody AccommodationPricingChangeRequestDTO updatedDTO) {
         AccommodationPricingChangeRequest existingRequest = pricingChangeRequestService.findOne(id);
         if (existingRequest == null) {
@@ -118,6 +123,7 @@ public class AccommodationPricingChangeRequestController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
     public ResponseEntity<Void> deleteAccommodationPricingChangeRequest(@PathVariable Long id) {
         AccommodationPricingChangeRequest existingRequest = pricingChangeRequestService.findOne(id);
 
@@ -129,8 +135,8 @@ public class AccommodationPricingChangeRequestController {
         }
     }
 
-    //TODO overlapping checking needs to be tested, when reservations are added
     @DeleteMapping(value = "/update/{accommodationId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> updateAccommodationPricings(@PathVariable Long accommodationId, @RequestBody List<AccommodationPricingChangeRequestDTO> accommodationPricingChangeRequestDTOS) {
         accommodationPricingService.deleteAllPricingsForAccommodation(accommodationId);
         if (accommodationPricingChangeRequestDTOS.isEmpty()) return new ResponseEntity<>(HttpStatus.OK);

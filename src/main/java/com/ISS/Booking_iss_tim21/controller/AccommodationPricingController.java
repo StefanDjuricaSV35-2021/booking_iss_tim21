@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class AccommodationPricingController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
     public ResponseEntity<AccommodationPricingDTO> createAccommodationPricing(@RequestBody AccommodationPricingDTO accommodationPricingDTO) {
         if (accommodationPricingDTO.getAccommodationId() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -67,6 +69,7 @@ public class AccommodationPricingController {
     }
 
     @PutMapping(consumes = "application/json")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<AccommodationPricingDTO> updateAccommodation(@RequestBody AccommodationPricingDTO accommodationPricingDTO) {
       AccommodationPricing accommodationPricing = pricingService.findOne(accommodationPricingDTO.getId());
 
@@ -84,6 +87,7 @@ public class AccommodationPricingController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteAccommodationPricing(@PathVariable Long id) {
         AccommodationPricing accommodationPricing = pricingService.findOne(id);
 
@@ -97,6 +101,7 @@ public class AccommodationPricingController {
     }
 
     @GetMapping(value = "/{accommodationId}/accommodationPricings")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<AccommodationPricingDTO>> getPricingsForAccommodation(@PathVariable Long accommodationId) {
         List<AccommodationPricing> accommodationPricings = pricingService.getActiveAccommodationPricings(accommodationId);
 
@@ -108,6 +113,7 @@ public class AccommodationPricingController {
     }
 
     @GetMapping(value = "/{accommodationId}/activeAccommodationPricings")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<AccommodationPricingDTO>> getActivePricingsForAccommodation(@PathVariable Long accommodationId) {
         List<AccommodationPricing> accommodationPricings = pricingService.getActiveAccommodationPricings(accommodationId);
 

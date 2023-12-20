@@ -1,6 +1,7 @@
 package com.ISS.Booking_iss_tim21.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,7 @@ public class UploadController {
     public static String UPLOAD_DIRECTORY = "./src/main/resources/images/";
 
     @PostMapping("/upload")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
     public ResponseEntity<List<String>> uploadFiles(@RequestParam("images") List<MultipartFile> files) throws IOException {
         List<String> filenames = new ArrayList<>();
 

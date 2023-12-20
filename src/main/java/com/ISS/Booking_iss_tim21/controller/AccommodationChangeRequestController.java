@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
@@ -29,8 +30,8 @@ public class AccommodationChangeRequestController {
     AccommodationService accommodationService;
 
 
-    //TODO: figure out how to return pictures
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<AccommodationChangeRequestDTO>> getPendingAccommodationChangeRequests() {
         List<AccommodationChangeRequest> accommodationChangeRequests = accommodationChangeRequestService.getAllPending();
         if(accommodationChangeRequests.isEmpty()){
@@ -45,6 +46,7 @@ public class AccommodationChangeRequestController {
         return new ResponseEntity<>(accommodationChangeRequestDTOs, HttpStatus.OK);
     }
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<AccommodationChangeRequestDTO> getAccommodationChangeRequest(@PathVariable Long id) {
         AccommodationChangeRequest accommodationChangeRequest = accommodationChangeRequestService.findOne(id);
 
@@ -57,6 +59,7 @@ public class AccommodationChangeRequestController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
     public ResponseEntity<AccommodationChangeRequestDTO> createAccommodationChangeRequest(@RequestBody AccommodationChangeRequestDTO accommodationChangeRequestDTO) {
         if (accommodationChangeRequestDTO.getAccommodationId() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -100,6 +103,7 @@ public class AccommodationChangeRequestController {
 
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<AccommodationChangeRequestDTO> updateAccommodationChangeRequest(@RequestBody AccommodationChangeRequestDTO accommodationChangeRequestDTO) {
         AccommodationChangeRequest accommodationChangeRequest = accommodationChangeRequestService.findOne(accommodationChangeRequestDTO.getId());
         if (accommodationChangeRequest == null) {
@@ -135,6 +139,7 @@ public class AccommodationChangeRequestController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteAccommodationChangeRequest(@PathVariable Long id) {
 
         AccommodationChangeRequest existingRequest = accommodationChangeRequestService.findOne(id);

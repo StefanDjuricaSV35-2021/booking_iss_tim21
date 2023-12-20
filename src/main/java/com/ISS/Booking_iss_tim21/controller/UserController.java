@@ -48,6 +48,7 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
   
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<UserDTO>> getUsers() {
 
         List<User> users = userService.findAll();
@@ -64,6 +65,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
         User user = userService.findById(id);
 
@@ -75,6 +77,7 @@ public class UserController {
     }
 
     @PostMapping(consumes = "application/json")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<UserDTO> saveUser(@Valid @RequestBody UserDTO userDTO) throws ConstraintViolationException {
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         User user = userService.save(userDTO);
@@ -84,6 +87,7 @@ public class UserController {
 
     //@PreAuthorize("hasAnyAuthority('ROLE_GUEST', 'ROLE_OWNER', 'ROLE_ADMIN')")
     @PutMapping(consumes = "application/json")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO) throws ConstraintViolationException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
@@ -115,6 +119,7 @@ public class UserController {
 
     //@PreAuthorize("hasAnyAuthority('ROLE_GUEST', 'ROLE_OWNER')")
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
@@ -148,6 +153,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/email/{email}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<UserDTO> getUser(@PathVariable String email) {
         User user = userService.findByEmail(email);
 

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,6 +39,7 @@ public class AuthenticationController {
             value = "/signOut",
             produces = MediaType.TEXT_PLAIN_VALUE
     )
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity logoutUser() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -54,6 +56,7 @@ public class AuthenticationController {
 
 
     @PostMapping("/refresh")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<JWTAuthenticationResponse> refresh(@RequestBody RefreshTokenRequest refreshTokenRequest){
         return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
     }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class ReservationRequestController {
     @Autowired
     private AccommodationService accommodationService;
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<ReservationRequestDTO>> getReservationRequests() {
         List<ReservationRequest> reservationRequests = requestService.getAll();
 
@@ -41,6 +43,7 @@ public class ReservationRequestController {
     }
 
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<ReservationRequestDTO> getReservationRequest(@PathVariable Long id) {
 
         ReservationRequest reservationRequest = requestService.findOne(id);
@@ -53,6 +56,7 @@ public class ReservationRequestController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
     public ResponseEntity<ReservationRequestDTO> createReservationRequest(@RequestBody ReservationRequestDTO reservationRequestDTO) {
 
 //        if (reservationRequestDTO.getUserId() == null) {
@@ -80,6 +84,7 @@ public class ReservationRequestController {
     }
 
     @PutMapping(consumes = "application/json")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<ReservationRequestDTO> updateReservationRequest(@RequestBody ReservationRequestDTO reservationRequestDTO) {
       ReservationRequest reservationRequest = requestService.findOne(reservationRequestDTO.getId());
 
@@ -99,6 +104,7 @@ public class ReservationRequestController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<Void> deleteReservationRequest(@PathVariable Long id) {
         ReservationRequest reservationRequest = requestService.findOne(id);
 
@@ -111,6 +117,7 @@ public class ReservationRequestController {
     }
 
     @GetMapping(value = "/{userId}/reservationRequests")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<ReservationRequestDTO>> getUsersReservationRequests(@PathVariable Long userId) {
         List<ReservationRequest> reservationRequests = requestService.getUsersReservationRequestsById(userId);
         List<ReservationRequestDTO> reservationRequestDTOs = new ArrayList<>();
@@ -121,6 +128,7 @@ public class ReservationRequestController {
     }
 
     @GetMapping(value = "/{userId}/currentReservationRequests")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<ReservationRequestDTO>> getCurrentReservationRequests(@PathVariable Long userId) {
         List<ReservationRequest> reservationRequests = requestService.getCurrentReservationRequestsById(userId);
 

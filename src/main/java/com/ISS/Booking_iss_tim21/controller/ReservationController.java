@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class ReservationController {
 
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<ReservationDTO>> getReservations() {
         List<Reservation> reservations = reservationService.getAll();
 
@@ -44,6 +46,7 @@ public class ReservationController {
     }
 
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<ReservationDTO> getReservation(@PathVariable Long id) {
 
         Reservation reservation = reservationService.findOne(id);
@@ -56,6 +59,7 @@ public class ReservationController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) {
 //        if (reservationDTO.getUserId() == null) {
 //            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -82,6 +86,7 @@ public class ReservationController {
     }
 
     @PutMapping(consumes = "application/json")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<ReservationDTO> updateReservation(@RequestBody ReservationDTO reservationDTO) {
         Reservation reservation = reservationService.findOne(reservationDTO.getId());
 
@@ -101,6 +106,7 @@ public class ReservationController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteReservationRequest(@PathVariable Long id) {
         Reservation reservation= reservationService.findOne(id);
 
@@ -113,6 +119,7 @@ public class ReservationController {
     }
 
     @GetMapping(value = "/{userId}/reservations")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<ReservationDTO>> getUsersReservations(@PathVariable Long userId) {
         List<Reservation> reservations = reservationService.getUsersReservationsById(userId);
 
@@ -125,6 +132,7 @@ public class ReservationController {
     }
 
     @GetMapping(value = "/{userId}/currentReservations")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<ReservationDTO>> getCurrentReservations(@PathVariable Long userId) {
 
         List<Reservation> reservations = reservationService.getCurrentReservationsById(userId);

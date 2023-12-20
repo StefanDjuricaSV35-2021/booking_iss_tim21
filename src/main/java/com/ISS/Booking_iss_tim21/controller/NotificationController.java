@@ -10,6 +10,7 @@ import com.ISS.Booking_iss_tim21.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class NotificationController {
     NotificationService service;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<NotificationDTO>> getNotifications() {
 
         List<Notification> notifications= service.getAll();
@@ -36,6 +38,7 @@ public class NotificationController {
     }
 
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<NotificationDTO>> getUserNotifications(@PathVariable Long id) {
 
         //Accommodation accommodation = accommodationService.findOne(id);
@@ -57,11 +60,12 @@ public class NotificationController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
+    public ResponseEntity<Void> deleteNotifications(@PathVariable Long id) {
 
-        Notification course = service.findOne(id);
+        Notification notification = service.findOne(id);
 
-        if (course != null) {
+        if (notification != null) {
             service.remove(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {

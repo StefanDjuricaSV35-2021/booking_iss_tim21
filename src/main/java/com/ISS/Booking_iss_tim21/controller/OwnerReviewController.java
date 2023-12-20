@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class OwnerReviewController {
 
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<OwnerReviewDTO>> getOwnerReviews() {
 
         List<OwnerReview> reviews = ownerReviewService.getAll();
@@ -42,6 +44,7 @@ public class OwnerReviewController {
     }
 
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<OwnerReviewDTO>> getOwnerReviews(@PathVariable Long id) {
         //Accommodation accommodation = accommodationService.findOne(id);
         List<OwnerReview> reviews= ownerReviewService.getAllByOwnerId(id);
@@ -59,6 +62,7 @@ public class OwnerReviewController {
 
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
     public ResponseEntity<OwnerReviewDTO> createOwnerReview(@RequestBody OwnerReviewDTO ownerReviewDTO) {
 
         if (ownerReviewDTO.getReviewerId() == null || ownerReviewDTO.getReviewedId() == null) {
@@ -84,6 +88,7 @@ public class OwnerReviewController {
         return new ResponseEntity<>(new OwnerReviewDTO(review), HttpStatus.CREATED);
     }
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_GUEST')")
     public ResponseEntity<Void> deleteOwnerReview(@PathVariable Long id) {
 
         OwnerReview review = ownerReviewService.findOne(id);
