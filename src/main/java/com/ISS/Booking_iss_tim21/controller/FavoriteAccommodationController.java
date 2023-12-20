@@ -7,6 +7,7 @@ import com.ISS.Booking_iss_tim21.service.FavoriteAccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class FavoriteAccommodationController {
     private FavoriteAccommodationService favoriteAccommodationService;
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
     public ResponseEntity<List<FavoriteAccommodationDTO>> getFavoriteAccommodations() {
 
         List<FavoriteAccommodation> favoriteAccommodations = favoriteAccommodationService.findAll();
@@ -34,6 +36,7 @@ public class FavoriteAccommodationController {
     }
 
     @GetMapping(value = "/user/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
     public ResponseEntity<List<FavoriteAccommodationDTO>> getUsersFavoriteAccommodations(@PathVariable Long id) {
         List<FavoriteAccommodation> favoriteAccommodations = favoriteAccommodationService.findUsersAccommodations(id);
 
@@ -49,6 +52,7 @@ public class FavoriteAccommodationController {
     }
 
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
     public ResponseEntity<FavoriteAccommodationDTO> getFavoriteAccommodation(@PathVariable Long id) {
         FavoriteAccommodation favoriteAccommodation = favoriteAccommodationService.findOne(id);
 
@@ -61,6 +65,7 @@ public class FavoriteAccommodationController {
     }
 
     @PostMapping(consumes = "application/json")
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
     public ResponseEntity<FavoriteAccommodationDTO> saveFavoriteAccommodation(@RequestBody FavoriteAccommodationDTO favoriteAccommodationDTO) {
         FavoriteAccommodation favoriteAccommodation = new FavoriteAccommodation();
 
@@ -73,6 +78,7 @@ public class FavoriteAccommodationController {
     }
 
     @PutMapping(consumes = "application/json")
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
     public ResponseEntity<FavoriteAccommodationDTO> updateFavoriteAccommodation(@RequestBody FavoriteAccommodationDTO favoriteAccommodationDTO) {
         // a course must exist
         FavoriteAccommodation favoriteAccommodation = favoriteAccommodationService.findOne(favoriteAccommodationDTO.getUserId());
@@ -90,6 +96,7 @@ public class FavoriteAccommodationController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
     public ResponseEntity<Void> deleteFavoriteAccommodation(@PathVariable Long id) {
         FavoriteAccommodation favoriteAccommodation = favoriteAccommodationService.findOne(id);
 
