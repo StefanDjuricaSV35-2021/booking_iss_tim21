@@ -39,4 +39,5 @@ public class ReservationRequestService {
         }
         return currentReservationRequests;
     }
+    public List<ReservationRequest> getUsersReservationRequestsByOwnerId(Long userId) {return repository.getUsersReservationRequestsByOwnerId(userId);}
 }

@@ -55,7 +55,6 @@ public class UserReportController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        System.out.println(userReportDTO.getId());
 
         UserReport report = new UserReport();
         report.setReported(reported);
@@ -63,7 +62,6 @@ public class UserReportController {
         report.setId(userReportDTO.getId());
         report.setDescription(userReportDTO.getDescription());
 
-        System.out.println(report.getId());
 
         userReportService.save(report);
 

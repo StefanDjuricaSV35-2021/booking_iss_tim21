@@ -119,11 +119,30 @@ public class ReservationRequestController {
     @GetMapping(value = "/{userId}/reservationRequests")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<ReservationRequestDTO>> getUsersReservationRequests(@PathVariable Long userId) {
+
         List<ReservationRequest> reservationRequests = requestService.getUsersReservationRequestsById(userId);
         List<ReservationRequestDTO> reservationRequestDTOs = new ArrayList<>();
         for (ReservationRequest r : reservationRequests) {
             reservationRequestDTOs.add(new ReservationRequestDTO(r));
+
+
         }
+
+        return new ResponseEntity<>(reservationRequestDTOs, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{userId}/ownerReservationRequests")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
+    public ResponseEntity<List<ReservationRequestDTO>> getOwnerReservationRequests(@PathVariable Long userId) {
+
+        List<ReservationRequest> reservationRequests = requestService.getUsersReservationRequestsByOwnerId(userId);
+        List<ReservationRequestDTO> reservationRequestDTOs = new ArrayList<>();
+        for (ReservationRequest r : reservationRequests) {
+            reservationRequestDTOs.add(new ReservationRequestDTO(r));
+
+
+        }
+
         return new ResponseEntity<>(reservationRequestDTOs, HttpStatus.OK);
     }
 
