@@ -149,6 +149,10 @@ public class AuthenticationService {
             throw new BadRequestException("User is not authenticated!");
         }
     }
+
+    public Authentication getAuthentication(){
+        return securityContext.getAuthentication();
+    }
 }
 
 

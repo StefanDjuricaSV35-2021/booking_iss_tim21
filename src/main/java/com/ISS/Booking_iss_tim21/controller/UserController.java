@@ -10,6 +10,7 @@ import com.ISS.Booking_iss_tim21.model.UserActivationRequest;
 import com.ISS.Booking_iss_tim21.repository.UserActivationRequestRepository;
 import com.ISS.Booking_iss_tim21.model.enumeration.Role;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
+import com.ISS.Booking_iss_tim21.service.AuthenticationService;
 import com.ISS.Booking_iss_tim21.service.ReservationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
 import jakarta.validation.ConstraintViolationException;
@@ -44,6 +45,9 @@ public class UserController {
 
     @Autowired
     private AccommodationService accommodationService;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
 
     @Autowired
@@ -91,7 +95,7 @@ public class UserController {
     @PutMapping(consumes = "application/json")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO) throws ConstraintViolationException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = authenticationService.getAuthentication();
         String currentUsername = authentication.getName();
 
         User user = userService.findById(userDTO.getId());
@@ -123,7 +127,7 @@ public class UserController {
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = authenticationService.getAuthentication();
         String currentUsername = authentication.getName();
 
         User user = userService.findById(id);
