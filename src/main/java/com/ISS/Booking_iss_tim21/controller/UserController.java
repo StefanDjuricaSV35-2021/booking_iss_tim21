@@ -19,9 +19,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +48,8 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-  
+
+
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<UserDTO>> getUsers() {
@@ -85,7 +88,6 @@ public class UserController {
         return new ResponseEntity<>(new UserDTO(user), HttpStatus.CREATED);
     }
 
-    //@PreAuthorize("hasAnyAuthority('ROLE_GUEST', 'ROLE_OWNER', 'ROLE_ADMIN')")
     @PutMapping(consumes = "application/json")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO) throws ConstraintViolationException {

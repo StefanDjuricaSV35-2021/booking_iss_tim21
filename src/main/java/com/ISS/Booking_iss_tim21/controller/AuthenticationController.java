@@ -41,17 +41,7 @@ public class AuthenticationController {
     )
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity logoutUser() {
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (!(auth instanceof AnonymousAuthenticationToken)){
-            SecurityContextHolder.clearContext();
-
-            return new ResponseEntity<>("You successfully logged out!", HttpStatus.OK);
-        } else {
-            throw new BadRequestException("User is not authenticated!");
-        }
-
+        return new ResponseEntity<>(authenticationService.logout(), HttpStatus.OK);
     }
 
 

@@ -83,6 +83,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ReviewReport> reviewReports;
 
+    @Transient
+    private String jwt;
+
     public User(UserDTO userDTO) {
         this.Id = userDTO.getId();
         this.email = userDTO.getEmail();
