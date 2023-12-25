@@ -92,15 +92,10 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO) throws ConstraintViolationException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
 
         User user = userService.findById(userDTO.getId());
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        if(!currentUsername.equals(user.getUsername())) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         // if a user that has the same email exists, don't allow save
@@ -124,7 +119,6 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
 
         User user = userService.findById(id);
 
@@ -132,9 +126,6 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if(!currentUsername.equals(user.getUsername())) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
         if (user.getRole() == Role.GUEST) {
             List<Reservation> currentActiveReservations = reservationService.getCurrentActiveReservationsById(user.getId());
             if(!currentActiveReservations.isEmpty()) {
