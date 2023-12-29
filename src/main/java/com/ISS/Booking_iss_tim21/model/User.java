@@ -68,6 +68,12 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "reviewed", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     private List<OwnerReview> ownerReviews;
 
+    @OneToMany(mappedBy = "reported", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    private List<UserReport> userReports;
+
+    @OneToMany(mappedBy = "reporter", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    private List<UserReport> userReports2;
+
     @OneToMany(mappedBy = "reviewer", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Review> reviews;
 
@@ -82,6 +88,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ReviewReport> reviewReports;
+
+    @Transient
+    private String jwt;
 
     public User(UserDTO userDTO) {
         this.Id = userDTO.getId();

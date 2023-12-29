@@ -69,7 +69,6 @@ public class FavoriteAccommodationController {
     public ResponseEntity<FavoriteAccommodationDTO> saveFavoriteAccommodation(@RequestBody FavoriteAccommodationDTO favoriteAccommodationDTO) {
         FavoriteAccommodation favoriteAccommodation = new FavoriteAccommodation();
 
-        favoriteAccommodation.setFavoriteAccommodationId(favoriteAccommodationDTO.getFavoriteAccommodationId());
         favoriteAccommodation.setAccommodationId(favoriteAccommodationDTO.getAccommodationId());
         favoriteAccommodation.setUserId(favoriteAccommodationDTO.getUserId());
 

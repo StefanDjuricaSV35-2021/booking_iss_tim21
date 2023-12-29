@@ -3,12 +3,14 @@ package com.ISS.Booking_iss_tim21.dto;
 import com.ISS.Booking_iss_tim21.model.FavoriteAccommodation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Setter
 public class FavoriteAccommodationDTO {
     private Long favoriteAccommodationId;

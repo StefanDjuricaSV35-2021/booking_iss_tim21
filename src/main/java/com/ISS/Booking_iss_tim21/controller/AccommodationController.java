@@ -108,6 +108,20 @@ public class AccommodationController {
         return new ResponseEntity<>(accDTO, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/preview/{id}")
+    public ResponseEntity<AccommodationPreviewDTO> getAccommodationPreview(@PathVariable Long id) {
+
+        Accommodation accommodation = accommodationService.findOne(id);
+
+        if (accommodation == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        AccommodationPreviewDTO accDTO=new AccommodationPreviewDTO(accommodation);
+
+        return new ResponseEntity<>(accDTO, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/price")
     public ResponseEntity<Double> getAccommodationPrice(
             @RequestParam(value="dateFrom",required = true) String dateFrom,
