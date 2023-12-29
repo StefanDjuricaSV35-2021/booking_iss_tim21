@@ -2,6 +2,7 @@ package com.ISS.Booking_iss_tim21.utility;
 
 import com.ISS.Booking_iss_tim21.config.AppConfig;
 import com.ISS.Booking_iss_tim21.model.TimeSlot;
+import org.joda.time.LocalTime;
 import org.springframework.cglib.core.Local;
 
 import java.text.DateFormat;
@@ -42,42 +43,13 @@ public class DateManipulationTools {
 
     }
 
+    public static TimeSlot datesToTimeslot(org.joda.time.LocalDate beginDate, org.joda.time.LocalDate endDate){
 
+        TimeSlot newTs=new TimeSlot();
+        newTs.setStartDate(beginDate.toLocalDateTime(LocalTime.MIDNIGHT).toDateTime(AppConfig.gmtTimeZone).toInstant().getMillis()/AppConfig.UNIX_DIFF);
+        newTs.setEndDate(endDate.toLocalDateTime(LocalTime.MIDNIGHT).toDateTime(AppConfig.gmtTimeZone).toInstant().getMillis()/AppConfig.UNIX_DIFF);
 
-    public static List<String> datesFromTimeSlots(List<TimeSlot> timeSlots){
-
-        List<String> dates=new ArrayList<>();
-
-        for(TimeSlot ts:timeSlots){
-            dates.addAll(getDatesBetween(UnixToString(ts.getStartDate()),UnixToString(ts.getEndDate())));
-        }
-
-        return dates;
-    }
-
-    public static List<String> getDatesBetween(String startDate, String endDate){
-
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
-
-        LocalDate date1 = LocalDate.parse(startDate, dateFormatter);
-        LocalDate date2 = LocalDate.parse(endDate, dateFormatter);
-
-        List<LocalDate> datesBetween=date1.datesUntil(date2).toList();
-
-        return datesToStrings(datesBetween);
-
-    }
-
-    static List<String> datesToStrings(List<LocalDate> dates){
-
-        List<String> convertedDates=new ArrayList<>();
-
-        for (LocalDate ld:dates){
-
-            convertedDates.add(ld.format(DateTimeFormatter.ofPattern(datePattern)));
-        }
-
-        return convertedDates;
+        return newTs;
 
     }
 }

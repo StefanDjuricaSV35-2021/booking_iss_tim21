@@ -1,15 +1,18 @@
 package com.ISS.Booking_iss_tim21.service;
 
+import com.ISS.Booking_iss_tim21.config.AppConfig;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
+import com.ISS.Booking_iss_tim21.model.Reservation;
 import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
 import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
 import com.ISS.Booking_iss_tim21.repository.AccommodationRepository;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +28,12 @@ public class AccommodationService {
 
     @Autowired
     AccommodationFilterService filterService;
+
+    @Autowired
+    AccommodationDatesService dateService;
+
+    @Autowired
+    ReservationService resService;
 
     public List<Accommodation> getAll(){
         return repository.findAll();
@@ -63,12 +72,6 @@ public class AccommodationService {
 
     }
 
-    public List<TimeSlot> getAccommodationAvaiableDates(Long id){
-
-        return pricingService.getAccommodationTimeSlots(id);
-
-    }
-
 
     public List<Accommodation> setPrices(List<Accommodation> accs,String dateFrom,String dateTo,Integer noGuests){
 
@@ -102,12 +105,31 @@ public class AccommodationService {
         List<Accommodation> availableAccommodations = new ArrayList<Accommodation>();
 
         for (Long id: availableAccommodationsIds) {
+            if(hasOverlapingReservation(id,dateFrom,dateTo)){
+                continue;
+            }
 
             availableAccommodations.add(findOne(id));
 
         }
 
         return availableAccommodations;
+
+    }
+
+    private boolean hasOverlapingReservation(Long accId,Long dateFrom,Long dateTo) {
+
+        List<Reservation> reservations=resService.getAccommodationReservations(accId);
+
+        for(Reservation res:reservations){
+            Long resStart=res.getTimeSlot().getStartDate();
+            Long resEnd=res.getTimeSlot().getEndDate();
+            if((resStart < dateTo) && (resEnd > dateFrom)){
+                return false;
+            }
+        }
+
+        return true;
 
     }
 

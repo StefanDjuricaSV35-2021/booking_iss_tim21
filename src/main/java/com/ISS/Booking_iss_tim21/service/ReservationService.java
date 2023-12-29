@@ -17,6 +17,8 @@ public class ReservationService {
         return repository.findAll();
     }
 
+    public List<Reservation> getAccommodationReservations(Long id){return repository.getReservationByAccommodationId(id);}
+
 
     public Reservation findOne(Long id) {
         return repository.findById(id).orElseGet(null);

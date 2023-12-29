@@ -5,10 +5,7 @@ import com.ISS.Booking_iss_tim21.dto.AccommodationPreviewDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.User;
-import com.ISS.Booking_iss_tim21.service.AccommodationFilterService;
-import com.ISS.Booking_iss_tim21.service.AccommodationPricingService;
-import com.ISS.Booking_iss_tim21.service.AccommodationService;
-import com.ISS.Booking_iss_tim21.service.UserService;
+import com.ISS.Booking_iss_tim21.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,8 +24,7 @@ public class AccommodationController {
     @Autowired
     private AccommodationFilterService accommodationFilterService;
     @Autowired
-    private AccommodationPricingService pricingService;
-
+    AccommodationDatesService datesService;
     @Autowired
     private UserService userService;
 
@@ -106,7 +102,7 @@ public class AccommodationController {
 
         AccommodationDetailsDTO accDTO=new AccommodationDetailsDTO(accommodation);
 
-        List<TimeSlot> accDates=accommodationService.getAccommodationAvaiableDates(accDTO.getId());
+        List<TimeSlot> accDates=datesService.getAccommodationAvaiableDates(accDTO.getId());
         accDTO.setDates(accDates);
 
         return new ResponseEntity<>(accDTO, HttpStatus.OK);

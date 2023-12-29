@@ -58,17 +58,17 @@ VALUES (3, 'TV');
 
 -- Inserting photos for the Cozy Cottage (accommodation_id = 1)
 INSERT INTO accommodation_photos (accommodation_id, photos)
-VALUES (1, './src/main/resources/images/peakpx.jpg');
+VALUES (1, 'peakpx.jpg');
 
 INSERT INTO accommodation_photos (accommodation_id, photos)
-VALUES (1, './src/main/resources/images/peakpx.jpg');
+VALUES (1, 'peakpx.jpg');
 
 -- Inserting photos for the Modern Apartment (accommodation_id = 2)
 INSERT INTO accommodation_photos (accommodation_id, photos)
-VALUES (2, './src/main/resources/images/peakpx.jpg');
+VALUES (2, 'peakpx.jpg');
 
 INSERT INTO accommodation_photos (accommodation_id, photos)
-VALUES (2, './src/main/resources/images/peakpx.jpg');
+VALUES (2, 'peakpx.jpg');
 
 -- Inserting photos for the Seaside Villa (accommodation_id = 3)
 INSERT INTO accommodation_photos (accommodation_id, photos)
