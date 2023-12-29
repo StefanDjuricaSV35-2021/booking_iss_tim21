@@ -1,6 +1,7 @@
 package com.ISS.Booking_iss_tim21.service;
 
 import com.ISS.Booking_iss_tim21.model.Reservation;
+import com.ISS.Booking_iss_tim21.model.enumeration.ReservationStatus;
 import com.ISS.Booking_iss_tim21.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class ReservationService {
 
     public List<Reservation> getAccommodationReservations(Long id){return repository.getReservationByAccommodationId(id);}
 
+    public List<Reservation> getActiveAccommodationReservations(Long id){return repository.getReservationByAccommodationIdAndStatus(id, ReservationStatus.Active);}
 
     public Reservation findOne(Long id) {
         return repository.findById(id).orElseGet(null);

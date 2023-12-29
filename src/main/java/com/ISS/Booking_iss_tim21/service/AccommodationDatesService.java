@@ -26,7 +26,7 @@ public class AccommodationDatesService {
     public List<TimeSlot> getAccommodationAvaiableDates(Long id){
 
         List<TimeSlot> datesWithPrices = pricingService.getAccommodationTimeSlots(id);
-        List<Reservation> reservations=resService.getAccommodationReservations(id);
+        List<Reservation> reservations=resService.getActiveAccommodationReservations(id);
         if(reservations.isEmpty()){
             return datesWithPrices;
         }else {
