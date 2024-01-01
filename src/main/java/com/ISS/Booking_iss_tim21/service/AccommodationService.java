@@ -125,11 +125,11 @@ public class AccommodationService {
             Long resStart=res.getTimeSlot().getStartDate();
             Long resEnd=res.getTimeSlot().getEndDate();
             if((resStart < dateTo) && (resEnd > dateFrom)){
-                return false;
+                return true;
             }
         }
 
-        return true;
+        return false;
 
     }
 
