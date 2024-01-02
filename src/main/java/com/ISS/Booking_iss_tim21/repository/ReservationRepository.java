@@ -12,6 +12,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("select r from Reservation r where r.user.Id = ?1")
     public List<Reservation> getUsersReservationsById(Long userId);
 
+    @Query("select r from Reservation r where r.accommodation.owner.Id = ?1")
+    public List<Reservation> getOwnersReservationsById(Long ownerId);
+
     public List<Reservation> getReservationByAccommodationId(Long accommodation_id);
 
     public List<Reservation> getReservationByAccommodationIdAndStatus(Long accommodation_id, ReservationStatus status);

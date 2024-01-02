@@ -51,7 +51,7 @@ public class ReservationService {
         List<Reservation> allReservations = repository.getActiveUsersReservationsById(userId);
         List<Reservation> currentReservations = new ArrayList<>();
         for (Reservation r : allReservations) {
-            if (r.getTimeSlot().getStartDate() > currentUnixTimestamp)
+            if (r.getTimeSlot().getEndDate() > currentUnixTimestamp)
                 currentReservations.add(r);
         }
         return currentReservations;
@@ -61,7 +61,18 @@ public class ReservationService {
         List<Reservation> allReservations = repository.getUsersReservationsById(userId);
         List<Reservation> currentReservations = new ArrayList<>();
         for (Reservation r : allReservations) {
-            if (r.getTimeSlot().getStartDate() > currentUnixTimestamp)
+            if (r.getTimeSlot().getEndDate() > currentUnixTimestamp)
+                currentReservations.add(r);
+        }
+        return currentReservations;
+    }
+
+    public List<Reservation> getCurrentOwnersReservationsById(Long ownerId) {
+        long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
+        List<Reservation> allReservations = repository.getOwnersReservationsById(ownerId);
+        List<Reservation> currentReservations = new ArrayList<>();
+        for (Reservation r : allReservations) {
+            if (r.getTimeSlot().getEndDate() > currentUnixTimestamp)
                 currentReservations.add(r);
         }
         return currentReservations;
