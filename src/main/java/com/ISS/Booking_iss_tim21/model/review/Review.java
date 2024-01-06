@@ -33,6 +33,9 @@ public class Review {
     @Column(name = "rating", nullable = true)
     private int rating;
 
+    @Column(name = "timePosted", nullable = true)
+    private Long timePosted;
+
     @OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ReviewReport> reviewReports;
 

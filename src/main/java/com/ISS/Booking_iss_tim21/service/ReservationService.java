@@ -3,6 +3,7 @@ package com.ISS.Booking_iss_tim21.service;
 import com.ISS.Booking_iss_tim21.model.Reservation;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationStatus;
 import com.ISS.Booking_iss_tim21.repository.ReservationRepository;
+import jdk.jshell.Snippet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -76,5 +77,29 @@ public class ReservationService {
                 currentReservations.add(r);
         }
         return currentReservations;
+    }
+
+    public List<Reservation> getFinishedUsersReservationsForOwner(Long userId, Long ownerId){
+        List<Reservation> allReservations = repository.getUsersReservationsById(userId);
+        List<Reservation> reservations = new ArrayList<>();
+        for (Reservation r : allReservations) {
+            if (r.getStatus().equals(ReservationStatus.Finished) && r.getAccommodation().getOwner().getId().equals(ownerId))
+                reservations.add(r);
+        }
+        return reservations;
+    }
+
+    public void updateReservations(){
+        long currentUnixTimestamp = System.currentTimeMillis();
+        List<Reservation> allReservations = repository.findAll();
+        for (Reservation r : allReservations) {
+            System.out.println(r.getStatus());
+            System.out.println(currentUnixTimestamp);
+            System.out.println(r.getTimeSlot().getEndDate());
+            if(r.getTimeSlot().getEndDate() <= currentUnixTimestamp && r.getStatus().equals(ReservationStatus.Active)){
+                r.setStatus(ReservationStatus.Finished);
+                repository.save(r);
+            }
+        }
     }
 }

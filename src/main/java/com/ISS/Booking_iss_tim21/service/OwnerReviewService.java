@@ -1,5 +1,6 @@
 package com.ISS.Booking_iss_tim21.service;
 
+import com.ISS.Booking_iss_tim21.model.enumeration.ReservationStatus;
 import com.ISS.Booking_iss_tim21.model.review.OwnerReview;
 import com.ISS.Booking_iss_tim21.repository.OwnerReviewRepository;
 
@@ -14,6 +15,8 @@ public class OwnerReviewService {
     @Autowired
 
     OwnerReviewRepository repository;
+
+
 
     public List<OwnerReview> getAll() {return repository.findAll();}
     public OwnerReview findOne(Long id) {

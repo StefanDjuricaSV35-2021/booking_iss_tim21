@@ -1,7 +1,9 @@
 package com.ISS.Booking_iss_tim21.dto;
 
 import com.ISS.Booking_iss_tim21.model.review.AccommodationReview;
+import lombok.Data;
 
+@Data
 public class AccommodationReviewDTO {
 
     private Long id;
@@ -9,6 +11,7 @@ public class AccommodationReviewDTO {
     Long reviewerId;
 
     Long accommodationId;
+    Long timePosted;
 
     String comment;
 
@@ -20,26 +23,6 @@ public class AccommodationReviewDTO {
         this.accommodationId=review.getReviewed().getId();
         this.comment=review.getComment();
         this.rating=review.getRating();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Long getReviewerId() {
-        return reviewerId;
-    }
-
-    public Long getAccommodationId() {
-        return accommodationId;
-    }
-
-
-    public String getComment() {
-        return comment;
-    }
-
-    public int getRating() {
-        return rating;
+        this.timePosted = review.getTimePosted();
     }
 }
