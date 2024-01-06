@@ -23,7 +23,4 @@ public class ReviewReport {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
-    @Column(name = "description", nullable = true)
-    private String description;
 }

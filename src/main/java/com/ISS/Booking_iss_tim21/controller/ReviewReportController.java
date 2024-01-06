@@ -46,7 +46,7 @@ public class ReviewReportController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
-    public ResponseEntity<ReviewReportDTO> createOwnerReview(@RequestBody ReviewReportDTO reviewReportDTO) {
+    public ResponseEntity<ReviewReportDTO> createOwnerReviewReport(@RequestBody ReviewReportDTO reviewReportDTO) {
 
         if (reviewReportDTO.getReportedReviewId() == null || reviewReportDTO.getReporterId() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -64,7 +64,6 @@ public class ReviewReportController {
         report.setUser(reporter);
         report.setReview(review);
         report.setId(reviewReportDTO.getId());
-        report.setDescription(reviewReportDTO.getDescription());
         reviewReportService.save(report);
 
 
