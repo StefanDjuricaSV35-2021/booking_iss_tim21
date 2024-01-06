@@ -4,6 +4,7 @@ import com.ISS.Booking_iss_tim21.dto.OwnerReviewDTO;
 import com.ISS.Booking_iss_tim21.model.review.OwnerReview;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.service.OwnerReviewService;
+import com.ISS.Booking_iss_tim21.service.ReservationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,8 @@ public class OwnerReviewController {
     @Autowired
     private UserService userService;
 
-
+    @Autowired
+    private ReservationService reservationService;
 
 
     @GetMapping
@@ -69,19 +71,23 @@ public class OwnerReviewController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-       User reviewer = userService.findById(ownerReviewDTO.getReviewerId());
+        User reviewer = userService.findById(ownerReviewDTO.getReviewerId());
         User reviewed = userService.findById(ownerReviewDTO.getReviewedId());
 
         if (reviewer == null || reviewed == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        if(reservationService.getFinishedUsersReservationsForOwner(reviewer.getId(), reviewed.getId()).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         OwnerReview review = new OwnerReview();
         review.setReviewer(reviewer);
         review.setReviewed(reviewed);
-        review.setId(ownerReviewDTO.getId());
         review.setComment(ownerReviewDTO.getComment());
         review.setRating(ownerReviewDTO.getRating());
+        review.setTimePosted(ownerReviewDTO.getTimePosted());
 
         ownerReviewService.save(review);
 
