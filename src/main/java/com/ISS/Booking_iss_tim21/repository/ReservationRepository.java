@@ -25,4 +25,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("select r from Reservation r where r.accommodation.id = ?1 and r.status = com.ISS.Booking_iss_tim21.model.enumeration.ReservationStatus.Active")
 
     public List<Reservation> getActiveReservationsForAccommodation(Long accommodationId);
+
+    @Query("select r from Reservation r where r.accommodation.id = ?1 and r.status = com.ISS.Booking_iss_tim21.model.enumeration.ReservationStatus.Finished")
+
+    public List<Reservation> getFinishedReservationsForAccommodation(Long accommodationId);
 }

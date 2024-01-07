@@ -2,19 +2,17 @@ package com.ISS.Booking_iss_tim21.dto;
 
 import com.ISS.Booking_iss_tim21.model.review.AccommodationReview;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class AccommodationReviewDTO {
 
     private Long id;
-
     Long reviewerId;
-
     Long accommodationId;
     Long timePosted;
-
     String comment;
-
     int rating;
 
     public AccommodationReviewDTO(AccommodationReview review) {

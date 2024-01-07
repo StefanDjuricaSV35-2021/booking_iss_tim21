@@ -99,4 +99,16 @@ public class ReservationService {
             }
         }
     }
+
+    public boolean isValidForReview(Long userId, Long accommodationId){
+        long currentUnixTimestamp = System.currentTimeMillis();
+        List<Reservation> allReservations = repository.getFinishedReservationsForAccommodation(accommodationId);
+        for (Reservation r : allReservations) {
+            if (r.getUser().getId().equals(userId) && r.getTimeSlot().getEndDate()+ (7 * 24 * 60 * 60 * 1000) >= currentUnixTimestamp){//(7 * 24 * 60 * 60 * 1000) je sedam dana
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
