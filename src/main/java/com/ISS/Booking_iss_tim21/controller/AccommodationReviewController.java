@@ -1,11 +1,14 @@
 package com.ISS.Booking_iss_tim21.controller;
 
 import com.ISS.Booking_iss_tim21.dto.AccommodationReviewDTO;
+import com.ISS.Booking_iss_tim21.dto.OwnerReviewDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.review.AccommodationReview;
+import com.ISS.Booking_iss_tim21.model.review.OwnerReview;
 import com.ISS.Booking_iss_tim21.service.AccommodationReviewService;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
+import com.ISS.Booking_iss_tim21.service.ReservationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +33,9 @@ public class AccommodationReviewController {
     @Autowired
     AccommodationService accommodationService;
 
+    @Autowired
+    ReservationService reservationService;
+
     @GetMapping
     public ResponseEntity<List<AccommodationReviewDTO>> getAccommodationReviews() {
 
@@ -44,9 +50,23 @@ public class AccommodationReviewController {
         return new ResponseEntity<>(reviewsDTO, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
+    public ResponseEntity<List<AccommodationReviewDTO>> getAccommodationsReviews(@PathVariable Long id) {
+        List<AccommodationReview> reviews= accommodationReviewService.findAllByAccommodationId(id);
+        if (reviews == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        List<AccommodationReviewDTO> reviewDTOS=new ArrayList<AccommodationReviewDTO>();
+        for (AccommodationReview n:reviews) {
+            reviewDTOS.add(new AccommodationReviewDTO(n));
+        }
+        return new ResponseEntity<>(reviewDTOS, HttpStatus.OK);
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
-    public ResponseEntity<AccommodationReviewDTO> createOwnerReview(@RequestBody AccommodationReviewDTO accommodationReviewDTO) {
+    public ResponseEntity<AccommodationReviewDTO> createAccommodationReview(@RequestBody AccommodationReviewDTO accommodationReviewDTO) {
 
         if (accommodationReviewDTO.getAccommodationId() == null || accommodationReviewDTO.getReviewerId() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -59,10 +79,13 @@ public class AccommodationReviewController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        if(!reservationService.isValidForReview(reviewer.getId(), reviewed.getId())){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         AccommodationReview review = new AccommodationReview();
         review.setReviewer(reviewer);
         review.setReviewed(reviewed);
-        review.setId(accommodationReviewDTO.getId());
         review.setComment(accommodationReviewDTO.getComment());
         review.setRating(accommodationReviewDTO.getRating());
 

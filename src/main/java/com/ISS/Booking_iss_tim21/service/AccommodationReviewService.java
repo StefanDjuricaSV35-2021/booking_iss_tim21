@@ -18,7 +18,9 @@ public class AccommodationReviewService {
         return repository.findById(id).orElseGet(null);
     }
     public void remove(Long id) { repository.deleteById(id);}
-
     public void save(AccommodationReview review) {repository.save(review);
+    }
+    public List<AccommodationReview> findAllByAccommodationId(Long id){
+        return repository.findAllByAccommodationId(id);
     }
 }

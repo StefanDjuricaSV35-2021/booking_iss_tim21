@@ -72,7 +72,6 @@ public class AccommodationService {
 
     }
 
-
     public List<Accommodation> setPrices(List<Accommodation> accs,String dateFrom,String dateTo,Integer noGuests){
 
         for (Accommodation ac:accs){
