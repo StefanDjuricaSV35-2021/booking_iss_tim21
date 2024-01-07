@@ -93,9 +93,6 @@ public class ReservationService {
         long currentUnixTimestamp = System.currentTimeMillis();
         List<Reservation> allReservations = repository.findAll();
         for (Reservation r : allReservations) {
-            System.out.println(r.getStatus());
-            System.out.println(currentUnixTimestamp);
-            System.out.println(r.getTimeSlot().getEndDate());
             if(r.getTimeSlot().getEndDate() <= currentUnixTimestamp && r.getStatus().equals(ReservationStatus.Active)){
                 r.setStatus(ReservationStatus.Finished);
                 repository.save(r);
