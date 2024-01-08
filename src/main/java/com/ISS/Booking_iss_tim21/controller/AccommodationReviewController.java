@@ -10,6 +10,7 @@ import com.ISS.Booking_iss_tim21.service.AccommodationReviewService;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import com.ISS.Booking_iss_tim21.service.ReservationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -64,6 +65,17 @@ public class AccommodationReviewController {
         return new ResponseEntity<>(reviewDTOS, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/one/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
+    public ResponseEntity<AccommodationReviewDTO> getAccommodationsReview(@PathVariable Long id) {
+        AccommodationReview review= accommodationReviewService.findOne(id);
+        if (review == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        AccommodationReviewDTO reviewDTO = new AccommodationReviewDTO(review);
+        return new ResponseEntity<>(reviewDTO, HttpStatus.OK);
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
     public ResponseEntity<AccommodationReviewDTO> createAccommodationReview(@RequestBody AccommodationReviewDTO accommodationReviewDTO) {
@@ -97,6 +109,7 @@ public class AccommodationReviewController {
 
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @Transactional
     public ResponseEntity<Void> deleteAccommodationReview(@PathVariable Long id) {
 
         AccommodationReview review = accommodationReviewService.findOne(id);
