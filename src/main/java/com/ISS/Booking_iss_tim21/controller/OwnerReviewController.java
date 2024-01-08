@@ -60,6 +60,18 @@ public class OwnerReviewController {
         return new ResponseEntity<>(reviewDTOS, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/one/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
+    public ResponseEntity<OwnerReviewDTO> getOwnerReview(@PathVariable Long id) {
+        //Accommodation accommodation = accommodationService.findOne(id);
+        OwnerReview review= ownerReviewService.findOne(id);
+        if (review == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        OwnerReviewDTO ownerReviewDTO = new OwnerReviewDTO(review);
+        return new ResponseEntity<>(ownerReviewDTO, HttpStatus.OK);
+    }
+
 
 
 

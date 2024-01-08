@@ -19,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/auth/reports/reviews")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ReviewReportController {
     @Autowired
     private ReviewReportService reviewReportService;
@@ -44,8 +45,18 @@ public class ReviewReportController {
         return new ResponseEntity<>(reportsDTO, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
+    public ResponseEntity<ReviewReportDTO> getReviewReports(@PathVariable Long id) {
+
+        ReviewReport report = reviewReportService.findOne(id);
+        ReviewReportDTO reviewReportDTO = new ReviewReportDTO(report);
+
+        return new ResponseEntity<>(reviewReportDTO, HttpStatus.OK);
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST', 'ROLE_OWNER')")
     public ResponseEntity<ReviewReportDTO> createOwnerReviewReport(@RequestBody ReviewReportDTO reviewReportDTO) {
 
         if (reviewReportDTO.getReportedReviewId() == null || reviewReportDTO.getReporterId() == null) {
@@ -59,14 +70,10 @@ public class ReviewReportController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-
         ReviewReport report = new ReviewReport();
         report.setUser(reporter);
         report.setReview(review);
-        report.setId(reviewReportDTO.getId());
         reviewReportService.save(report);
-
-
 
         return new ResponseEntity<>(new ReviewReportDTO(report), HttpStatus.CREATED);
     }

@@ -16,8 +16,6 @@ public class OwnerReviewService {
 
     OwnerReviewRepository repository;
 
-
-
     public List<OwnerReview> getAll() {return repository.findAll();}
     public OwnerReview findOne(Long id) {
         return repository.findById(id).orElseGet(null);
