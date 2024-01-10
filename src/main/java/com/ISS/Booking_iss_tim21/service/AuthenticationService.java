@@ -80,6 +80,7 @@ public class AuthenticationService {
         user.setPhone(signUpRequest.getPhone());
 
         user.setEnabled(false);
+        user.setBlocked(false);
         user.setRole(role);
 
         emailService.sendEmail(user.getEmail(),new EmailStructure("Welcome to booʞing!!","Dear "+user.getName()+" "+user.getSurname()+
@@ -103,6 +104,10 @@ public class AuthenticationService {
 
         if(!user.isEnabled()){
             throw new UserNotEnabledException("User account is not enabled.");
+        }
+
+        if(user.isBlocked()){
+            throw new UserNotEnabledException("User account is blocked.");
         }
 
         var jwt = jwtService.generateToken(user);

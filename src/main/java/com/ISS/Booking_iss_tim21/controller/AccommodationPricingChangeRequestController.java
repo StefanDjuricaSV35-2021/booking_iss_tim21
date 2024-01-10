@@ -140,10 +140,10 @@ public class AccommodationPricingChangeRequestController {
     public ResponseEntity<Void> updateAccommodationPricings(@PathVariable Long accommodationId, @RequestBody List<AccommodationPricingChangeRequestDTO> accommodationPricingChangeRequestDTOS) {
         accommodationPricingService.deleteAllPricingsForAccommodation(accommodationId);
         if (accommodationPricingChangeRequestDTOS.isEmpty()) return new ResponseEntity<>(HttpStatus.OK);
+        Accommodation accommodation = accommodationService.findOne(accommodationId);
 
-        List<Reservation> reservations = reservationService.getCurrentActiveReservationsForAccommodation(accommodationId);
         for(AccommodationPricingChangeRequestDTO accommodationPricingChangeRequestDTO : accommodationPricingChangeRequestDTOS) {
-            pricingChangeRequestService.checkOverlapAndAdjustTimeSlots(reservations, accommodationPricingChangeRequestDTO);
+            accommodationPricingService.savePricingFromRequest(accommodationPricingChangeRequestDTO, accommodation);
         }
 
         return new ResponseEntity<>(HttpStatus.OK);

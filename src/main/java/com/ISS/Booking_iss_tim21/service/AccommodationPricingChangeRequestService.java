@@ -30,32 +30,4 @@ public class AccommodationPricingChangeRequestService {
         repository.deleteById(id);
     }
 
-    public void checkOverlapAndAdjustTimeSlots(List<Reservation> reservations, AccommodationPricingChangeRequestDTO a) {
-        Accommodation accommodation = accommodationService.findOne(a.getAccommodationId());
-
-        if (reservations.isEmpty()) {
-            accommodationPricingService.savePricingFromRequest(a, accommodation);
-            return;
-        }
-
-        for (Reservation r : reservations) {
-            if (r.getTimeSlot().getStartDate() > a.getTimeSlot().getStartDate() && r.getTimeSlot().getStartDate() < a.getTimeSlot().getEndDate() && r.getTimeSlot().getEndDate() >= a.getTimeSlot().getEndDate()) {
-                a.getTimeSlot().setEndDate(r.getTimeSlot().getStartDate());
-            } else if (r.getTimeSlot().getStartDate() <= a.getTimeSlot().getStartDate() && r.getTimeSlot().getEndDate() > a.getTimeSlot().getStartDate() && r.getTimeSlot().getStartDate() < a.getTimeSlot().getEndDate()) {
-                a.getTimeSlot().setStartDate(r.getTimeSlot().getEndDate());
-            } else if (r.getTimeSlot().getStartDate() <= a.getTimeSlot().getStartDate() && r.getTimeSlot().getEndDate() >= a.getTimeSlot().getEndDate()) {
-                continue;
-            } else if (r.getTimeSlot().getStartDate() > a.getTimeSlot().getEndDate() && r.getTimeSlot().getEndDate() < a.getTimeSlot().getEndDate()) {
-                AccommodationPricingChangeRequestDTO pricingSecondPart = new AccommodationPricingChangeRequestDTO();
-                pricingSecondPart.setId(0L);
-                pricingSecondPart.setAccommodationId(a.getAccommodationId());
-                pricingSecondPart.setPrice(a.getPrice());
-                pricingSecondPart.setStatus(a.getStatus());
-                pricingSecondPart.setAccommodationChangeRequestId(a.getAccommodationChangeRequestId());
-                pricingSecondPart.setTimeSlot(new TimeSlot(r.getTimeSlot().getEndDate(), a.getTimeSlot().getEndDate()));
-
-                checkOverlapAndAdjustTimeSlots(reservations, pricingSecondPart);
-            }
-        }
-    }
 }

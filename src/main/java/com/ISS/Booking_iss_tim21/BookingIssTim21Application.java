@@ -56,6 +56,7 @@ public class BookingIssTim21Application implements CommandLineRunner {
 			user.setStreet("AdminStreet");
 			user.setPhone("AdminPhoneNumber");
 			user.setEnabled(true);
+			user.setBlocked(false);
 			user.setRole(Role.ADMIN);
 
 			userRepository.save(user);
