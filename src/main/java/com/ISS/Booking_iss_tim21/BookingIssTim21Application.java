@@ -39,6 +39,7 @@ public class BookingIssTim21Application implements CommandLineRunner {
 //		joe.setCity("joe");
 //		joe.setStreet("joe");
 //		joe.setPhone("joe");
+//		joe.setBlocked(false);
 //		joe.setEnabled(true);
 //		joe.setRole(Role.GUEST);
 //
