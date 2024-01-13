@@ -1,7 +1,6 @@
 package com.ISS.Booking_iss_tim21.controller;
 
-import com.ISS.Booking_iss_tim21.dto.AccommodationDetailsDTO;
-import com.ISS.Booking_iss_tim21.dto.AccommodationPreviewDTO;
+import com.ISS.Booking_iss_tim21.dto.*;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.User;
@@ -229,6 +228,35 @@ public class AccommodationController {
         }
         return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);
 
+    }
+
+    @GetMapping(value = "/{ownerId}/profit")
+    public ResponseEntity<List<AccommodationProfitDTO>> getOwnersAccommodationsProfit(
+            @PathVariable Long ownerId,
+            @RequestParam(value="dateFrom",required = true) String dateFrom,
+            @RequestParam(value="dateTo",required=true) String dateTo) {
+
+        List<AccommodationProfitDTO> accommodationProfitDTOS = accommodationService.getOwnerAccommodationsProfit(ownerId,dateFrom,dateTo);
+        return new ResponseEntity<>(accommodationProfitDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/annual-data")
+    public ResponseEntity<AccommodationAnnualDataDTO> getAccommodationAnnualData(
+            @PathVariable Long id,
+            @RequestParam(value="year",required = true) Integer year) {
+
+        AccommodationAnnualDataDTO accommodationAnnualData = accommodationService.getAccommodationAnnualData(id,year);
+        return new ResponseEntity<>(accommodationAnnualData, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{ownerId}/res-count")
+    public ResponseEntity<List<AccommodationReservationCountDTO>> getOwnersAccommodationsReservationCount(
+            @PathVariable Long ownerId,
+            @RequestParam(value="dateFrom",required = true) String dateFrom,
+            @RequestParam(value="dateTo",required=true) String dateTo) {
+
+        List<AccommodationReservationCountDTO> accommodationReservationCountDTOS = accommodationService.getOwnerAccommodationsReservationCount(ownerId,dateFrom,dateTo);
+        return new ResponseEntity<>(accommodationReservationCountDTOS, HttpStatus.OK);
     }
 
 }

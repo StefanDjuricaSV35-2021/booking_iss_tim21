@@ -1,7 +1,11 @@
 package com.ISS.Booking_iss_tim21.service;
 
 import com.ISS.Booking_iss_tim21.config.AppConfig;
+import com.ISS.Booking_iss_tim21.dto.AccommodationAnnualDataDTO;
+import com.ISS.Booking_iss_tim21.dto.AccommodationProfitDTO;
+import com.ISS.Booking_iss_tim21.dto.AccommodationReservationCountDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
+import com.ISS.Booking_iss_tim21.model.AccommodationPricing;
 import com.ISS.Booking_iss_tim21.model.Reservation;
 import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
@@ -13,8 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.ISS.Booking_iss_tim21.utility.DateManipulationTools.dateStringToUnix;
 
@@ -46,7 +49,7 @@ public class AccommodationService {
         return repository.findAllNotEnabled();
     }
 
-
+    public String getAccommodationName(Long accId){return repository.getAccommodationNameById(accId);}
     public Accommodation findOne(Long id) {
         return repository.findById(id).orElseGet(null);
     }
@@ -116,6 +119,47 @@ public class AccommodationService {
 
     }
 
+    public List<AccommodationReservationCountDTO> getOwnerAccommodationsReservationCount(Long ownerId, String dateFrom, String dateTo){
+
+        Map<String,Integer> counter=new HashMap<>();
+
+        List<Reservation> ownerReservation=resService.getOwnerReservationsBetweenDates(ownerId,dateFrom,dateTo);
+
+        for(Reservation r:ownerReservation){
+            counter.merge(r.getAccommodation().getName(), 1, Integer::sum);
+        }
+
+        List<AccommodationReservationCountDTO> accommodationReservationCountDTOS=new ArrayList<>();
+
+        for (String key : counter.keySet()) {
+            accommodationReservationCountDTOS.add(new AccommodationReservationCountDTO(key,counter.get(key)));
+        }
+
+        return accommodationReservationCountDTOS;}
+
+    public List<AccommodationProfitDTO> getOwnerAccommodationsProfit(Long ownerId, String dateFrom, String dateTo){
+
+        Map<String,Double> profit=new HashMap<>();
+
+        List<Reservation> ownerReservation=resService.getOwnerReservationsBetweenDates(ownerId,dateFrom,dateTo);
+
+        for(Reservation r:ownerReservation){
+            profit.merge(r.getAccommodation().getName(), r.getPrice(), Double::sum);
+        }
+
+        List<AccommodationProfitDTO> accommodationProfitDTOS=new ArrayList<>();
+
+        for (String key : profit.keySet()) {
+            accommodationProfitDTOS.add(new AccommodationProfitDTO(
+                    key,profit.get(key)));
+        }
+
+        return accommodationProfitDTOS;
+    }
+
+
+
+
     private boolean hasOverlapingReservation(Long accId,Long dateFrom,Long dateTo) {
 
         List<Reservation> reservations=resService.getAccommodationReservations(accId);
@@ -132,5 +176,36 @@ public class AccommodationService {
 
     }
 
+
+    public AccommodationAnnualDataDTO getAccommodationAnnualData(Long accId,Integer year){
+        String dateFrom=year+"-01-01";
+        String dateTo=year+"-12-31";
+
+        Map<Integer,Double> monthsProfit=new HashMap<>();
+        Map<Integer,Integer> monthsReservations=new HashMap<>();
+
+
+        List<Reservation> reservations=resService.getAccommodationReservationsBetweenDates(accId,dateFrom,dateTo);
+
+
+        for(Reservation r :reservations){
+
+            Date d=new Date(r.getTimeSlot().getStartDate());
+            monthsProfit.merge(d.getMonth(), r.getPrice(), Double::sum);
+            monthsReservations.merge(d.getMonth(),1,Integer::sum);
+
+        }
+
+        double[] profits = new double[12];
+        int[] res = new int[12];
+
+        for (Integer key : monthsProfit.keySet()) {
+            profits[key]=monthsProfit.get(key);
+            res[key]=monthsReservations.get(key);
+        }
+
+        return new AccommodationAnnualDataDTO(getAccommodationName(accId),profits,res);
+
+    }
 
 }

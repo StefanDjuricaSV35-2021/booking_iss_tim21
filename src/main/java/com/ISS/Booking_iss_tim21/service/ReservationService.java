@@ -1,6 +1,7 @@
 package com.ISS.Booking_iss_tim21.service;
 
 import com.ISS.Booking_iss_tim21.model.Reservation;
+import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationStatus;
 import com.ISS.Booking_iss_tim21.repository.ReservationRepository;
 import jdk.jshell.Snippet;
@@ -9,6 +10,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.ISS.Booking_iss_tim21.utility.DateManipulationTools.dateStringToUnix;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 @Service
 public class ReservationService {
@@ -36,6 +41,50 @@ public class ReservationService {
 
     public List<Reservation> getActiveUsersReservationsById(Long userId) { return repository.getActiveUsersReservationsById(userId); }
 
+    public List<Reservation> getOwnerReservations(Long ownerId){
+        return repository.getOwnersReservationsById(ownerId);
+    }
+
+    public List<Reservation> getOwnerReservationsBetweenDates(Long ownerId,String dateFrom,String dateTo){
+        Long unixDateFrom=dateStringToUnix(dateFrom);
+        Long unixDateTo=dateStringToUnix(dateTo);
+
+        List<Reservation> validReservations= new ArrayList<>();
+        List<Reservation> allReservations= repository.getOwnersReservationsById(ownerId);
+
+        for (Reservation r : allReservations){
+            TimeSlot ts=r.getTimeSlot();
+
+            if(max(ts.getStartDate(), unixDateFrom) < min(ts.getEndDate(), unixDateTo)){
+                validReservations.add(r);
+            }
+        }
+
+        return validReservations;
+
+    }
+
+    public List<Reservation> getAccommodationReservationsBetweenDates(Long accId,String dateFrom,String dateTo){
+        Long unixDateFrom=dateStringToUnix(dateFrom);
+        Long unixDateTo=dateStringToUnix(dateTo);
+
+        List<Reservation> validReservations= new ArrayList<>();
+        List<Reservation> allReservations= repository.getReservationByAccommodationId(accId);
+
+        for (Reservation r : allReservations){
+            TimeSlot ts=r.getTimeSlot();
+
+            if(max(ts.getStartDate(), unixDateFrom) < min(ts.getEndDate(), unixDateTo)){
+                validReservations.add(r);
+            }
+        }
+
+        return validReservations;
+
+    }
+
+
+
     public List<Reservation> getCurrentActiveReservationsForAccommodation(Long accommodationId) {
         long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
         List<Reservation> allReservations = repository.getActiveReservationsForAccommodation(accommodationId);
@@ -46,6 +95,7 @@ public class ReservationService {
         }
         return currentReservations;
     }
+
 
     public List<Reservation> getCurrentActiveReservationsById(Long userId) {
         long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
