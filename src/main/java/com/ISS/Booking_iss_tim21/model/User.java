@@ -1,6 +1,8 @@
 package com.ISS.Booking_iss_tim21.model;
 
 import com.ISS.Booking_iss_tim21.dto.UserDTO;
+import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
+import com.ISS.Booking_iss_tim21.model.enumeration.NotificationType;
 import com.ISS.Booking_iss_tim21.model.enumeration.Role;
 import com.ISS.Booking_iss_tim21.model.review.OwnerReview;
 import com.ISS.Booking_iss_tim21.model.review.Review;
@@ -67,6 +69,10 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "recipient", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Notification> notifications;
+
+    @ElementCollection(targetClass = NotificationType.class, fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    private List<NotificationType> subscribedNotificationTypes;
 
     @OneToMany(mappedBy = "reviewed", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     private List<OwnerReview> ownerReviews;

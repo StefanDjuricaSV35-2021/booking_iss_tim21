@@ -1,7 +1,9 @@
 package com.ISS.Booking_iss_tim21.service;
 
 import com.ISS.Booking_iss_tim21.dto.UserDTO;
+import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.Reservation;
+import com.ISS.Booking_iss_tim21.model.enumeration.NotificationType;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationStatus;
 import com.ISS.Booking_iss_tim21.model.enumeration.Role;
 import com.ISS.Booking_iss_tim21.model.User;
@@ -28,6 +30,9 @@ public class UserService {
     @Autowired
     private ReservationRepository reservationRepository;
 
+    @Autowired
+    private AccommodationService accommodationService;
+
     public List<User> findAll(){
         return repository.findAll();
     }
@@ -53,6 +58,17 @@ public class UserService {
 
     public User findByEmail(String  email){
         return this.repository.findByEmail(email).orElse(null);
+    }
+
+    public boolean isSubscribedTo(Long id,NotificationType type){
+        User user=findById(id);
+        List<NotificationType> subscribedTypes=user.getSubscribedNotificationTypes();
+
+        if(subscribedTypes.contains(type)){
+            return true;
+        }
+
+        return false;
     }
 
 
