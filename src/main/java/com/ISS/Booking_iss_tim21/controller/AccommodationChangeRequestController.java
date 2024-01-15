@@ -93,6 +93,7 @@ public class AccommodationChangeRequestController {
         accommodationChangeRequest.setPhotos(accommodationChangeRequestDTO.getPhotos());
         accommodationChangeRequest.setDaysForCancellation(accommodationChangeRequestDTO.getDaysForCancellation());
         accommodationChangeRequest.setPerNight(accommodationChangeRequestDTO.isPerNight());
+        accommodationChangeRequest.setAutoAccepting(accommodationChangeRequestDTO.isAutoAccepting());
         accommodationChangeRequest.setEnabled(accommodationChangeRequest.isEnabled());
 
         accommodationChangeRequestService.save(accommodationChangeRequest);
@@ -130,6 +131,7 @@ public class AccommodationChangeRequestController {
         accommodationChangeRequest.setPhotos(accommodationChangeRequestDTO.getPhotos());
         accommodationChangeRequest.setDaysForCancellation(accommodationChangeRequestDTO.getDaysForCancellation());
         accommodationChangeRequest.setPerNight(accommodationChangeRequestDTO.isPerNight());
+        accommodationChangeRequest.setAutoAccepting(accommodationChangeRequestDTO.isAutoAccepting());
         accommodationChangeRequest.setEnabled(accommodationChangeRequest.isEnabled());
 
         accommodationChangeRequestService.save(accommodationChangeRequest);

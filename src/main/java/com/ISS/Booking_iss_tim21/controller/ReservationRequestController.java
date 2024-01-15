@@ -2,11 +2,10 @@ package com.ISS.Booking_iss_tim21.controller;
 
 import com.ISS.Booking_iss_tim21.dto.ReservationRequestDTO;
 import com.ISS.Booking_iss_tim21.model.ReservationRequest;
-import com.ISS.Booking_iss_tim21.model.TimeSlot;
-import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationRequestStatus;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import com.ISS.Booking_iss_tim21.service.ReservationRequestService;
+import com.ISS.Booking_iss_tim21.service.ReservationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,13 +15,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/auth/reservationRequests")
 public class ReservationRequestController {
+
+    @Autowired
+    private ReservationService reservationService;
     @Autowired
     private ReservationRequestService requestService;
     @Autowired
@@ -67,7 +67,6 @@ public class ReservationRequestController {
 //            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 //        }
 
-
         ReservationRequest reservationRequest = new ReservationRequest();
         reservationRequest.setId(reservationRequestDTO.getId());
         reservationRequest.setUser(userService.findById(reservationRequestDTO.getUserId()));
@@ -77,6 +76,10 @@ public class ReservationRequestController {
         reservationRequest.setTimeSlot(reservationRequestDTO.getTimeSlot());
         reservationRequest.setStatus(reservationRequestDTO.getStatus());
 
+        if(reservationRequest.getAccommodation().isAutoAccepting()){
+            reservationRequest.setStatus(ReservationRequestStatus.Accepted);
+            reservationService.acceptReservation(reservationRequest);
+        }
 
         requestService.save(reservationRequest);
 

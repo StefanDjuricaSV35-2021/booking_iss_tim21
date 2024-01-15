@@ -9,6 +9,7 @@ import com.ISS.Booking_iss_tim21.model.enumeration.NotificationType;
 import com.ISS.Booking_iss_tim21.service.NotificationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +17,17 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.socket.messaging.SessionConnectEvent;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/auth/notifications")
@@ -36,6 +42,8 @@ public class NotificationController {
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
+
+
 
     @MessageMapping("/send")
     public ResponseEntity<?> sendNotification( NotificationDTO notificationDTO) {
@@ -77,6 +85,7 @@ public class NotificationController {
 
         return new ResponseEntity<>(notificationDTOS, HttpStatus.OK);
     }
+
 
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")

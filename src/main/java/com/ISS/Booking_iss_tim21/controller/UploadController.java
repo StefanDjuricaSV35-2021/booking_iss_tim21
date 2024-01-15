@@ -23,7 +23,7 @@ public class UploadController {
     public static String UPLOAD_DIRECTORY = "./src/main/resources/images/";
 
     @PostMapping("/upload")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
+   @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
     public ResponseEntity<List<String>> uploadFiles(@RequestParam("images") List<MultipartFile> files) throws IOException {
         List<String> filenames = new ArrayList<>();
 

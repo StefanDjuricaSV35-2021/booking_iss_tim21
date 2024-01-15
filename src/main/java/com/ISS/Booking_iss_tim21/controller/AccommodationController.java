@@ -160,6 +160,7 @@ public class AccommodationController {
         accommodation.setLocation(accommodationDTO.getLocation());
         accommodation.setEnabled(accommodationDTO.isEnabled());
         accommodation.setPerNight(accommodationDTO.isPerNight());
+        accommodation.setAutoAccepting(false);
 
         accommodationService.save(accommodation);
 
@@ -194,6 +195,7 @@ public class AccommodationController {
         accommodation.setLocation(accommodationDTO.getLocation());
         accommodation.setEnabled(accommodationDTO.isEnabled());
         accommodation.setPerNight(accommodationDTO.isPerNight());
+        accommodation.setAutoAccepting(accommodationDTO.isAutoAccepting());
 
         accommodationService.save(accommodation);
         return new ResponseEntity<>(new AccommodationDetailsDTO(accommodation), HttpStatus.OK);

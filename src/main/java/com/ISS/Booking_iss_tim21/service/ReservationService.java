@@ -1,6 +1,8 @@
 package com.ISS.Booking_iss_tim21.service;
 
+import com.ISS.Booking_iss_tim21.dto.ReservationRequestDTO;
 import com.ISS.Booking_iss_tim21.model.Reservation;
+import com.ISS.Booking_iss_tim21.model.ReservationRequest;
 import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationStatus;
 import com.ISS.Booking_iss_tim21.repository.ReservationRepository;
@@ -43,6 +45,18 @@ public class ReservationService {
 
     public List<Reservation> getOwnerReservations(Long ownerId){
         return repository.getOwnersReservationsById(ownerId);
+    }
+
+    public void acceptReservation(ReservationRequest request){
+        Reservation reservation= new Reservation();
+        reservation.setStatus(ReservationStatus.Active);
+        reservation.setUser(request.getUser());
+        reservation.setPrice(request.getPrice());
+        reservation.setAccommodation(request.getAccommodation());
+        reservation.setTimeSlot(request.getTimeSlot());
+        reservation.setGuestsNumber(request.getGuestsNumber());
+
+        save(reservation);
     }
 
     public List<Reservation> getOwnerReservationsBetweenDates(Long ownerId,String dateFrom,String dateTo){
