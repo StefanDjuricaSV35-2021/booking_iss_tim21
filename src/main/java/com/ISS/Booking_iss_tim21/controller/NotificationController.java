@@ -43,16 +43,15 @@ public class NotificationController {
 
 
         //if(userService.isSubscribedTo(notificationDTO.getRecipientId(),notificationDTO.getType())) {
-
         simpMessagingTemplate.convertAndSendToUser(notificationDTO.getRecipientId().toString(), "/specific", notificationDTO.getMessage());
         //}
 
-//        Notification notification=new Notification();
-//        notification.setType(notificationDTO.getType());
-//        notification.setMessage(notificationDTO.getMessage());
-//        notification.setRecipient(userService.findById(notificationDTO.getRecipientId()));
-//
-//        notifService.save(notification);
+        Notification notification=new Notification();
+        notification.setType(notificationDTO.getType());
+        notification.setMessage(notificationDTO.getMessage());
+        notification.setRecipient(userService.findById(notificationDTO.getRecipientId()));
+
+        notifService.save(notification);
 
         return new ResponseEntity<>(notificationDTO, new HttpHeaders(), HttpStatus.OK);
     }
