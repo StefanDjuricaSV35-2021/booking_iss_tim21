@@ -2,6 +2,7 @@ package com.ISS.Booking_iss_tim21.service;
 
 import com.ISS.Booking_iss_tim21.config.AppConfig;
 import com.ISS.Booking_iss_tim21.dto.AccommodationAnnualDataDTO;
+import com.ISS.Booking_iss_tim21.dto.AccommodationPreviewDTO;
 import com.ISS.Booking_iss_tim21.dto.AccommodationProfitDTO;
 import com.ISS.Booking_iss_tim21.dto.AccommodationReservationCountDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
@@ -99,6 +100,14 @@ public class AccommodationService {
         validAccommodation.retainAll(accommodationsWithGuestRange);
 
         return validAccommodation;
+    }
+
+    public AccommodationPreviewDTO getAccommodationPreview(Long accId ){
+
+        Accommodation acc=findOne(accId);
+        AccommodationPreviewDTO preview= new AccommodationPreviewDTO(acc);
+
+        return preview;
     }
 
     public List<Accommodation> getAvailableAccommodations(Long dateFrom,Long dateTo){

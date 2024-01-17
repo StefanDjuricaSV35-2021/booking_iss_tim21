@@ -54,4 +54,18 @@ public class FavoriteAccommodationService {
         return false;
 
     }
+
+    public FavoriteAccommodation findFavoriteAcc(Long accId,Long userId){
+
+        List<FavoriteAccommodation> favs=findUsersAccommodations(userId);
+
+        for(FavoriteAccommodation fav:favs){
+            if(fav.getAccommodationId()==accId){
+                return fav;
+            }
+        }
+
+        return null;
+
+    }
 }

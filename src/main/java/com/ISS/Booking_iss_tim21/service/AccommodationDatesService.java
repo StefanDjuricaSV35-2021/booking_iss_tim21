@@ -52,7 +52,7 @@ public class AccommodationDatesService {
                 if(!isAvaiable){
 
                     if(startDate!=null){
-                        TimeSlot newTs=datesToTimeslot(tsStart,d);
+                        TimeSlot newTs=datesToTimeslot(startDate,d);
                         availableDates.add(newTs);
                         startDate=null;
                     }
