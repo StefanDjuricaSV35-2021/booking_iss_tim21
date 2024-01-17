@@ -1,8 +1,10 @@
 package com.ISS.Booking_iss_tim21.controller;
 
 
+import com.ISS.Booking_iss_tim21.dto.AccommodationPreviewDTO;
 import com.ISS.Booking_iss_tim21.dto.FavoriteAccommodationDTO;
 import com.ISS.Booking_iss_tim21.model.FavoriteAccommodation;
+import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import com.ISS.Booking_iss_tim21.service.FavoriteAccommodationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,9 @@ public class FavoriteAccommodationController {
 
     @Autowired
     private FavoriteAccommodationService favoriteAccommodationService;
+
+    @Autowired
+    private AccommodationService accService;
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
@@ -49,6 +54,22 @@ public class FavoriteAccommodationController {
         }
 
         return new ResponseEntity<>(favoriteAccommodationsDTO, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/user/{id}/previews")
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
+    public ResponseEntity<List<AccommodationPreviewDTO>> getUsersFavoriteAccommodationsPreviews(@PathVariable Long id) {
+        List<FavoriteAccommodation> favoriteAccommodations = favoriteAccommodationService.findUsersAccommodations(id);
+
+        // convert courses to DTOs
+        List<AccommodationPreviewDTO> favoriteAccommodationsPreviewsDTO = new ArrayList<>();
+        for (FavoriteAccommodation s : favoriteAccommodations) {
+            if (s.getUserId().equals(id)){
+                favoriteAccommodationsPreviewsDTO.add(accService.getAccommodationPreview(s.getAccommodationId()));
+            }
+        }
+
+        return new ResponseEntity<>(favoriteAccommodationsPreviewsDTO, HttpStatus.OK);
     }
 
     @GetMapping(value = "/is-favorite")
@@ -111,6 +132,19 @@ public class FavoriteAccommodationController {
 
         if (favoriteAccommodation != null) {
             favoriteAccommodationService.remove(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping()
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
+    public ResponseEntity<Void> deleteUsersFavortieAccommodation(@RequestParam(value="userId",required = true) Long userId,
+                                                                 @RequestParam(value="accId",required=true) Long accId) {
+        FavoriteAccommodation fav=favoriteAccommodationService.findFavoriteAcc(accId,userId);
+        if (fav != null) {
+            favoriteAccommodationService.remove(fav.getFavoriteAccommodationId());
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

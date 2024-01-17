@@ -26,9 +26,9 @@ public class ReservationService {
         return repository.findAll();
     }
 
-    public List<Reservation> getAccommodationReservations(Long id){return repository.getReservationByAccommodationId(id);}
+    public List<Reservation> getAccommodationReservations(Long id){return repository.getReservationsByAccommodationId(id);}
 
-    public List<Reservation> getActiveAccommodationReservations(Long id){return repository.getReservationByAccommodationIdAndStatus(id, ReservationStatus.Active);}
+    public List<Reservation> getActiveAccommodationReservations(Long id){return repository.getReservationsByAccommodationIdAndStatus(id, ReservationStatus.Active);}
 
     public Reservation findOne(Long id) {
         return repository.findById(id).orElseGet(null);
@@ -83,7 +83,7 @@ public class ReservationService {
         Long unixDateTo=dateStringToUnix(dateTo);
 
         List<Reservation> validReservations= new ArrayList<>();
-        List<Reservation> allReservations= repository.getReservationByAccommodationId(accId);
+        List<Reservation> allReservations= repository.getReservationsByAccommodationId(accId);
 
         for (Reservation r : allReservations){
             TimeSlot ts=r.getTimeSlot();
