@@ -132,7 +132,7 @@ public class AccommodationService {
         List<AccommodationReservationCountDTO> accommodationReservationCountDTOS=new ArrayList<>();
 
         for (String key : counter.keySet()) {
-            accommodationReservationCountDTOS.add(new AccommodationReservationCountDTO(key,counter.get(key)));
+            accommodationReservationCountDTOS.add(new AccommodationReservationCountDTO(key,(double)counter.get(key)));
         }
 
         return accommodationReservationCountDTOS;}

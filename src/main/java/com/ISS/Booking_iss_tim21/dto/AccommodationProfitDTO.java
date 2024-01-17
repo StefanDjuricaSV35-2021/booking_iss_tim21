@@ -12,5 +12,5 @@ import lombok.Setter;
 public class AccommodationProfitDTO {
 
     String name;
-    Double profit;
+    Double value;
 }

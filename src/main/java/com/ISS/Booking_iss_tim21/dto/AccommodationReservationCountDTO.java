@@ -12,5 +12,5 @@ import lombok.Setter;
 public class AccommodationReservationCountDTO {
 
     String name;
-    Integer count;
+    Double value;
 }

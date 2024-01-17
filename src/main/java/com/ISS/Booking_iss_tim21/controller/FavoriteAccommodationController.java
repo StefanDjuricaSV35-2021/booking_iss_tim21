@@ -51,6 +51,16 @@ public class FavoriteAccommodationController {
         return new ResponseEntity<>(favoriteAccommodationsDTO, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/is-favorite")
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
+    public ResponseEntity<Boolean> checkIfUsersFavorite(
+            @RequestParam(value="accId",required = true) Long accId,
+            @RequestParam(value="userId",required=true) Long userId) {
+
+        Boolean isFavorite=favoriteAccommodationService.isUsersFavorite(accId,userId);
+        return new ResponseEntity<>(isFavorite, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
     public ResponseEntity<FavoriteAccommodationDTO> getFavoriteAccommodation(@PathVariable Long id) {

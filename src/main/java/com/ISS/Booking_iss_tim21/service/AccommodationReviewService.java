@@ -23,4 +23,18 @@ public class AccommodationReviewService {
     public List<AccommodationReview> findAllByAccommodationId(Long id){
         return repository.findAllByAccommodationId(id);
     }
+    public Double getAverageReview(Long accId){
+        List<AccommodationReview> reviews=findAllByAccommodationId(accId);
+
+        if(reviews.isEmpty()){
+            return 0.0;
+        }
+
+        double sum=0.0;
+        for(AccommodationReview review:reviews){
+            sum+=review.getRating();
+        }
+
+        return (sum/reviews.size());
+    }
 }

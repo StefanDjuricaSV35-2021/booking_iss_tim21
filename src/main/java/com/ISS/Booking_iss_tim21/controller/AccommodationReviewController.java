@@ -65,6 +65,16 @@ public class AccommodationReviewController {
         return new ResponseEntity<>(reviewDTOS, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/{accId}/avg")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
+    public ResponseEntity<Double> getAccommodationsAverageReview(@PathVariable Long accId) {
+
+        Double avg= accommodationReviewService.getAverageReview(accId);
+        return new ResponseEntity<>(avg, HttpStatus.OK);
+    }
+
+
+
     @GetMapping(value = "/one/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<AccommodationReviewDTO> getAccommodationsReview(@PathVariable Long id) {
