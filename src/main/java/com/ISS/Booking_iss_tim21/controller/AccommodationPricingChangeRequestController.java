@@ -135,6 +135,20 @@ public class AccommodationPricingChangeRequestController {
         }
     }
 
+    @PutMapping(value = "/update/{accommodationId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Void> updateAccommodationPricingsMobile(@PathVariable Long accommodationId, @RequestBody List<AccommodationPricingChangeRequestDTO> accommodationPricingChangeRequestDTOS) {
+        accommodationPricingService.deleteAllPricingsForAccommodation(accommodationId);
+        if (accommodationPricingChangeRequestDTOS.isEmpty()) return new ResponseEntity<>(HttpStatus.OK);
+        Accommodation accommodation = accommodationService.findOne(accommodationId);
+
+        for(AccommodationPricingChangeRequestDTO accommodationPricingChangeRequestDTO : accommodationPricingChangeRequestDTOS) {
+            accommodationPricingService.savePricingFromRequest(accommodationPricingChangeRequestDTO, accommodation);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @DeleteMapping(value = "/update/{accommodationId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> updateAccommodationPricings(@PathVariable Long accommodationId, @RequestBody List<AccommodationPricingChangeRequestDTO> accommodationPricingChangeRequestDTOS) {

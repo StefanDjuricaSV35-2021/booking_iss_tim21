@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -35,7 +36,7 @@ public class AccommodationChangeRequestController {
     public ResponseEntity<List<AccommodationChangeRequestDTO>> getPendingAccommodationChangeRequests() {
         List<AccommodationChangeRequest> accommodationChangeRequests = accommodationChangeRequestService.getAllPending();
         if(accommodationChangeRequests.isEmpty()){
-            return new ResponseEntity<>(null, HttpStatus.OK);
+            return new ResponseEntity<>(Collections.emptyList(), HttpStatus.OK);
         }
 
         List<AccommodationChangeRequestDTO> accommodationChangeRequestDTOs = new ArrayList<>();
