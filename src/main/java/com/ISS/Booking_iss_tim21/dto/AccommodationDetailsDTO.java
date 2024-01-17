@@ -45,6 +45,7 @@ public class AccommodationDetailsDTO {
         setDescription(accommodation.getDescription());
         setAmenities(accommodation.getAmenities());
         setPhotos(accommodation.getPhotos());
+        setEnabled(accommodation.isEnabled());
         setDaysForCancellation(accommodation.getDaysForCancellation());
         setLocation(accommodation.getLocation());
         setAutoAccepting(accommodation.isAutoAccepting());
