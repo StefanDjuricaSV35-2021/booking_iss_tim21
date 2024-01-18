@@ -32,7 +32,7 @@ public class ReservationRequestService {
     public List<ReservationRequest> getAccommodationReservationRequestsById(Long accommodationId) { return repository.getAccommodationReservationRequestsById(accommodationId); }
 
     public List<ReservationRequest> getCurrentReservationRequestsById(Long userId) {
-        long currentUnixTimestamp = System.currentTimeMillis();
+        long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
         List<ReservationRequest> allReservationRequests = repository.getUsersReservationRequestsById(userId);
         List<ReservationRequest> currentReservationRequests = new ArrayList<>();
         for (ReservationRequest r : allReservationRequests) {

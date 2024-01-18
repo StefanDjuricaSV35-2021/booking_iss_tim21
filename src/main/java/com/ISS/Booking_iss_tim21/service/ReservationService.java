@@ -118,7 +118,7 @@ public class ReservationService {
 
 
     public List<Reservation> getCurrentActiveReservationsForAccommodation(Long accommodationId) {
-        long currentUnixTimestamp = System.currentTimeMillis();
+        long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
         List<Reservation> allReservations = repository.getActiveReservationsForAccommodation(accommodationId);
         List<Reservation> currentReservations = new ArrayList<>();
         for (Reservation r : allReservations) {
@@ -130,7 +130,7 @@ public class ReservationService {
 
 
     public List<Reservation> getCurrentActiveReservationsById(Long userId) {
-        long currentUnixTimestamp = System.currentTimeMillis();
+        long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
         List<Reservation> allReservations = repository.getActiveUsersReservationsById(userId);
         List<Reservation> currentReservations = new ArrayList<>();
         for (Reservation r : allReservations) {
@@ -140,7 +140,7 @@ public class ReservationService {
         return currentReservations;
     }
     public List<Reservation> getCurrentReservationsById(Long userId) {
-        long currentUnixTimestamp = System.currentTimeMillis();
+        long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
         List<Reservation> allReservations = repository.getUsersReservationsById(userId);
         List<Reservation> currentReservations = new ArrayList<>();
         for (Reservation r : allReservations) {
@@ -151,7 +151,7 @@ public class ReservationService {
     }
 
     public List<Reservation> getCurrentOwnersReservationsById(Long ownerId) {
-        long currentUnixTimestamp = System.currentTimeMillis();
+        long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
         List<Reservation> allReservations = repository.getOwnersReservationsById(ownerId);
         List<Reservation> currentReservations = new ArrayList<>();
         for (Reservation r : allReservations) {
