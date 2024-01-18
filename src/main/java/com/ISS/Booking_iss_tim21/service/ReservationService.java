@@ -1,5 +1,6 @@
 package com.ISS.Booking_iss_tim21.service;
 
+import com.ISS.Booking_iss_tim21.config.AppConfig;
 import com.ISS.Booking_iss_tim21.dto.ReservationRequestDTO;
 import com.ISS.Booking_iss_tim21.model.Reservation;
 import com.ISS.Booking_iss_tim21.model.ReservationRequest;
@@ -118,7 +119,7 @@ public class ReservationService {
 
 
     public List<Reservation> getCurrentActiveReservationsForAccommodation(Long accommodationId) {
-        long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
+        long currentUnixTimestamp = System.currentTimeMillis() / AppConfig.UNIX_DIFF;
         List<Reservation> allReservations = repository.getActiveReservationsForAccommodation(accommodationId);
         List<Reservation> currentReservations = new ArrayList<>();
         for (Reservation r : allReservations) {
@@ -130,7 +131,7 @@ public class ReservationService {
 
 
     public List<Reservation> getCurrentActiveReservationsById(Long userId) {
-        long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
+        long currentUnixTimestamp = System.currentTimeMillis() / AppConfig.UNIX_DIFF;
         List<Reservation> allReservations = repository.getActiveUsersReservationsById(userId);
         List<Reservation> currentReservations = new ArrayList<>();
         for (Reservation r : allReservations) {
@@ -140,7 +141,7 @@ public class ReservationService {
         return currentReservations;
     }
     public List<Reservation> getCurrentReservationsById(Long userId) {
-        long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
+        long currentUnixTimestamp = System.currentTimeMillis() / AppConfig.UNIX_DIFF;
         List<Reservation> allReservations = repository.getUsersReservationsById(userId);
         List<Reservation> currentReservations = new ArrayList<>();
         for (Reservation r : allReservations) {
@@ -151,7 +152,7 @@ public class ReservationService {
     }
 
     public List<Reservation> getCurrentOwnersReservationsById(Long ownerId) {
-        long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
+        long currentUnixTimestamp = System.currentTimeMillis() / AppConfig.UNIX_DIFF;
         List<Reservation> allReservations = repository.getOwnersReservationsById(ownerId);
         List<Reservation> currentReservations = new ArrayList<>();
         for (Reservation r : allReservations) {
