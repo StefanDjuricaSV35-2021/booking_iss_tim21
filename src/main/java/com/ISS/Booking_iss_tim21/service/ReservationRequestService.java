@@ -29,6 +29,8 @@ public class ReservationRequestService {
 
     public List<ReservationRequest> getUsersReservationRequestsById(Long userId) { return repository.getUsersReservationRequestsById(userId); }
 
+    public List<ReservationRequest> getAccommodationReservationRequestsById(Long accommodationId) { return repository.getAccommodationReservationRequestsById(accommodationId); }
+
     public List<ReservationRequest> getCurrentReservationRequestsById(Long userId) {
         long currentUnixTimestamp = System.currentTimeMillis() / 1000L;
         List<ReservationRequest> allReservationRequests = repository.getUsersReservationRequestsById(userId);

@@ -4,6 +4,7 @@ import com.ISS.Booking_iss_tim21.dto.ReservationRequestDTO;
 import com.ISS.Booking_iss_tim21.model.Reservation;
 import com.ISS.Booking_iss_tim21.model.ReservationRequest;
 import com.ISS.Booking_iss_tim21.model.TimeSlot;
+import com.ISS.Booking_iss_tim21.model.enumeration.ReservationRequestStatus;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationStatus;
 import com.ISS.Booking_iss_tim21.repository.ReservationRepository;
 import jdk.jshell.Snippet;
@@ -21,6 +22,9 @@ import static java.lang.Math.min;
 public class ReservationService {
     @Autowired
     ReservationRepository repository;
+
+    @Autowired
+    ReservationRequestService reservationRequestService;
 
     public List<Reservation> getAll(){
         return repository.findAll();
@@ -48,6 +52,21 @@ public class ReservationService {
     }
 
     public void acceptReservation(ReservationRequest request){
+        List<ReservationRequest> requests = reservationRequestService.getAccommodationReservationRequestsById(request.getAccommodation().getId());
+        for (ReservationRequest r : requests) {
+            if (r.getStatus() != ReservationRequestStatus.Waiting) continue;
+            if (r.getTimeSlot().getStartDate() >= request.getTimeSlot().getStartDate() && r.getTimeSlot().getStartDate() < request.getTimeSlot().getEndDate()) {
+                r.setStatus(ReservationRequestStatus.Declined);
+                reservationRequestService.save(r);
+            } else if (r.getTimeSlot().getEndDate() <= request.getTimeSlot().getEndDate() && r.getTimeSlot().getEndDate() > request.getTimeSlot().getStartDate()) {
+                r.setStatus(ReservationRequestStatus.Declined);
+                reservationRequestService.save(r);
+            } else if (r.getTimeSlot().getStartDate() <= request.getTimeSlot().getStartDate() && r.getTimeSlot().getEndDate() >= request.getTimeSlot().getEndDate()) {
+                r.setStatus(ReservationRequestStatus.Declined);
+                reservationRequestService.save(r);
+            }
+        }
+
         Reservation reservation= new Reservation();
         reservation.setStatus(ReservationStatus.Active);
         reservation.setUser(request.getUser());
@@ -55,7 +74,6 @@ public class ReservationService {
         reservation.setAccommodation(request.getAccommodation());
         reservation.setTimeSlot(request.getTimeSlot());
         reservation.setGuestsNumber(request.getGuestsNumber());
-
         save(reservation);
     }
 
