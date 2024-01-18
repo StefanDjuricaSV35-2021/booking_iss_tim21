@@ -36,4 +36,19 @@ public class UploadController {
 
         return ResponseEntity.ok().body(filenames);
     }
+
+    @PostMapping("/upload/mobile")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
+    public ResponseEntity<List<String>> uploadFilesMobile(@RequestPart("images") List<MultipartFile> files) throws IOException {
+        List<String> filenames = new ArrayList<>();
+
+        for(MultipartFile file: files){
+            String filename = StringUtils.cleanPath(file.getOriginalFilename());
+            Path fileStorage = get(UPLOAD_DIRECTORY, filename).toAbsolutePath().normalize();
+            copy(file.getInputStream(), fileStorage, REPLACE_EXISTING);
+            filenames.add(filename);
+        }
+
+        return ResponseEntity.ok().body(filenames);
+    }
 }
