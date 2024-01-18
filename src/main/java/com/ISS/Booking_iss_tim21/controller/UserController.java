@@ -1,12 +1,14 @@
 package com.ISS.Booking_iss_tim21.controller;
 
 
+import com.ISS.Booking_iss_tim21.dto.NotificationTypeUpdateRequest;
 import com.ISS.Booking_iss_tim21.dto.UserActivationRequestDTO;
 import com.ISS.Booking_iss_tim21.dto.UserDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.Reservation;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.UserActivationRequest;
+import com.ISS.Booking_iss_tim21.model.enumeration.NotificationType;
 import com.ISS.Booking_iss_tim21.repository.UserActivationRequestRepository;
 import com.ISS.Booking_iss_tim21.model.enumeration.Role;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
@@ -192,6 +194,33 @@ public class UserController {
         user = userService.save(user);
 
         return new ResponseEntity<>(new UserDTO(user) , HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/notification/{email}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
+    public ResponseEntity<List<NotificationType>> getUserNotificationTypes(@PathVariable String email) {
+        User user = userService.findByEmail(email);
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(user.getSubscribedNotificationTypes(), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/notification",consumes = "application/json")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
+    public ResponseEntity<UserDTO> updateUserNotificationTypes(@Valid @RequestBody NotificationTypeUpdateRequest request) throws ConstraintViolationException {
+
+        User user = userService.findById(request.getUserId());
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        user.setSubscribedNotificationTypes(request.getSubscribedNotificationTypes());
+
+        user = userService.save(user);
+        return new ResponseEntity<>(new UserDTO(user), HttpStatus.OK);
     }
 }
 
