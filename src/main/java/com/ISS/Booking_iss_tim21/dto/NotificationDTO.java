@@ -19,7 +19,10 @@ public class NotificationDTO {
     Long recipientId;
 
     public NotificationDTO(Notification notification) {
-        this(notification.getId(), notification.getMessage());
+        this.id = notification.getId();
+        this.type = notification.getType();
+        this.message = notification.getMessage();
+        this.recipientId = notification.getRecipient().getId();
     }
 
     public NotificationDTO(Long id, String message) {
