@@ -1,7 +1,9 @@
 package com.ISS.Booking_iss_tim21.controller;
 
 import com.ISS.Booking_iss_tim21.dto.ReservationRequestDTO;
+import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.ReservationRequest;
+import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationRequestStatus;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import com.ISS.Booking_iss_tim21.service.ReservationRequestService;
@@ -56,16 +58,24 @@ public class ReservationRequestController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
+    //@PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
     public ResponseEntity<ReservationRequestDTO> createReservationRequest(@RequestBody ReservationRequestDTO reservationRequestDTO) {
 
-//        if (reservationRequestDTO.getUserId() == null) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//        User user = userService.findOne(reservationRequestDTO.getUserId());
-//        if (user == null) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
+        if (reservationRequestDTO.getUserId() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        User user = userService.findById(reservationRequestDTO.getUserId());
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (reservationRequestDTO.getAccommodationId() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Accommodation acc = accommodationService.findOne(reservationRequestDTO.getAccommodationId());
+        if (acc == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         ReservationRequest reservationRequest = new ReservationRequest();
         reservationRequest.setId(reservationRequestDTO.getId());

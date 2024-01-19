@@ -11,6 +11,7 @@ import com.ISS.Booking_iss_tim21.model.Reservation;
 import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.enumeration.AccommodationType;
 import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
+import com.ISS.Booking_iss_tim21.model.enumeration.ReservationStatus;
 import com.ISS.Booking_iss_tim21.repository.AccommodationRepository;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
@@ -135,6 +136,7 @@ public class AccommodationService {
         List<Reservation> ownerReservation=resService.getOwnerReservationsBetweenDates(ownerId,dateFrom,dateTo);
 
         for(Reservation r:ownerReservation){
+            if(r.getStatus()== ReservationStatus.Cancelled){continue;}
             counter.merge(r.getAccommodation().getName(), 1, Integer::sum);
         }
 
@@ -153,6 +155,7 @@ public class AccommodationService {
         List<Reservation> ownerReservation=resService.getOwnerReservationsBetweenDates(ownerId,dateFrom,dateTo);
 
         for(Reservation r:ownerReservation){
+            if(r.getStatus()== ReservationStatus.Cancelled){continue;}
             profit.merge(r.getAccommodation().getName(), r.getPrice(), Double::sum);
         }
 
@@ -174,6 +177,7 @@ public class AccommodationService {
         List<Reservation> reservations=resService.getAccommodationReservations(accId);
 
         for(Reservation res:reservations){
+
             Long resStart=res.getTimeSlot().getStartDate();
             Long resEnd=res.getTimeSlot().getEndDate();
             if((resStart < dateTo) && (resEnd > dateFrom)){
@@ -198,7 +202,7 @@ public class AccommodationService {
 
 
         for(Reservation r :reservations){
-
+            if(r.getStatus()== ReservationStatus.Cancelled){continue;}
             Date d=new Date(r.getTimeSlot().getStartDate());
             monthsProfit.merge(d.getMonth(), r.getPrice(), Double::sum);
             monthsReservations.merge(d.getMonth(),1,Integer::sum);
