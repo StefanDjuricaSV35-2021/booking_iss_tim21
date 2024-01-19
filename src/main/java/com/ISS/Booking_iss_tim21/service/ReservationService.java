@@ -173,7 +173,7 @@ public class ReservationService {
     }
 
     public void updateReservations(){
-        long currentUnixTimestamp = System.currentTimeMillis();
+        long currentUnixTimestamp = System.currentTimeMillis()/AppConfig.UNIX_DIFF;
         List<Reservation> allReservations = repository.findAll();
         for (Reservation r : allReservations) {
             if(r.getTimeSlot().getEndDate() <= currentUnixTimestamp && r.getStatus().equals(ReservationStatus.Active)){
@@ -184,7 +184,7 @@ public class ReservationService {
     }
 
     public boolean isValidForReview(Long userId, Long accommodationId){
-        long currentUnixTimestamp = System.currentTimeMillis();
+        long currentUnixTimestamp = System.currentTimeMillis()/AppConfig.UNIX_DIFF;
         List<Reservation> allReservations = repository.getFinishedReservationsForAccommodation(accommodationId);
         for (Reservation r : allReservations) {
             if (r.getUser().getId().equals(userId) && r.getTimeSlot().getEndDate()+ (7 * 24 * 60 * 60 * 1000) >= currentUnixTimestamp){//(7 * 24 * 60 * 60 * 1000) je sedam dana
