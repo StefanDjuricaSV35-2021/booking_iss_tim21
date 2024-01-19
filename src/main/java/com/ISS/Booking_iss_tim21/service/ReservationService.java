@@ -53,6 +53,19 @@ public class ReservationService {
     }
 
     public void acceptReservation(ReservationRequest request){
+        checkOverlapAndUpdateRequests(request);
+
+        Reservation reservation= new Reservation();
+        reservation.setStatus(ReservationStatus.Active);
+        reservation.setUser(request.getUser());
+        reservation.setPrice(request.getPrice());
+        reservation.setAccommodation(request.getAccommodation());
+        reservation.setTimeSlot(request.getTimeSlot());
+        reservation.setGuestsNumber(request.getGuestsNumber());
+        save(reservation);
+    }
+
+    private void checkOverlapAndUpdateRequests(ReservationRequest request) {
         List<ReservationRequest> requests = reservationRequestService.getAccommodationReservationRequestsById(request.getAccommodation().getId());
         for (ReservationRequest r : requests) {
             if (r.getStatus() != ReservationRequestStatus.Waiting) continue;
@@ -67,15 +80,6 @@ public class ReservationService {
                 reservationRequestService.save(r);
             }
         }
-
-        Reservation reservation= new Reservation();
-        reservation.setStatus(ReservationStatus.Active);
-        reservation.setUser(request.getUser());
-        reservation.setPrice(request.getPrice());
-        reservation.setAccommodation(request.getAccommodation());
-        reservation.setTimeSlot(request.getTimeSlot());
-        reservation.setGuestsNumber(request.getGuestsNumber());
-        save(reservation);
     }
 
     public List<Reservation> getOwnerReservationsBetweenDates(Long ownerId,String dateFrom,String dateTo){

@@ -104,8 +104,16 @@ public class ReservationRequestController {
         if (reservationRequest == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        reservationRequest.setUser(userService.findById(reservationRequestDTO.getUserId()));
-        reservationRequest.setAccommodation(accommodationService.findOne(reservationRequestDTO.getAccommodationId()));
+        User user = userService.findById(reservationRequestDTO.getUserId());
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Accommodation acc = accommodationService.findOne(reservationRequestDTO.getAccommodationId());
+        if (acc == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        reservationRequest.setUser(user);
+        reservationRequest.setAccommodation(acc);
         reservationRequest.setGuestsNumber(reservationRequestDTO.getGuestsNumber());
         reservationRequest.setPrice(reservationRequestDTO.getPrice());
         reservationRequest.setTimeSlot(reservationRequestDTO.getTimeSlot());
