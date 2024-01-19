@@ -50,9 +50,9 @@ public class NotificationController {
 
 
 
-        //if(userService.isSubscribedTo(notificationDTO.getRecipientId(),notificationDTO.getType())) {
-        simpMessagingTemplate.convertAndSendToUser(notificationDTO.getRecipientId().toString(), "/specific", notificationDTO.getMessage());
-        //}
+        if(userService.isSubscribedTo(notificationDTO.getRecipientId(),notificationDTO.getType())) {
+            simpMessagingTemplate.convertAndSendToUser(notificationDTO.getRecipientId().toString(), "/specific", notificationDTO.getMessage());
+        }
 
         Notification notification=new Notification();
         notification.setType(notificationDTO.getType());
