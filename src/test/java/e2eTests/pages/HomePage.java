@@ -1,5 +1,6 @@
 package e2eTests.pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -33,6 +34,15 @@ public class HomePage {
     @FindBy(css = "#profileButton")
     private WebElement profileButton;
 
+    @FindBy(css = "a[routerLink='login']")
+    private WebElement loginButton;
+
+    @FindBy(css = ".mat-mdc-menu-trigger.profileImg")
+    private WebElement profileImg;
+
+    @FindBy(css = "[routerlink='/accommodation_create']")
+    private WebElement accommodationCreateButton;
+
     private static String PAGE_URL = "http://localhost:4200/homePage";
 
     public HomePage(WebDriver driver) {
@@ -41,21 +51,31 @@ public class HomePage {
         PageFactory.initElements(driver, this);
     }
 
-    public boolean isPageOpened() {
-        return (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.textToBePresentInElement(bookingTitle, "Booʞing"));
+    public boolean isLoaded() {
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("a[routerLink='login']")));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
-    public void logIn(String email, String password) {
-        loginNavBar.click();
-        (new WebDriverWait(driver, Duration.ofSeconds(10)))
-                .until(ExpectedConditions.textToBePresentInElement(rememberMe, "Remember me"));
 
-        emailInput.click();
-        emailInput.sendKeys(email);
+    public void login() {
+        loginButton.click();
+    }
 
-        passwordInput.click();
-        passwordInput.sendKeys(password);
+    public void clickProfileImg() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".mat-mdc-menu-trigger.profileImg")));
 
-        submitLoginButton.click();
+        profileImg.click();
+    }
+
+    public void clickCreateAccommodation() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("[routerlink='/accommodation_create']")));
+
+        accommodationCreateButton.click();
     }
 }
