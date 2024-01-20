@@ -35,6 +35,12 @@ public class AccommodationCreationPage {
     @FindBy(css = "[id='submitPrice']")
     private WebElement addPricingButton;
 
+    @FindBy(css = "[id='create']")
+    private WebElement createAccommodationButton;
+
+    @FindBy(css = "[id='priceForm']")
+    private WebElement pricingForm;
+
     @FindBy(css = ".table.table-bordered.mt-3")
     private WebElement tableElement;
 
@@ -95,7 +101,7 @@ public class AccommodationCreationPage {
     public void addPricing(){
         previousElementNum = currentElementNum;
 
-        addPricingButton.click();
+        pricingForm.submit();
 
         By tbodySelector = By.cssSelector(".table.table-bordered.mt-3 tbody");
 

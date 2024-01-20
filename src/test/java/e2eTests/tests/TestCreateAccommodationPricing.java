@@ -6,6 +6,8 @@ import e2eTests.pages.LoginPage;
 import org.testng.annotations.Test;
 import org.junit.jupiter.api.Assertions;
 
+import java.time.Duration;
+
 public class TestCreateAccommodationPricing extends TestBase{
     @Test
     public void test() {
@@ -16,8 +18,8 @@ public class TestCreateAccommodationPricing extends TestBase{
         LoginPage loginPage = new LoginPage(driver);
         Assertions.assertTrue(loginPage.isLoaded());
 
-        loginPage.inputEmail("bob.jones@example.com");
-        loginPage.inputPassword("admin");
+        loginPage.inputEmail("stefandjurica420@gmail.com");
+        loginPage.inputPassword("1234");
         loginPage.login();
 
         Assertions.assertTrue(homePage.isLoaded());
@@ -30,7 +32,6 @@ public class TestCreateAccommodationPricing extends TestBase{
 
         accommodationCreationPage.selectPerNight();
         accommodationCreationPage.selectPerGuest();
-        accommodationCreationPage.scrollDown();
 
 
         accommodationCreationPage.inputStartDate("01-02-2024");
