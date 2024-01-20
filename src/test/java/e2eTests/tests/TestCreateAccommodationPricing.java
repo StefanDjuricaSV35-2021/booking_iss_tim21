@@ -1,5 +1,6 @@
 package e2eTests.tests;
 
+import e2eTests.pages.AccommodationCreationPage;
 import e2eTests.pages.HomePage;
 import e2eTests.pages.LoginPage;
 import org.testng.annotations.Test;
@@ -23,5 +24,18 @@ public class TestCreateAccommodationPricing extends TestBase{
         homePage.clickProfileImg();
         homePage.clickCreateAccommodation();
 
+        AccommodationCreationPage accommodationCreationPage = new AccommodationCreationPage(driver);
+        Assertions.assertTrue(accommodationCreationPage.isLoaded());
+        accommodationCreationPage.scrollDown();
+
+        accommodationCreationPage.selectPerNight();
+        accommodationCreationPage.selectPerGuest();
+        accommodationCreationPage.scrollDown();
+
+
+        accommodationCreationPage.inputStartDate("01-02-2024");
+        accommodationCreationPage.inputEndDate("01-03-2024");
+        accommodationCreationPage.inputPricing("123.3");
+        accommodationCreationPage.addPricing();
     }
 }

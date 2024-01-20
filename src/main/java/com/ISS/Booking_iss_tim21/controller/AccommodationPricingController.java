@@ -1,5 +1,6 @@
 package com.ISS.Booking_iss_tim21.controller;
 
+import com.ISS.Booking_iss_tim21.config.AppConfig;
 import com.ISS.Booking_iss_tim21.dto.AccommodationPricingDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.AccommodationPricing;
@@ -62,6 +63,8 @@ public class AccommodationPricingController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        accommodationPricingDTO.getTimeSlot().setStartDate(accommodationPricingDTO.getTimeSlot().getStartDate()+ 3600 * AppConfig.UNIX_DIFF);
+        accommodationPricingDTO.getTimeSlot().setEndDate(accommodationPricingDTO.getTimeSlot().getEndDate()+ 3600 * AppConfig.UNIX_DIFF);
 
         AccommodationPricing accommodationPricing = new AccommodationPricing();
         accommodationPricing.setAccommodation(accommodation);
@@ -80,6 +83,9 @@ public class AccommodationPricingController {
         if (accommodationPricing == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
+        accommodationPricingDTO.getTimeSlot().setStartDate(accommodationPricingDTO.getTimeSlot().getStartDate()+ 3600 * AppConfig.UNIX_DIFF);
+        accommodationPricingDTO.getTimeSlot().setEndDate(accommodationPricingDTO.getTimeSlot().getEndDate()+ 3600 * AppConfig.UNIX_DIFF);
 
         accommodationPricing.setAccommodation(accommodationService.findOne(accommodationPricingDTO.getAccommodationId()));
         accommodationPricing.setTimeSlot(accommodationPricingDTO.getTimeSlot());
