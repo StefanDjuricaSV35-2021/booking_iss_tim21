@@ -1,11 +1,27 @@
 package e2eTests.pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class HomePage {
 
     private WebDriver driver;
+
+    @FindBy(css = "a[routerLink='login']")
+    private WebElement loginButton;
+
+    @FindBy(css = ".mat-mdc-menu-trigger.profileImg")
+    private WebElement profileImg;
+
+    @FindBy(css = "[routerlink='/accommodation_create']")
+    private WebElement accommodationCreateButton;
 
     private static String PAGE_URL = "http://localhost:4200/homePage";
 
@@ -13,5 +29,32 @@ public class HomePage {
         this.driver = driver;
         driver.get(PAGE_URL);
         PageFactory.initElements(driver, this);
+    }
+    public boolean isLoaded() {
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("a[routerLink='login']")));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public void login(){
+        loginButton.click();
+    }
+
+    public void clickProfileImg(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".mat-mdc-menu-trigger.profileImg")));
+
+        profileImg.click();
+    }
+
+    public void clickCreateAccommodation(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("[routerlink='/accommodation_create']")));
+
+        accommodationCreateButton.click();
     }
 }
