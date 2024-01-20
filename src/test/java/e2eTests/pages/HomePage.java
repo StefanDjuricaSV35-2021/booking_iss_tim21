@@ -23,6 +23,16 @@ public class HomePage {
     @FindBy(css = "[routerlink='/accommodation_create']")
     private WebElement accommodationCreateButton;
 
+    @FindBy(css = "[routerlink='/reservationsGuest']")
+    private WebElement reservationsButton;
+
+    @FindBy(css = "[routerlink='/reservationsOwner']")
+    private WebElement reservationsButtonOwner;
+
+    @FindBy(css = "[routerlink='/reservationRequests']")
+    private WebElement reservationRequestsButton;
+
+
     private static String PAGE_URL = "http://localhost:4200/homePage";
 
     public HomePage(WebDriver driver) {
@@ -30,6 +40,7 @@ public class HomePage {
         driver.get(PAGE_URL);
         PageFactory.initElements(driver, this);
     }
+
     public boolean isLoaded() {
         try {
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -40,21 +51,42 @@ public class HomePage {
         }
     }
 
-    public void login(){
+    public void login() {
         loginButton.click();
     }
 
-    public void clickProfileImg(){
+    public void clickProfileImg() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".mat-mdc-menu-trigger.profileImg")));
 
         profileImg.click();
     }
 
-    public void clickCreateAccommodation(){
+    public void clickCreateAccommodation() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("[routerlink='/accommodation_create']")));
 
         accommodationCreateButton.click();
+    }
+
+    public void clickViewReservationsGuest() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.textToBePresentInElement(reservationsButton, "View Reservations"));
+
+        reservationsButton.click();
+    }
+
+    public void clickViewReservationsOwner() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.textToBePresentInElement(reservationsButtonOwner, "View Reservations"));
+
+        reservationsButtonOwner.click();
+    }
+
+    public void clickViewReservationRequests() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.textToBePresentInElement(reservationRequestsButton, "View Reservation Requests"));
+
+        reservationRequestsButton.click();
     }
 }
