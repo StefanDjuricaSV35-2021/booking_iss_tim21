@@ -49,7 +49,6 @@ public class AccommodationPricingService {
     public AccommodationPricing save(AccommodationPricingDTO accommodationPricingDTO) throws Exception{
         if (accommodationPricingDTO.getAccommodationId() == null) {
             throw new Exception("Accommodation id missing.");
-
         }
 
         Accommodation accommodation = accommodationService.findOne(accommodationPricingDTO.getAccommodationId());
