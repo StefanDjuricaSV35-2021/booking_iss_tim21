@@ -96,7 +96,7 @@ public class ReservationRequestController {
         return new ResponseEntity<>(new ReservationRequestDTO(reservationRequest), HttpStatus.CREATED);
     }
 
-    @PutMapping(consumes = "application/json")
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<ReservationRequestDTO> updateReservationRequest(@RequestBody ReservationRequestDTO reservationRequestDTO) {
       ReservationRequest reservationRequest = requestService.findOne(reservationRequestDTO.getId());
