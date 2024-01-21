@@ -4,8 +4,12 @@ import com.ISS.Booking_iss_tim21.config.AppConfig;
 import com.ISS.Booking_iss_tim21.dto.AccommodationPricingDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.AccommodationPricing;
+import com.ISS.Booking_iss_tim21.model.Reservation;
+import com.ISS.Booking_iss_tim21.model.ReservationRequest;
 import com.ISS.Booking_iss_tim21.service.AccommodationPricingService;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
+import com.ISS.Booking_iss_tim21.service.ReservationRequestService;
+import com.ISS.Booking_iss_tim21.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +28,11 @@ public class AccommodationPricingController {
     private AccommodationPricingService pricingService;
     @Autowired
     private AccommodationService accommodationService;
+    @Autowired
+    private ReservationService reservationService;
+    @Autowired
+    private ReservationRequestService reservationRequestService;
+
     @GetMapping
     public ResponseEntity<List<AccommodationPricingDTO>> getAccommodationPricings() {
         List<AccommodationPricing> accommodationPricings = pricingService.getAll();
@@ -53,7 +62,6 @@ public class AccommodationPricingController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
     public ResponseEntity<AccommodationPricingDTO> createAccommodationPricing(@RequestBody AccommodationPricingDTO accommodationPricingDTO) {
 
-        System.out.print(accommodationPricingDTO.getTimeSlot().getStartDate());
         if (accommodationPricingDTO.getAccommodationId() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -70,6 +78,19 @@ public class AccommodationPricingController {
         accommodationPricing.setAccommodation(accommodation);
         accommodationPricing.setTimeSlot(accommodationPricingDTO.getTimeSlot());
         accommodationPricing.setPrice(accommodationPricingDTO.getPrice());
+
+        for (AccommodationPricing a:pricingService.getAccommodationPricingForAccommodation(accommodation.getId())) {
+            if (a.getTimeSlot().overlapsWith(accommodationPricing.getTimeSlot())){
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        for (Reservation r:reservationService.getAccommodationReservations(accommodation.getId())) {
+            if (r.getTimeSlot().overlapsWith(accommodationPricing.getTimeSlot())){
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        }
+
 
         pricingService.save(accommodationPricing);
         return new ResponseEntity<>(new AccommodationPricingDTO(accommodationPricing), HttpStatus.CREATED);
@@ -90,6 +111,7 @@ public class AccommodationPricingController {
         accommodationPricing.setAccommodation(accommodationService.findOne(accommodationPricingDTO.getAccommodationId()));
         accommodationPricing.setTimeSlot(accommodationPricingDTO.getTimeSlot());
         accommodationPricing.setPrice(accommodationPricingDTO.getPrice());
+
 
 
         pricingService.save(accommodationPricing);

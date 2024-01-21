@@ -2,6 +2,8 @@ INSERT INTO "users" (id, city, country, email, name, password, phone, street, su
 VALUES (1, 'New York', 'USA', 'john.doe@example.com', 'John', '$2a$10$CUvvlUoIyBbwE2cTnb3.sObysf0Cni4Dd5/GIgOY965J/Ycv/abhW', '+1 123 456 7890', '123 Main St', 'Doe', 0, true, false);
 INSERT INTO "users" (id, city, country, email, name, password, phone, street, surname, role, enabled, blocked)
 VALUES (2, 'Berlin', 'Germany', 'bob.jones@example.com', 'Bob', '$2a$10$CUvvlUoIyBbwE2cTnb3.sObysf0Cni4Dd5/GIgOY965J/Ycv/abhW', '+49 30 9876 5432', '789 Oak St', 'Jones', 2, true, false);
+INSERT INTO "users" (id, city, country, email, name, password, phone, street, surname, role, enabled, blocked)
+VALUES (3, 'Berlin', 'Germany', 'stefandjurica420@gmail.com', 'Bob', '$2a$10$jmd0YlAdXmwMUC9fLtO9Ke2yr0JAakmg1EqbaezSfCaiLVSpwCWQi', '+49 30 9876 5432', '789 Oak St', 'Jones', 2, true, false);
 
 
 INSERT INTO accommodation (id, owner_id, name, type, min_guests, max_guests, description, days_for_cancellation, location, enabled, per_night,auto_accepting)

@@ -24,4 +24,8 @@ public class TimeSlot {
     public String toString() {
         return startDate +";"+ endDate;
     }
+    public boolean overlapsWith(TimeSlot t){
+        return !(endDate <= t.startDate || startDate >= t.endDate);
+    }
+
 }
