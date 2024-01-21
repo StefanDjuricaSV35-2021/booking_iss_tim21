@@ -1,9 +1,6 @@
 package e2eTests.pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -34,6 +31,12 @@ public class AccommodationCreationPage {
 
     @FindBy(css = "[id='submitPrice']")
     private WebElement addPricingButton;
+
+    @FindBy(css = "[id='create']")
+    private WebElement createAccommodationButton;
+
+    @FindBy(css = "[id='priceForm']")
+    private WebElement pricingForm;
 
     @FindBy(css = ".table.table-bordered.mt-3")
     private WebElement tableElement;
@@ -95,20 +98,71 @@ public class AccommodationCreationPage {
     public void addPricing(){
         previousElementNum = currentElementNum;
 
-        addPricingButton.click();
+        pricingForm.submit();
 
-        By tbodySelector = By.cssSelector(".table.table-bordered.mt-3 tbody");
-
+        By tbodySelector = By.cssSelector(".table.table-bordered.mt-3 > tbody");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         wait.until(ExpectedConditions.presenceOfElementLocated(tbodySelector));
 
-        List<WebElement> elements = tableElement.findElements(tbodySelector);
-        currentElementNum = elements.size();
-        System.out.println(previousElementNum);
-        System.out.println(currentElementNum);
+        WebElement tbodyElement = driver.findElement(tbodySelector);
+
+        By trSelector = By.cssSelector(".table.table-bordered.mt-3 > tbody > tr");
+
+        try {
+            wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+            wait.until(ExpectedConditions.presenceOfElementLocated(trSelector));
+
+            List<WebElement> elements = tbodyElement.findElements(trSelector);
+            currentElementNum = elements.size();
+        } catch (TimeoutException e) {
+            currentElementNum = 0;
+        }
+    }
+
+    public void removePricing(){
+        previousElementNum = currentElementNum;
+
+        pricingForm.submit();
+
+        By tbodySelector = By.cssSelector(".table.table-bordered.mt-3 > tbody");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.presenceOfElementLocated(tbodySelector));
+
+        WebElement tbodyElement = driver.findElement(tbodySelector);
+
+        By buttonSelector = By.cssSelector(".table.table-bordered.mt-3 > tbody > tr:first-child button");
+
+        try {
+            wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+            wait.until(ExpectedConditions.presenceOfElementLocated(buttonSelector));
+
+            WebElement buttonElement = tbodyElement.findElement(buttonSelector);
+            System.out.println(buttonElement.getText());
+            wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+            wait.until(ExpectedConditions.elementToBeClickable(buttonElement));
+            buttonElement.click();
+
+            By trSelector = By.cssSelector(".table.table-bordered.mt-3 > tbody > tr");
+
+            try {
+                wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+                wait.until(ExpectedConditions.presenceOfElementLocated(trSelector));
+
+                List<WebElement> elements = tbodyElement.findElements(trSelector);
+                currentElementNum = elements.size();
+            } catch (TimeoutException e) {
+                currentElementNum = 0;
+            }
+        } catch (TimeoutException e) {
+            currentElementNum = previousElementNum;
+        }
     }
 
     public boolean elementAdded(){
         return previousElementNum < currentElementNum;
+    }
+
+    public boolean elementRemoved(){
+        return previousElementNum > currentElementNum;
     }
 }

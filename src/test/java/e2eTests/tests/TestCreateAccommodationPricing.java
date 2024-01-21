@@ -6,7 +6,23 @@ import e2eTests.pages.LoginPage;
 import org.testng.annotations.Test;
 import org.junit.jupiter.api.Assertions;
 
+import java.time.Duration;
+
 public class TestCreateAccommodationPricing extends TestBase{
+
+    private String email = "stefandjurica420@gmail.com";
+    private String password = "1234";
+
+    private String good_start_date = "01-02-2024";
+    private String good_end_date = "01-05-2024";
+    private String good_price = "123.3";
+
+    private String bad_price = "fjsfjsjfksjfk";
+
+
+    private String second_good_start_date = "01-06-2024";
+    private String second_good_end_date = "01-09-2024";
+
     @Test
     public void test() {
         HomePage homePage = new HomePage(driver);
@@ -16,8 +32,8 @@ public class TestCreateAccommodationPricing extends TestBase{
         LoginPage loginPage = new LoginPage(driver);
         Assertions.assertTrue(loginPage.isLoaded());
 
-        loginPage.inputEmail("bob.jones@example.com");
-        loginPage.inputPassword("admin");
+        loginPage.inputEmail(email);
+        loginPage.inputPassword(password);
         loginPage.login();
 
         Assertions.assertTrue(homePage.isLoaded());
@@ -30,12 +46,42 @@ public class TestCreateAccommodationPricing extends TestBase{
 
         accommodationCreationPage.selectPerNight();
         accommodationCreationPage.selectPerGuest();
-        accommodationCreationPage.scrollDown();
 
-
-        accommodationCreationPage.inputStartDate("01-02-2024");
-        accommodationCreationPage.inputEndDate("01-03-2024");
-        accommodationCreationPage.inputPricing("123.3");
         accommodationCreationPage.addPricing();
+        Assertions.assertFalse(accommodationCreationPage.elementAdded());
+
+        accommodationCreationPage.inputStartDate(good_start_date);
+        accommodationCreationPage.inputEndDate(good_end_date);
+        accommodationCreationPage.inputPricing(bad_price);
+        accommodationCreationPage.addPricing();
+        Assertions.assertFalse(accommodationCreationPage.elementAdded());
+
+        accommodationCreationPage.inputStartDate(good_start_date);
+        accommodationCreationPage.inputEndDate(good_end_date);
+        accommodationCreationPage.inputPricing(good_price);
+        accommodationCreationPage.addPricing();
+        Assertions.assertTrue(accommodationCreationPage.elementAdded());
+
+        accommodationCreationPage.inputStartDate(good_start_date);
+        accommodationCreationPage.inputEndDate(good_end_date);
+        accommodationCreationPage.inputPricing(good_price);
+        accommodationCreationPage.addPricing();
+        Assertions.assertFalse(accommodationCreationPage.elementAdded());
+
+        accommodationCreationPage.inputStartDate(second_good_end_date);
+        accommodationCreationPage.inputEndDate(second_good_start_date);
+        accommodationCreationPage.inputPricing(good_price);
+        accommodationCreationPage.addPricing();
+        Assertions.assertFalse(accommodationCreationPage.elementAdded());
+
+        accommodationCreationPage.inputStartDate(second_good_start_date);
+        accommodationCreationPage.inputEndDate(second_good_end_date);
+        accommodationCreationPage.inputPricing(good_price);
+        accommodationCreationPage.addPricing();
+        Assertions.assertTrue(accommodationCreationPage.elementAdded());
+
+//        accommodationCreationPage.removePricing();
+//        Assertions.assertTrue(accommodationCreationPage.elementRemoved());
+
     }
 }
