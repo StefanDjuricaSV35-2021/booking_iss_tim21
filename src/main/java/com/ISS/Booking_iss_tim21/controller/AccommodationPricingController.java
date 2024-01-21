@@ -62,38 +62,12 @@ public class AccommodationPricingController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
     public ResponseEntity<AccommodationPricingDTO> createAccommodationPricing(@RequestBody AccommodationPricingDTO accommodationPricingDTO) {
 
-        if (accommodationPricingDTO.getAccommodationId() == null) {
+        try{
+            AccommodationPricing accommodationPricing = pricingService.save(accommodationPricingDTO);
+            return new ResponseEntity<>(new AccommodationPricingDTO(accommodationPricing), HttpStatus.CREATED);
+        }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-        Accommodation accommodation = accommodationService.findOne(accommodationPricingDTO.getAccommodationId());
-        if (accommodation == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        accommodationPricingDTO.getTimeSlot().setStartDate(accommodationPricingDTO.getTimeSlot().getStartDate()+ 3600 * AppConfig.UNIX_DIFF);
-        accommodationPricingDTO.getTimeSlot().setEndDate(accommodationPricingDTO.getTimeSlot().getEndDate()+ 3600 * AppConfig.UNIX_DIFF);
-
-        AccommodationPricing accommodationPricing = new AccommodationPricing();
-        accommodationPricing.setAccommodation(accommodation);
-        accommodationPricing.setTimeSlot(accommodationPricingDTO.getTimeSlot());
-        accommodationPricing.setPrice(accommodationPricingDTO.getPrice());
-
-        for (AccommodationPricing a:pricingService.getAccommodationPricingForAccommodation(accommodation.getId())) {
-            if (a.getTimeSlot().overlapsWith(accommodationPricing.getTimeSlot())){
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-        }
-
-        for (Reservation r:reservationService.getAccommodationReservations(accommodation.getId())) {
-            if (r.getTimeSlot().overlapsWith(accommodationPricing.getTimeSlot())){
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-        }
-
-
-        pricingService.save(accommodationPricing);
-        return new ResponseEntity<>(new AccommodationPricingDTO(accommodationPricing), HttpStatus.CREATED);
     }
 
     @PutMapping(consumes = "application/json")
