@@ -17,6 +17,18 @@ public class HomePage {
     @FindBy(css = "a[routerLink='login']")
     private WebElement loginButton;
 
+    @FindBy(css = "#locationInput")
+    private WebElement locationInputField;
+
+    @FindBy(css = "#start-date-input")
+    private WebElement dateFromInput;
+    @FindBy(css = "#end-date-input")
+    private WebElement dateToInput;
+    @FindBy(css = "#guests-number-input")
+    private WebElement noGuestsInput;
+    @FindBy(css = "#search-btn")
+    private WebElement searchButton;
+
     @FindBy(css = ".mat-mdc-menu-trigger.profileImg")
     private WebElement profileImg;
 
@@ -51,10 +63,20 @@ public class HomePage {
         }
     }
 
+    public void inputLocation(String location){
+        locationInputField.sendKeys(location);
+    }
+    public void inputDateFrom(String date){
+        dateFromInput.sendKeys(date);
+    }
+    public void inputDateTo(String date){
+        dateToInput.sendKeys(date);
+    }
+    public void inputNoGuests(Integer number){noGuestsInput.sendKeys(number.toString());}
+    public void searchButtonClick(){searchButton.click();}
     public void login() {
         loginButton.click();
     }
-
     public void clickProfileImg() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".mat-mdc-menu-trigger.profileImg")));

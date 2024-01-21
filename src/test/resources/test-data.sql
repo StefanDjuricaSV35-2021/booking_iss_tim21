@@ -12,5 +12,5 @@ INSERT INTO reservation (id, accommodation_id, guests_number, price, status, sta
 VALUES (1, 1, 2, 120.00, 1, 1640995200, 1643673600, 1);
 
 
--- INSERT INTO reservation_request (accommodation_id, guests_number, price, status, start_date, end_date, user_id)
--- VALUES (1, 3, 150.00, 1, 1643673600, 1644595200, 2);
+INSERT INTO reservation_request (accommodation_id, guests_number, price, status, start_date, end_date, user_id)
+VALUES (1, 3, 150.00, 1, 1643673600, 1644595200, 2);
