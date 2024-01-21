@@ -154,6 +154,15 @@ public class ReservationRequestController {
         return new ResponseEntity<>(reservationRequestDTOs, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/{userId}/cancel-count")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
+    public ResponseEntity<Integer> getUsersCancelCount(@PathVariable Long userId) {
+
+        int count=requestService.getUsersCancellaionCount(userId);
+
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/{userId}/ownerReservationRequests")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<ReservationRequestDTO>> getOwnerReservationRequests(@PathVariable Long userId) {
