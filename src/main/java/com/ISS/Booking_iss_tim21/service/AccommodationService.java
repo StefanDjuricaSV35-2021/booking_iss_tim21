@@ -53,7 +53,7 @@ public class AccommodationService {
 
     public String getAccommodationName(Long accId){return repository.getAccommodationNameById(accId);}
     public Accommodation findOne(Long id) {
-        return repository.findById(id).orElseGet(null);
+        return repository.findById(id).orElse(null);
     }
     public void save(Accommodation accommodation) { repository.save(accommodation); }
     public void remove(Long id) {

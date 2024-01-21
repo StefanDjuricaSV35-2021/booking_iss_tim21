@@ -1,156 +1,160 @@
 package com.ISS.Booking_iss_tim21.controller;
-import com.ISS.Booking_iss_tim21.model.Accommodation;
-import com.ISS.Booking_iss_tim21.model.ReservationRequest;
-import com.ISS.Booking_iss_tim21.model.User;
-import com.ISS.Booking_iss_tim21.repository.UserRepository;
-import com.ISS.Booking_iss_tim21.service.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ISS.Booking_iss_tim21.dto.JWTAuthenticationResponse;
+import com.ISS.Booking_iss_tim21.dto.SignInRequest;
 import com.ISS.Booking_iss_tim21.dto.ReservationRequestDTO;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationRequestStatus;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import com.fasterxml.jackson.core.type.TypeReference;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 
-@WebMvcTest(controllers = ReservationRequestController.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@AutoConfigureMockMvc
-class ReservationRequestControllerTest {
-    final String END_POINT_PATH="/api/v1/auth/reservationRequests";
-    private final ObjectMapper objectMapper=new ObjectMapper();
-
-    // Zbog main klase
-
-    @MockBean
-    private JWTService yourService;
-    @MockBean
-    private UserRepository userRepository;
-    @MockBean
-    private ReservationService reservationService;
-
-    //-------------------------------
-
-    @MockBean
-    private ReservationRequestService requestService;
-    @MockBean
-    private UserService userService;
-    @MockBean
-    private AccommodationService accommodationService;
+public class ReservationRequestControllerTest {
     @Autowired
-    private MockMvc mockMvc;
+    private TestRestTemplate restTemplate;
 
-    @Test
-    @WithMockUser(authorities = {"ROLE_GUEST"})
-    public void test_add_null_user_id_should_return_400_bad_request() throws Exception {
-        ReservationRequestDTO req=new ReservationRequestDTO();
-        req.setId(2L);
-        req.setStatus(ReservationRequestStatus.Accepted);
-        req.setPrice(200.0);
-        req.setTimeSlot(new TimeSlot());
-        req.setUserId(3L);
-        req.setAccommodationId(2L);
-        req.setGuestsNumber(3);
 
-        String jsonRequest = objectMapper.writeValueAsString(req);
+    private String token;
 
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post(END_POINT_PATH).with(csrf()) //<- kod POST mora csrf
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonRequest))
-                .andExpect(status().isBadRequest())
-                .andDo(print())
-        ;
+    @BeforeEach
+    public void login() {
+        HttpHeaders headers = new HttpHeaders();
+        SignInRequest user = new SignInRequest();
+        user.setEmail("owner@example.com");
+        user.setPassword("admin");
+
+        HttpEntity<SignInRequest> requestEntity = new HttpEntity<>(user, headers);
+        ResponseEntity<JWTAuthenticationResponse> responseEntity = restTemplate.exchange(
+                "/api/v1/auth/signin",
+                HttpMethod.POST,
+                requestEntity,
+                JWTAuthenticationResponse.class);
+        this.token = responseEntity.getBody().getToken();
 
     }
-    @Test
-    @WithMockUser(authorities = {"ROLE_ADMIN", "ROLE_OWNER", "ROLE_GUEST"})
-    void test_get_all_reservation_requests() throws Exception {
-        ArrayList<ReservationRequest> reqs=new ArrayList<>();
-        ReservationRequest req=new ReservationRequest(1L,new User(),new Accommodation(),3,3.0,new TimeSlot(),ReservationRequestStatus.Accepted);
-        reqs.add(req);
-        when(requestService.getAll()).thenReturn(reqs);
-
-        ResultActions action=mockMvc.perform(MockMvcRequestBuilders
-                        .get(END_POINT_PATH)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print()).andExpect(status().isOk());
-
-        ReservationRequestDTO[] results=objectMapper.readValue(action.andReturn().getResponse().getContentAsString(),ReservationRequestDTO[].class);
-        assertEquals(results.length,1);
-    }
 
     @Test
-    void getReservationRequest() {
-    }
-
-    @Test
-    void createReservationRequest() {
-    }
-
-    @Test
-    void updateReservationRequest() {
-    }
-
-    @Test
-    @WithMockUser(authorities = {"ROLE_ADMIN", "ROLE_OWNER", "ROLE_GUEST"})
-    public void testUpdateRequestShouldReturnBadRequest() throws Exception {
+    @DisplayName("Test with invalid request id, should return bad request")
+    public void testUpdateRequestShouldReturnBadRequest() {
         ReservationRequestDTO requestDTO = new ReservationRequestDTO();
         requestDTO.setId(-1L);
         requestDTO.setStatus(ReservationRequestStatus.Accepted);
         requestDTO.setPrice(200.0);
-        requestDTO.setTimeSlot(new TimeSlot());
+        requestDTO.setTimeSlot(new TimeSlot(1640995200, 1643673600));
         requestDTO.setUserId(1L);
         requestDTO.setAccommodationId(1L);
         requestDTO.setGuestsNumber(3);
 
-        String jsonRequest = objectMapper.writeValueAsString(requestDTO);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + token);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.put(END_POINT_PATH).with(csrf())
-                        .content(jsonRequest)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                        .andDo(print())
-                        .andExpect(status().isBadRequest());
+        System.out.println(token);
+
+        HttpEntity<ReservationRequestDTO> requestEntity = new HttpEntity<>(requestDTO, headers);
+
+        ResponseEntity<ReservationRequestDTO> responseEntity = restTemplate.exchange(
+                "/api/v1/auth/reservationRequests",
+                HttpMethod.PUT,
+                requestEntity,
+                ReservationRequestDTO.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
-    void deleteReservationRequest() {
+    @DisplayName("Test with invalid user id, should return bad request")
+    public void testUpdateRequestInvalidUserShouldReturnBadRequest() {
+        ReservationRequestDTO requestDTO = new ReservationRequestDTO();
+        requestDTO.setId(1L);
+        requestDTO.setStatus(ReservationRequestStatus.Accepted);
+        requestDTO.setPrice(200.0);
+        requestDTO.setTimeSlot(new TimeSlot(1640995200, 1643673600));
+        requestDTO.setUserId(-1L);
+        requestDTO.setAccommodationId(1L);
+        requestDTO.setGuestsNumber(3);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + token);
+
+        System.out.println(token);
+
+        HttpEntity<ReservationRequestDTO> requestEntity = new HttpEntity<>(requestDTO, headers);
+
+        ResponseEntity<ReservationRequestDTO> responseEntity = restTemplate.exchange(
+                "/api/v1/auth/reservationRequests",
+                HttpMethod.PUT,
+                requestEntity,
+                ReservationRequestDTO.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
-    void getUsersReservationRequests() {
+    @DisplayName("Test with invalid accommodation id, should return bad request")
+    public void testUpdateRequestInvalidAccommodationShouldReturnBadRequest() {
+        ReservationRequestDTO requestDTO = new ReservationRequestDTO();
+        requestDTO.setId(1L);
+        requestDTO.setStatus(ReservationRequestStatus.Accepted);
+        requestDTO.setPrice(200.0);
+        requestDTO.setTimeSlot(new TimeSlot(1640995200, 1643673600));
+        requestDTO.setUserId(1L);
+        requestDTO.setAccommodationId(-1L);
+        requestDTO.setGuestsNumber(3);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + token);
+
+        System.out.println(token);
+
+        HttpEntity<ReservationRequestDTO> requestEntity = new HttpEntity<>(requestDTO, headers);
+
+        ResponseEntity<ReservationRequestDTO> responseEntity = restTemplate.exchange(
+                "/api/v1/auth/reservationRequests",
+                HttpMethod.PUT,
+                requestEntity,
+                ReservationRequestDTO.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
-    void getOwnerReservationRequests() {
-    }
+    @DisplayName("Test with valid inputs, should return ok")
+    public void testUpdateRequestShouldReturnOk() {
+        ReservationRequestDTO requestDTO = new ReservationRequestDTO();
+        requestDTO.setId(1L);
+        requestDTO.setStatus(ReservationRequestStatus.Waiting);
+        requestDTO.setPrice(200.0);
+        requestDTO.setTimeSlot(new TimeSlot(1640995200, 1643673600));
+        requestDTO.setUserId(1L);
+        requestDTO.setAccommodationId(1L);
+        requestDTO.setGuestsNumber(3);
 
-    @Test
-    void getCurrentReservationRequests() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + token);
+
+        System.out.println(token);
+
+        HttpEntity<ReservationRequestDTO> requestEntity = new HttpEntity<>(requestDTO, headers);
+
+        ResponseEntity<ReservationRequestDTO> responseEntity = restTemplate.exchange(
+                "/api/v1/auth/reservationRequests",
+                HttpMethod.PUT,
+                requestEntity,
+                ReservationRequestDTO.class);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 }

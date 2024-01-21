@@ -38,7 +38,7 @@ public class UserService {
     }
 
     public User findById(Long id) {
-        return repository.findById(id).orElseGet(null);
+        return repository.findById(id).orElse(null);
     }
 
     public void remove(Long id){

@@ -21,7 +21,7 @@ public class ReservationRequestService {
 
 
     public ReservationRequest findOne(Long id) {
-        return repository.findById(id).orElseGet(null);
+        return repository.findById(id).orElse(null);
     }
     public void save(ReservationRequest reservationRequest) { repository.save(reservationRequest); }
 
