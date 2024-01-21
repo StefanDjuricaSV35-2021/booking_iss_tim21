@@ -43,6 +43,151 @@ public class ReservationRequestControllerTest {
     }
 
     @Test
+    @DisplayName("Test with null user id, should return bad request")
+    public void testCreateRequestNullUserShouldReturnBadRequest() {
+        ReservationRequestDTO requestDTO = new ReservationRequestDTO();
+        requestDTO.setId(null);
+        requestDTO.setStatus(ReservationRequestStatus.Accepted);
+        requestDTO.setPrice(200.0);
+        requestDTO.setTimeSlot(new TimeSlot(1640995200, 1643673600));
+        requestDTO.setUserId(null);
+        requestDTO.setAccommodationId(1L);
+        requestDTO.setGuestsNumber(3);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + token);
+
+        System.out.println(token);
+
+        HttpEntity<ReservationRequestDTO> requestEntity = new HttpEntity<>(requestDTO, headers);
+
+        ResponseEntity<ReservationRequestDTO> responseEntity = restTemplate.exchange(
+                "/api/v1/auth/reservationRequests",
+                HttpMethod.POST,
+                requestEntity,
+                ReservationRequestDTO.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test with non-existant user id, should return bad request")
+    public void testCreateRequestNonExistantUserShouldReturnBadRequest() {
+        ReservationRequestDTO requestDTO = new ReservationRequestDTO();
+        requestDTO.setId(null);
+        requestDTO.setStatus(ReservationRequestStatus.Accepted);
+        requestDTO.setPrice(200.0);
+        requestDTO.setTimeSlot(new TimeSlot(1640995200, 1643673600));
+        requestDTO.setUserId(-1L);
+        requestDTO.setAccommodationId(1L);
+        requestDTO.setGuestsNumber(3);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + token);
+
+        System.out.println(token);
+
+        HttpEntity<ReservationRequestDTO> requestEntity = new HttpEntity<>(requestDTO, headers);
+
+        ResponseEntity<ReservationRequestDTO> responseEntity = restTemplate.exchange(
+                "/api/v1/auth/reservationRequests",
+                HttpMethod.POST,
+                requestEntity,
+                ReservationRequestDTO.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test with null accommodation id, should return bad request")
+    public void testCreateRequestNullAccommodationShouldReturnBadRequest() {
+        ReservationRequestDTO requestDTO = new ReservationRequestDTO();
+        requestDTO.setId(null);
+        requestDTO.setStatus(ReservationRequestStatus.Accepted);
+        requestDTO.setPrice(200.0);
+        requestDTO.setTimeSlot(new TimeSlot(1640995200, 1643673600));
+        requestDTO.setUserId(1L);
+        requestDTO.setAccommodationId(null);
+        requestDTO.setGuestsNumber(3);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + token);
+
+        System.out.println(token);
+
+        HttpEntity<ReservationRequestDTO> requestEntity = new HttpEntity<>(requestDTO, headers);
+
+        ResponseEntity<ReservationRequestDTO> responseEntity = restTemplate.exchange(
+                "/api/v1/auth/reservationRequests",
+                HttpMethod.POST,
+                requestEntity,
+                ReservationRequestDTO.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test with non-existant accommodation id, should return bad request")
+    public void testCreateRequestNonExistantAccommodationShouldReturnBadRequest() {
+        ReservationRequestDTO requestDTO = new ReservationRequestDTO();
+        requestDTO.setId(null);
+        requestDTO.setStatus(ReservationRequestStatus.Accepted);
+        requestDTO.setPrice(200.0);
+        requestDTO.setTimeSlot(new TimeSlot(1640995200, 1643673600));
+        requestDTO.setUserId(1L);
+        requestDTO.setAccommodationId(-1L);
+        requestDTO.setGuestsNumber(3);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + token);
+
+        System.out.println(token);
+
+        HttpEntity<ReservationRequestDTO> requestEntity = new HttpEntity<>(requestDTO, headers);
+
+        ResponseEntity<ReservationRequestDTO> responseEntity = restTemplate.exchange(
+                "/api/v1/auth/reservationRequests",
+                HttpMethod.POST,
+                requestEntity,
+                ReservationRequestDTO.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test with valid data, should return ok")
+    public void testCreateRequestShouldReturnCreated() {
+        ReservationRequestDTO requestDTO = new ReservationRequestDTO();
+        requestDTO.setId(null);
+        requestDTO.setStatus(ReservationRequestStatus.Accepted);
+        requestDTO.setPrice(200.0);
+        requestDTO.setTimeSlot(new TimeSlot(1640995200, 1643673600));
+        requestDTO.setUserId(1L);
+        requestDTO.setAccommodationId(1L);
+        requestDTO.setGuestsNumber(3);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + token);
+
+        System.out.println(token);
+
+        HttpEntity<ReservationRequestDTO> requestEntity = new HttpEntity<>(requestDTO, headers);
+
+        ResponseEntity<ReservationRequestDTO> responseEntity = restTemplate.exchange(
+                "/api/v1/auth/reservationRequests",
+                HttpMethod.POST,
+                requestEntity,
+                ReservationRequestDTO.class);
+
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+    }
+
+    @Test
     @DisplayName("Test with invalid request id, should return bad request")
     public void testUpdateRequestShouldReturnBadRequest() {
         ReservationRequestDTO requestDTO = new ReservationRequestDTO();
