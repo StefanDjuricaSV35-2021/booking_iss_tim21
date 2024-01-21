@@ -2,6 +2,7 @@ package com.ISS.Booking_iss_tim21.service;
 
 import com.ISS.Booking_iss_tim21.config.AppConfig;
 import com.ISS.Booking_iss_tim21.model.ReservationRequest;
+import com.ISS.Booking_iss_tim21.model.enumeration.ReservationRequestStatus;
 import com.ISS.Booking_iss_tim21.repository.ReservationRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,22 @@ public class ReservationRequestService {
     public List<ReservationRequest> getUsersReservationRequestsById(Long userId) { return repository.getUsersReservationRequestsById(userId); }
 
     public List<ReservationRequest> getAccommodationReservationRequestsById(Long accommodationId) { return repository.getAccommodationReservationRequestsById(accommodationId); }
+
+    public int getUsersCancellaionCount(Long userId){
+
+        int count=0;
+
+        List<ReservationRequest> ress=getUsersReservationRequestsById(userId);
+
+        for(ReservationRequest r:ress){
+            if(r.getStatus()== ReservationRequestStatus.Cancelled){
+                count++;
+            }
+        }
+
+        return count;
+
+    }
 
     public List<ReservationRequest> getCurrentReservationRequestsById(Long userId) {
         long currentUnixTimestamp = System.currentTimeMillis() / AppConfig.UNIX_DIFF;
