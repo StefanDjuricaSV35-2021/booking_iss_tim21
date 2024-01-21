@@ -17,16 +17,16 @@ public class HomePage {
     @FindBy(css = "a[routerLink='login']")
     private WebElement loginButton;
 
-    @FindBy(css = "#locationInput")
+    @FindBy(css = "input[id='location-input']")
     private WebElement locationInputField;
 
-    @FindBy(css = "#start-date-input")
+    @FindBy(css = "input[id='start-date-input']")
     private WebElement dateFromInput;
-    @FindBy(css = "#end-date-input")
+    @FindBy(css = "input[id='end-date-input']")
     private WebElement dateToInput;
-    @FindBy(css = "#guests-number-input")
+    @FindBy(css = "input[id='guests-number-input']")
     private WebElement noGuestsInput;
-    @FindBy(css = "#search-btn")
+    @FindBy(css = "button[id='search-btn']")
     private WebElement searchButton;
 
     @FindBy(css = ".mat-mdc-menu-trigger.profileImg")
@@ -73,7 +73,8 @@ public class HomePage {
         dateToInput.sendKeys(date);
     }
     public void inputNoGuests(Integer number){noGuestsInput.sendKeys(number.toString());}
-    public void searchButtonClick(){searchButton.click();}
+    public void searchButtonClick(){searchButton.click();
+    }
     public void login() {
         loginButton.click();
     }

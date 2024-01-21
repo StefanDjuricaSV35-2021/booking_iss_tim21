@@ -1,80 +1,96 @@
 package e2eTests.tests;
 
-import e2eTests.pages.*;
-import org.junit.jupiter.api.Assertions;
+import e2eTests.pages.HomePage;
+import e2eTests.pages.SearchPage;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 public class TestSearch extends TestBase {
     @Test
-    public void test() {
+    public void test_search() {
         HomePage homePage = new HomePage(driver);
-        Assertions.assertTrue(homePage.isLoaded());
+        assertTrue(homePage.isLoaded());
 
-        //log in as guest
-        homePage.inputLocation("Beograd");
+        //search wrong
+        homePage.inputLocation("Begec");
         homePage.inputDateFrom("2/13/2024");
         homePage.inputDateTo("2/14/2024");
         homePage.inputNoGuests(3);
         homePage.searchButtonClick();
 
-        SearchPage searchPagePage = new SearchPage(driver);
-        Assertions.assertTrue(searchPagePage.isLoaded());
 
 
-//        ReservationsPage reservationsPageGuest = new ReservationsPage(driver);
-//        Assertions.assertTrue(reservationsPageGuest.isLoadedGuest());
-//
-//        //cancel one reservation
-//        int cancelledCounter = reservationsPageGuest.countCancelledReservations();
-//        boolean wasCancelled = reservationsPageGuest.cancelOneReservation();
-//
-//        int newCancelledCounter = reservationsPageGuest.countCancelledReservations();
-//        if (wasCancelled) {
-//            assertEquals(newCancelledCounter, cancelledCounter + 1);
-//        } else {
-//            assertEquals(newCancelledCounter, cancelledCounter);
-//        }
-//
-//        reservationsPageGuest.logOut();
-//        assertTrue(homePage.isLoaded());
-//        homePage.login();
-//        Assertions.assertTrue(loginPage.isLoaded());
-//
-//        //log in as owner
-//        loginPage.inputEmail("owner@example.com");
-//        loginPage.inputPassword("admin");
-//        loginPage.login();
-//
-//        //count current reservations
-//        Assertions.assertTrue(homePage.isLoaded());
-//        homePage.clickProfileImg();
-//        homePage.clickViewReservationsOwner();
-//        ReservationsPage reservationsPageOwner = new ReservationsPage(driver);
-//        Assertions.assertTrue(reservationsPageOwner.isLoadedOwner());
-//        int reservationsCounter = reservationsPageOwner.countReservations();
-//
-//        //accept reservation request, one gets declined
-//        homePage.clickProfileImg();
-//        homePage.clickViewReservationRequests();
-//        ReservationRequestsPage reservationRequestsPage = new ReservationRequestsPage(driver);
-//        Assertions.assertTrue(reservationRequestsPage.isLoaded());
-//        int waitingCounter = reservationRequestsPage.getWaitingCounter();
-//
-//        reservationRequestsPage.acceptOne();
-//        reservationRequestsPage.waitToChangeStatus();
-//        int newWaitingCounter = reservationRequestsPage.getWaitingCounter();
-//
-//        //verify that two requests were changed
-//        assertEquals(newWaitingCounter, waitingCounter - 2);
-//
-//        homePage.clickProfileImg();
-//        homePage.clickViewReservationsOwner();
-//
-//        Assertions.assertTrue(reservationsPageOwner.isLoadedOwner());
-//        int newReservationsCounter = reservationsPageOwner.countReservations();
-//        assertEquals(newReservationsCounter, reservationsCounter + 1);
+        SearchPage searchPagePage = new SearchPage(driver, driver.getCurrentUrl());
+        assertTrue(searchPagePage.isLoaded());
+
+        List<String> loadedAccommodations=searchPagePage.getLoadedAccommodations();
+        assertEquals(loadedAccommodations.size(),0);
+
+        //search right
+        searchPagePage.inputLocation("Beograd");
+        homePage.searchButtonClick();
+        searchPagePage = new SearchPage(driver, driver.getCurrentUrl());
+        assertTrue(searchPagePage.isLoaded());
+
+        loadedAccommodations=searchPagePage.getLoadedAccommodations();
+        assertEquals(loadedAccommodations.size(),1);
+        assertTrue(loadedAccommodations.contains("Cozy Cottage"));
+
+        //filter amenity wrong
+        searchPagePage.selectAmenity("Tv");
+        loadedAccommodations=searchPagePage.getLoadedAccommodations();
+        assertEquals(loadedAccommodations.size(),0);
+
+        //filter amenities right
+        searchPagePage.selectAmenity("Tv");
+        searchPagePage.selectAmenity("WiFi");
+        searchPagePage.selectAmenity("Parking");
+        searchPagePage = new SearchPage(driver, driver.getCurrentUrl());
+        loadedAccommodations=searchPagePage.getLoadedAccommodations();
+        assertEquals(loadedAccommodations.size(),1);
+
+        //filter type wrong
+        searchPagePage.selectType("House");
+        searchPagePage = new SearchPage(driver, driver.getCurrentUrl());
+        loadedAccommodations=searchPagePage.getLoadedAccommodations();
+        assertEquals(loadedAccommodations.size(),0);
+
+        //filter type right
+        searchPagePage.selectType("House");
+        searchPagePage.selectType("Room");
+        searchPagePage = new SearchPage(driver, driver.getCurrentUrl());
+        loadedAccommodations=searchPagePage.getLoadedAccommodations();
+        assertEquals(loadedAccommodations.size(),1);
+
+        //filter min wrong
+        searchPagePage.setMinPrice(400.0);
+        searchPagePage = new SearchPage(driver, driver.getCurrentUrl());
+        loadedAccommodations=searchPagePage.getLoadedAccommodations();
+        assertEquals(loadedAccommodations.size(),0);
+
+        //filter min right
+        searchPagePage.setMinPrice(200.0);
+        searchPagePage = new SearchPage(driver, driver.getCurrentUrl());
+        loadedAccommodations=searchPagePage.getLoadedAccommodations();
+        assertEquals(loadedAccommodations.size(),1);
+
+        //filter max wrong
+        searchPagePage.setMaxPrice(250.0);
+        searchPagePage = new SearchPage(driver, driver.getCurrentUrl());
+        loadedAccommodations=searchPagePage.getLoadedAccommodations();
+        assertEquals(loadedAccommodations.size(),0);
+
+        //filter max right
+        searchPagePage.setMaxPrice(500.0);
+        searchPagePage = new SearchPage(driver, driver.getCurrentUrl());
+        loadedAccommodations=searchPagePage.getLoadedAccommodations();
+        assertEquals(loadedAccommodations.size(),1);
+
+
+
     }
 }

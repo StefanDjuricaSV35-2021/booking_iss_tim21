@@ -55,7 +55,7 @@ public class AccommodationFilterService {
 
     }
 
-    public List<Accommodation> filterAccommodationsByPriceRange(List<Accommodation> accs, Integer minPrice, Integer maxPrice){
+    public List<Accommodation> filterAccommodationsByPriceRange(List<Accommodation> accs, Double minPrice, Double maxPrice){
 
         accs=filterAccommodationsByMinPrice(accs,minPrice);
         accs=filterAccommodationsByMaxPrice(accs,maxPrice);
@@ -64,7 +64,7 @@ public class AccommodationFilterService {
 
     }
 
-    List<Accommodation> filterAccommodationsByMinPrice(List<Accommodation> accs, Integer minPrice){
+    List<Accommodation> filterAccommodationsByMinPrice(List<Accommodation> accs, Double minPrice){
 
         List<Accommodation> filtered=new ArrayList<>();
 
@@ -87,7 +87,7 @@ public class AccommodationFilterService {
 
     }
 
-    List<Accommodation> filterAccommodationsByMaxPrice(List<Accommodation> accs,Integer maxPrice){
+    List<Accommodation> filterAccommodationsByMaxPrice(List<Accommodation> accs,Double maxPrice){
 
         List<Accommodation> filtered=new ArrayList<>();
 
