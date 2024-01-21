@@ -12,8 +12,8 @@ public class UrlFilterParams {
 
     List<Amenity> amenities=new ArrayList<>();
     AccommodationType type=null;
-    Integer minPrice=null;
-    Integer maxPrice=null;
+    Double minPrice=null;
+    Double maxPrice=null;
 
     public UrlFilterParams() {
     }
@@ -38,11 +38,11 @@ public class UrlFilterParams {
                     break;
                 }
                 case "MinPrice": {
-                    this.minPrice=Integer.parseInt(val);
+                    this.minPrice=Double.parseDouble(val);
                     break;
                 }
                 case "MaxPrice": {
-                    this.maxPrice=Integer.parseInt(val);
+                    this.maxPrice=Double.parseDouble(val);
                     break;
                 }
                 default: {
@@ -64,11 +64,11 @@ public class UrlFilterParams {
         return type;
     }
 
-    public Integer getMinPrice() {
+    public Double getMinPrice() {
         return minPrice;
     }
 
-    public Integer getMaxPrice() {
+    public Double getMaxPrice() {
         return maxPrice;
     }
 }

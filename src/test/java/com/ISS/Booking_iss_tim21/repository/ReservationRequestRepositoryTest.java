@@ -5,6 +5,7 @@ import com.ISS.Booking_iss_tim21.model.ReservationRequest;
 import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationRequestStatus;
+import com.ISS.Booking_iss_tim21.service.JWTService;
 import com.ISS.Booking_iss_tim21.service.ReservationService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -20,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
@@ -44,6 +46,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @DataJpaTest
 @ActiveProfiles("test")
 class ReservationRequestRepositoryTest extends AbstractTestNGSpringContextTests {
+
+    // Zbog main klase
+
+    @MockBean
+    private JWTService yourService;
+    @MockBean
+    private UserRepository userRepository;
+    @MockBean
+    private ReservationService reservationService;
+
+    //-------------------------------
 
     @Autowired
     private ReservationRequestRepository reservationRequestRepository;
