@@ -39,6 +39,7 @@ public class AccommodationChangeRequestDTO {
     private Set<String> photos;
     private int daysForCancellation;
     private boolean perNight;
+    private boolean autoAccepting;
     private boolean enabled;
 
     public AccommodationChangeRequestDTO(AccommodationChangeRequest accommodationChangeRequest) {
@@ -63,6 +64,7 @@ public class AccommodationChangeRequestDTO {
                         map().setDaysForCancellation(source.getDaysForCancellation());
                         map().setPerNight(source.isPerNight());
                         map().setEnabled(source.isEnabled());
+                        map().setAutoAccepting(source.isAutoAccepting());
                     }
                 };
 

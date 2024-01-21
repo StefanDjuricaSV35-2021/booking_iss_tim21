@@ -20,14 +20,14 @@ VALUES (12, 'Berlin', 'Germany', 'admin@example.com', 'Admin', '$2a$10$CUvvlUoIy
 
 
 -- Inserting data into the accommodation table with modified fields
-INSERT INTO accommodation (id, owner_id, name, type, min_guests, max_guests, description, days_for_cancellation, location, enabled, per_night)
-VALUES (1, 9, 'Cozy Cottage', 0, 2, 4, 'A lovely cottage in the woods', 7, 'Beograd', true, false);
+INSERT INTO accommodation (id, owner_id, name, type, min_guests, max_guests, description, days_for_cancellation, location, enabled, per_night,auto_accepting)
+VALUES (1, 9, 'Cozy Cottage', 0, 2, 4, 'A lovely cottage in the woods', 7, 'Beograd', true, false,true);
 
-INSERT INTO accommodation (id, owner_id, name, type, min_guests, max_guests, description, days_for_cancellation, location, enabled, per_night)
-VALUES (2, 12, 'Modern Apartment', 1, 1, 2, 'A sleek apartment in the city center', 14, 'Novi Sad', true, false);
+INSERT INTO accommodation (id, owner_id, name, type, min_guests, max_guests, description, days_for_cancellation, location, enabled, per_night,auto_accepting)
+VALUES (2, 12, 'Modern Apartment', 1, 1, 2, 'A sleek apartment in the city center', 14, 'Novi Sad', true, false,false);
 
-INSERT INTO accommodation (id, owner_id, name, type, min_guests, max_guests, description, days_for_cancellation, location, enabled, per_night)
-VALUES (3, 12, 'Seaside Villa', 2, 6, 10, 'A luxurious villa with a view of the ocean', 30, 'Nis', true, false);
+INSERT INTO accommodation (id, owner_id, name, type, min_guests, max_guests, description, days_for_cancellation, location, enabled, per_night,auto_accepting)
+VALUES (3, 12, 'Seaside Villa', 2, 6, 10, 'A luxurious villa with a view of the ocean', 30, 'Nis', true, false,false);
 
 
 
@@ -58,17 +58,17 @@ VALUES (3, 'TV');
 
 -- Inserting photos for the Cozy Cottage (accommodation_id = 1)
 INSERT INTO accommodation_photos (accommodation_id, photos)
-VALUES (1, './src/main/resources/images/peakpx.jpg');
+VALUES (1, 'peakpx.jpg');
 
 INSERT INTO accommodation_photos (accommodation_id, photos)
-VALUES (1, './src/main/resources/images/peakpx.jpg');
+VALUES (1, 'peakpx.jpg');
 
 -- Inserting photos for the Modern Apartment (accommodation_id = 2)
 INSERT INTO accommodation_photos (accommodation_id, photos)
-VALUES (2, './src/main/resources/images/peakpx.jpg');
+VALUES (2, 'peakpx.jpg');
 
 INSERT INTO accommodation_photos (accommodation_id, photos)
-VALUES (2, './src/main/resources/images/peakpx.jpg');
+VALUES (2, 'peakpx.jpg');
 
 -- Inserting photos for the Seaside Villa (accommodation_id = 3)
 INSERT INTO accommodation_photos (accommodation_id, photos)
@@ -222,24 +222,24 @@ VALUES (3, 4, 300.00, 3, 1648238400, 1649068800, 12); -- Request for Seaside Vil
 -------------------------------------
 
 -- Inserting review reports
-INSERT INTO review_report (description, review_id, user_id)
-VALUES ('Inappropriate language used in the review', 1, 10); -- Report for Accommodation Review ID 1 by User 10
+INSERT INTO review_report ( review_id, user_id)
+VALUES (1, 10); -- Report for Accommodation Review ID 1 by User 10
 
-INSERT INTO review_report (description, review_id, user_id)
-VALUES ('False information in the review', 2, 11); -- Report for Accommodation Review ID 2 by User 11
+INSERT INTO review_report ( review_id, user_id)
+VALUES ( 2, 11); -- Report for Accommodation Review ID 2 by User 11
 
-INSERT INTO review_report (description, review_id, user_id)
-VALUES ('Suspicious activity in the review', 3, 11); -- Report for Accommodation Review ID 3 by User 11
+INSERT INTO review_report ( review_id, user_id)
+VALUES ( 3, 11); -- Report for Accommodation Review ID 3 by User 11
 
 -- Additional review reports
-INSERT INTO review_report (description, review_id, user_id)
-VALUES ('Review contains offensive content', 4, 9); -- Report for Accommodation Review ID 4 by User 9
+INSERT INTO review_report (review_id, user_id)
+VALUES ( 4, 9); -- Report for Accommodation Review ID 4 by User 9
 
-INSERT INTO review_report (description, review_id, user_id)
-VALUES ('Inappropriate behavior mentioned in the review', 5, 8); -- Report for Accommodation Review ID 5 by User 8
+INSERT INTO review_report (review_id, user_id)
+VALUES (5, 8); -- Report for Accommodation Review ID 5 by User 8
 
-INSERT INTO review_report (description, review_id, user_id)
-VALUES ('Unfair rating in the review', 6, 7); -- Report for Accommodation Review ID 6 by User 7
+INSERT INTO review_report ( review_id, user_id)
+VALUES ( 6, 7); -- Report for Accommodation Review ID 6 by User 7
 
 
 ------------------------------------

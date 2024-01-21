@@ -1,5 +1,6 @@
 package com.ISS.Booking_iss_tim21.controller;
 
+import com.ISS.Booking_iss_tim21.config.AppConfig;
 import com.ISS.Booking_iss_tim21.dto.AccommodationPricingDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.AccommodationPricing;
@@ -43,12 +44,16 @@ public class AccommodationPricingController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
+
+
         return new ResponseEntity<>(new AccommodationPricingDTO(accommodationPricing), HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
     public ResponseEntity<AccommodationPricingDTO> createAccommodationPricing(@RequestBody AccommodationPricingDTO accommodationPricingDTO) {
+
+        System.out.print(accommodationPricingDTO.getTimeSlot().getStartDate());
         if (accommodationPricingDTO.getAccommodationId() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -58,6 +63,8 @@ public class AccommodationPricingController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        accommodationPricingDTO.getTimeSlot().setStartDate(accommodationPricingDTO.getTimeSlot().getStartDate()+ 3600 * AppConfig.UNIX_DIFF);
+        accommodationPricingDTO.getTimeSlot().setEndDate(accommodationPricingDTO.getTimeSlot().getEndDate()+ 3600 * AppConfig.UNIX_DIFF);
 
         AccommodationPricing accommodationPricing = new AccommodationPricing();
         accommodationPricing.setAccommodation(accommodation);
@@ -77,6 +84,9 @@ public class AccommodationPricingController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        accommodationPricingDTO.getTimeSlot().setStartDate(accommodationPricingDTO.getTimeSlot().getStartDate()+ 3600 * AppConfig.UNIX_DIFF);
+        accommodationPricingDTO.getTimeSlot().setEndDate(accommodationPricingDTO.getTimeSlot().getEndDate()+ 3600 * AppConfig.UNIX_DIFF);
+
         accommodationPricing.setAccommodation(accommodationService.findOne(accommodationPricingDTO.getAccommodationId()));
         accommodationPricing.setTimeSlot(accommodationPricingDTO.getTimeSlot());
         accommodationPricing.setPrice(accommodationPricingDTO.getPrice());
@@ -87,7 +97,6 @@ public class AccommodationPricingController {
     }
 
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteAccommodationPricing(@PathVariable Long id) {
         AccommodationPricing accommodationPricing = pricingService.findOne(id);
 
@@ -103,11 +112,15 @@ public class AccommodationPricingController {
     @GetMapping(value = "/{accommodationId}/accommodationPricings")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<AccommodationPricingDTO>> getPricingsForAccommodation(@PathVariable Long accommodationId) {
-        List<AccommodationPricing> accommodationPricings = pricingService.getActiveAccommodationPricings(accommodationId);
+
+        List<AccommodationPricing> accommodationPricings = pricingService.getAccommodationPricingForAccommodation(accommodationId);
+
 
         List<AccommodationPricingDTO> accommodationPricingDTOS = new ArrayList<>();
+
         for (AccommodationPricing a : accommodationPricings) {
             accommodationPricingDTOS.add(new AccommodationPricingDTO(a));
+
         }
         return new ResponseEntity<>(accommodationPricingDTOS, HttpStatus.OK);
     }

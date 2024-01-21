@@ -1,6 +1,8 @@
 package com.ISS.Booking_iss_tim21.model;
 
 import com.ISS.Booking_iss_tim21.dto.UserDTO;
+import com.ISS.Booking_iss_tim21.model.enumeration.Amenity;
+import com.ISS.Booking_iss_tim21.model.enumeration.NotificationType;
 import com.ISS.Booking_iss_tim21.model.enumeration.Role;
 import com.ISS.Booking_iss_tim21.model.review.OwnerReview;
 import com.ISS.Booking_iss_tim21.model.review.Review;
@@ -59,14 +61,27 @@ public class User implements UserDetails {
     @Column(name = "enabled")
     private boolean enabled;
 
+    @Column(name = "blocked")
+    private boolean blocked;
+
     @Column(name = "role")
     private Role role;
 
     @OneToMany(mappedBy = "recipient", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Notification> notifications;
 
+    @ElementCollection(targetClass = NotificationType.class, fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    private List<NotificationType> subscribedNotificationTypes;
+
     @OneToMany(mappedBy = "reviewed", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     private List<OwnerReview> ownerReviews;
+
+    @OneToMany(mappedBy = "reported", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    private List<UserReport> userReports;
+
+    @OneToMany(mappedBy = "reporter", fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    private List<UserReport> userReports2;
 
     @OneToMany(mappedBy = "reviewer", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Review> reviews;
@@ -83,6 +98,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ReviewReport> reviewReports;
 
+    @Transient
+    private String jwt;
+
     public User(UserDTO userDTO) {
         this.Id = userDTO.getId();
         this.email = userDTO.getEmail();
@@ -95,6 +113,7 @@ public class User implements UserDetails {
         this.phone = userDTO.getPhone();
         this.role = userDTO.getRole();
         this.enabled = true;
+        this.blocked = userDTO.isBlocked();
     }
 
 

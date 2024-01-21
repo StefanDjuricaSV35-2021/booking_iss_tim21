@@ -44,6 +44,7 @@ public class AccommodationChangeRequest {
     private Set<String> photos;
     private int daysForCancellation;
     private boolean perNight;
+    private boolean autoAccepting;
     private boolean enabled;
 
 

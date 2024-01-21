@@ -1,6 +1,7 @@
 package com.ISS.Booking_iss_tim21.service;
 
 import com.ISS.Booking_iss_tim21.model.Notification;
+import com.ISS.Booking_iss_tim21.model.Reservation;
 import com.ISS.Booking_iss_tim21.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ public class NotificationService {
 
     @Autowired
     NotificationRepository repository;
+
 
     public List<Notification> getAll(){
         return repository.findAll();
@@ -26,6 +28,9 @@ public class NotificationService {
     public void remove(Long id) {
         repository.deleteById(id);
     }
+
+    public void save(Notification notification) { repository.save(notification); }
+
 
 
 

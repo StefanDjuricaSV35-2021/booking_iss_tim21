@@ -1,12 +1,13 @@
 package com.ISS.Booking_iss_tim21.controller;
 
 import com.ISS.Booking_iss_tim21.dto.ReservationRequestDTO;
+import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.ReservationRequest;
-import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationRequestStatus;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
 import com.ISS.Booking_iss_tim21.service.ReservationRequestService;
+import com.ISS.Booking_iss_tim21.service.ReservationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,13 +17,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/auth/reservationRequests")
 public class ReservationRequestController {
+
+    @Autowired
+    private ReservationService reservationService;
     @Autowired
     private ReservationRequestService requestService;
     @Autowired
@@ -59,14 +61,21 @@ public class ReservationRequestController {
     @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
     public ResponseEntity<ReservationRequestDTO> createReservationRequest(@RequestBody ReservationRequestDTO reservationRequestDTO) {
 
-//        if (reservationRequestDTO.getUserId() == null) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//        User user = userService.findOne(reservationRequestDTO.getUserId());
-//        if (user == null) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
+        if (reservationRequestDTO.getUserId() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        User user = userService.findById(reservationRequestDTO.getUserId());
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
+        if (reservationRequestDTO.getAccommodationId() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Accommodation acc = accommodationService.findOne(reservationRequestDTO.getAccommodationId());
+        if (acc == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         ReservationRequest reservationRequest = new ReservationRequest();
         reservationRequest.setId(reservationRequestDTO.getId());
@@ -77,6 +86,10 @@ public class ReservationRequestController {
         reservationRequest.setTimeSlot(reservationRequestDTO.getTimeSlot());
         reservationRequest.setStatus(reservationRequestDTO.getStatus());
 
+        if(reservationRequest.getAccommodation().isAutoAccepting()){
+            reservationRequest.setStatus(ReservationRequestStatus.Accepted);
+            reservationService.acceptReservation(reservationRequest);
+        }
 
         requestService.save(reservationRequest);
 
@@ -87,17 +100,27 @@ public class ReservationRequestController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<ReservationRequestDTO> updateReservationRequest(@RequestBody ReservationRequestDTO reservationRequestDTO) {
       ReservationRequest reservationRequest = requestService.findOne(reservationRequestDTO.getId());
-
         if (reservationRequest == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        reservationRequest.setUser(userService.findById(reservationRequestDTO.getUserId()));
-        reservationRequest.setAccommodation(accommodationService.findOne(reservationRequestDTO.getAccommodationId()));
+        User user = userService.findById(reservationRequestDTO.getUserId());
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Accommodation acc = accommodationService.findOne(reservationRequestDTO.getAccommodationId());
+        if (acc == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        ReservationRequestStatus statusOriginal = reservationRequest.getStatus();
+        reservationRequest.setUser(user);
+        reservationRequest.setAccommodation(acc);
         reservationRequest.setGuestsNumber(reservationRequestDTO.getGuestsNumber());
         reservationRequest.setPrice(reservationRequestDTO.getPrice());
         reservationRequest.setTimeSlot(reservationRequestDTO.getTimeSlot());
         reservationRequest.setStatus(reservationRequestDTO.getStatus());
-
+        if(reservationRequest.getStatus() == ReservationRequestStatus.Accepted && statusOriginal != ReservationRequestStatus.Accepted) {
+            reservationService.acceptReservation(reservationRequest);
+        }
 
         requestService.save(reservationRequest);
         return new ResponseEntity<>(new ReservationRequestDTO(reservationRequest), HttpStatus.OK);
@@ -119,11 +142,39 @@ public class ReservationRequestController {
     @GetMapping(value = "/{userId}/reservationRequests")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<ReservationRequestDTO>> getUsersReservationRequests(@PathVariable Long userId) {
+
         List<ReservationRequest> reservationRequests = requestService.getUsersReservationRequestsById(userId);
         List<ReservationRequestDTO> reservationRequestDTOs = new ArrayList<>();
         for (ReservationRequest r : reservationRequests) {
             reservationRequestDTOs.add(new ReservationRequestDTO(r));
+
+
         }
+
+        return new ResponseEntity<>(reservationRequestDTOs, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{userId}/cancel-count")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
+    public ResponseEntity<Integer> getUsersCancelCount(@PathVariable Long userId) {
+
+        int count=requestService.getUsersCancellaionCount(userId);
+
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{userId}/ownerReservationRequests")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
+    public ResponseEntity<List<ReservationRequestDTO>> getOwnerReservationRequests(@PathVariable Long userId) {
+
+        List<ReservationRequest> reservationRequests = requestService.getUsersReservationRequestsByOwnerId(userId);
+        List<ReservationRequestDTO> reservationRequestDTOs = new ArrayList<>();
+        for (ReservationRequest r : reservationRequests) {
+            reservationRequestDTOs.add(new ReservationRequestDTO(r));
+
+
+        }
+
         return new ResponseEntity<>(reservationRequestDTOs, HttpStatus.OK);
     }
 

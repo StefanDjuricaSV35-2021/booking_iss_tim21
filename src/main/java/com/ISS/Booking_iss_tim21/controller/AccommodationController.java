@@ -1,14 +1,10 @@
 package com.ISS.Booking_iss_tim21.controller;
 
-import com.ISS.Booking_iss_tim21.dto.AccommodationDetailsDTO;
-import com.ISS.Booking_iss_tim21.dto.AccommodationPreviewDTO;
+import com.ISS.Booking_iss_tim21.dto.*;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.TimeSlot;
 import com.ISS.Booking_iss_tim21.model.User;
-import com.ISS.Booking_iss_tim21.service.AccommodationFilterService;
-import com.ISS.Booking_iss_tim21.service.AccommodationPricingService;
-import com.ISS.Booking_iss_tim21.service.AccommodationService;
-import com.ISS.Booking_iss_tim21.service.UserService;
+import com.ISS.Booking_iss_tim21.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,8 +23,7 @@ public class AccommodationController {
     @Autowired
     private AccommodationFilterService accommodationFilterService;
     @Autowired
-    private AccommodationPricingService pricingService;
-
+    AccommodationDatesService datesService;
     @Autowired
     private UserService userService;
 
@@ -106,8 +101,22 @@ public class AccommodationController {
 
         AccommodationDetailsDTO accDTO=new AccommodationDetailsDTO(accommodation);
 
-        List<TimeSlot> accDates=accommodationService.getAccommodationAvaiableDates(accDTO.getId());
+        List<TimeSlot> accDates=datesService.getAccommodationAvaiableDates(accDTO.getId());
         accDTO.setDates(accDates);
+
+        return new ResponseEntity<>(accDTO, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/preview/{id}")
+    public ResponseEntity<AccommodationPreviewDTO> getAccommodationPreview(@PathVariable Long id) {
+
+        Accommodation accommodation = accommodationService.findOne(id);
+
+        if (accommodation == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        AccommodationPreviewDTO accDTO=new AccommodationPreviewDTO(accommodation);
 
         return new ResponseEntity<>(accDTO, HttpStatus.OK);
     }
@@ -118,9 +127,7 @@ public class AccommodationController {
             @RequestParam(value="dateTo",required=true) String dateTo,
             @RequestParam(value="noGuests",required=true) Integer noGuests,
             @RequestParam(value="id",required=true) Long id) {
-        System.out.println(dateFrom);
-        System.out.println(dateTo);
-        System.out.println(id);
+
         double price=accommodationService.getAccommodationPrice(dateFrom,dateTo,noGuests,id);
         return new ResponseEntity<>(price, HttpStatus.OK);
     }
@@ -153,6 +160,7 @@ public class AccommodationController {
         accommodation.setLocation(accommodationDTO.getLocation());
         accommodation.setEnabled(accommodationDTO.isEnabled());
         accommodation.setPerNight(accommodationDTO.isPerNight());
+        accommodation.setAutoAccepting(false);
 
         accommodationService.save(accommodation);
 
@@ -187,6 +195,7 @@ public class AccommodationController {
         accommodation.setLocation(accommodationDTO.getLocation());
         accommodation.setEnabled(accommodationDTO.isEnabled());
         accommodation.setPerNight(accommodationDTO.isPerNight());
+        accommodation.setAutoAccepting(accommodationDTO.isAutoAccepting());
 
         accommodationService.save(accommodation);
         return new ResponseEntity<>(new AccommodationDetailsDTO(accommodation), HttpStatus.OK);
@@ -221,6 +230,35 @@ public class AccommodationController {
         }
         return new ResponseEntity<>(accommodationPreviewDTOs, HttpStatus.OK);
 
+    }
+
+    @GetMapping(value = "/{ownerId}/profit")
+    public ResponseEntity<List<AccommodationProfitDTO>> getOwnersAccommodationsProfit(
+            @PathVariable Long ownerId,
+            @RequestParam(value="dateFrom",required = true) String dateFrom,
+            @RequestParam(value="dateTo",required=true) String dateTo) {
+
+        List<AccommodationProfitDTO> accommodationProfitDTOS = accommodationService.getOwnerAccommodationsProfit(ownerId,dateFrom,dateTo);
+        return new ResponseEntity<>(accommodationProfitDTOS, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/annual-data")
+    public ResponseEntity<AccommodationAnnualDataDTO> getAccommodationAnnualData(
+            @PathVariable Long id,
+            @RequestParam(value="year",required = true) Integer year) {
+
+        AccommodationAnnualDataDTO accommodationAnnualData = accommodationService.getAccommodationAnnualData(id,year);
+        return new ResponseEntity<>(accommodationAnnualData, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{ownerId}/res-count")
+    public ResponseEntity<List<AccommodationReservationCountDTO>> getOwnersAccommodationsReservationCount(
+            @PathVariable Long ownerId,
+            @RequestParam(value="dateFrom",required = true) String dateFrom,
+            @RequestParam(value="dateTo",required=true) String dateTo) {
+
+        List<AccommodationReservationCountDTO> accommodationReservationCountDTOS = accommodationService.getOwnerAccommodationsReservationCount(ownerId,dateFrom,dateTo);
+        return new ResponseEntity<>(accommodationReservationCountDTOS, HttpStatus.OK);
     }
 
 }

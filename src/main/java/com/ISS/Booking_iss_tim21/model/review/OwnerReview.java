@@ -16,8 +16,5 @@ public class OwnerReview extends Review {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private User reviewed;
-
-
-
 }
 

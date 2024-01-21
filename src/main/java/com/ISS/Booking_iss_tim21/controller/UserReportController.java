@@ -1,5 +1,6 @@
 package com.ISS.Booking_iss_tim21.controller;
 
+import com.ISS.Booking_iss_tim21.dto.UserDTO;
 import com.ISS.Booking_iss_tim21.dto.UserReportDTO;
 import com.ISS.Booking_iss_tim21.model.UserReport;
 import com.ISS.Booking_iss_tim21.model.User;
@@ -40,8 +41,46 @@ public class UserReportController {
         return new ResponseEntity<>(reportsDTO, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/guest/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_GUEST')")
+    public ResponseEntity<List<UserDTO>> getGuestsOwners(@PathVariable Long id) {
+
+        User user = userService.findById(id);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        List<User> users = userService.getGuestsOwners(user);
+
+        List<UserDTO> usersDTO = new ArrayList<>();
+        for (User u : users) {
+            usersDTO.add(new UserDTO(u));
+        }
+
+        return new ResponseEntity<>(usersDTO, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/owner/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
+    public ResponseEntity<List<UserDTO>> getOwnersGuests(@PathVariable Long id) {
+
+        User user = userService.findById(id);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        List<User> users = userService.getOwnersGuests(user);
+
+        List<UserDTO> usersDTO = new ArrayList<>();
+        for (User u : users) {
+            usersDTO.add(new UserDTO(u));
+        }
+
+        return new ResponseEntity<>(usersDTO, HttpStatus.OK);
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<UserReportDTO> createUserReport(@RequestBody UserReportDTO userReportDTO) {
 
         if (userReportDTO.getReportedId() == null || userReportDTO.getReporterId() == null) {
@@ -55,15 +94,12 @@ public class UserReportController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        System.out.println(userReportDTO.getId());
 
         UserReport report = new UserReport();
         report.setReported(reported);
         report.setReporter(reporter);
-        report.setId(userReportDTO.getId());
         report.setDescription(userReportDTO.getDescription());
 
-        System.out.println(report.getId());
 
         userReportService.save(report);
 
@@ -71,7 +107,7 @@ public class UserReportController {
     }
 
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteUserReport(@PathVariable Long id) {
 
         UserReport report = userReportService.findOne(id);

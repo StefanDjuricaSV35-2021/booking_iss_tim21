@@ -16,7 +16,7 @@ public class AccommodationReview extends Review {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "accommodation_id")
-    Accommodation reviewed;
+    private Accommodation reviewed;
 
 
 

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 @RestController
 @RequestMapping("/api/v1/auth/reservations")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ReservationController {
     @Autowired
     private ReservationService reservationService;
@@ -71,7 +72,6 @@ public class ReservationController {
 
 
         Reservation reservation = new Reservation();
-        reservation.setId(reservationDTO.getId());
         reservation.setUser(userService.findById(reservationDTO.getUserId()));
         reservation.setAccommodation(accommodationService.findOne(reservationDTO.getAccommodationId()));
         reservation.setGuestsNumber(reservationDTO.getGuestsNumber());
@@ -144,4 +144,20 @@ public class ReservationController {
         return new ResponseEntity<>(reservationDTOs, HttpStatus.OK);
 
     }
+
+    @GetMapping(value = "/{ownerId}/currentOwnersReservations")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
+    public ResponseEntity<List<ReservationDTO>> getCurrentOwnersReservations(@PathVariable Long ownerId) {
+
+        List<Reservation> reservations = reservationService.getCurrentOwnersReservationsById(ownerId);
+
+        List<ReservationDTO> reservationDTOs = new ArrayList<>();
+        for (Reservation r : reservations) {
+            reservationDTOs.add(new ReservationDTO(r));
+        }
+        return new ResponseEntity<>(reservationDTOs, HttpStatus.OK);
+
+    }
+
+
 }

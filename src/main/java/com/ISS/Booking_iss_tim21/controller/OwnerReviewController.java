@@ -4,7 +4,9 @@ import com.ISS.Booking_iss_tim21.dto.OwnerReviewDTO;
 import com.ISS.Booking_iss_tim21.model.review.OwnerReview;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.service.OwnerReviewService;
+import com.ISS.Booking_iss_tim21.service.ReservationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,7 +27,8 @@ public class OwnerReviewController {
     @Autowired
     private UserService userService;
 
-
+    @Autowired
+    private ReservationService reservationService;
 
 
     @GetMapping
@@ -58,6 +61,18 @@ public class OwnerReviewController {
         return new ResponseEntity<>(reviewDTOS, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/one/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
+    public ResponseEntity<OwnerReviewDTO> getOwnerReview(@PathVariable Long id) {
+        //Accommodation accommodation = accommodationService.findOne(id);
+        OwnerReview review= ownerReviewService.findOne(id);
+        if (review == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        OwnerReviewDTO ownerReviewDTO = new OwnerReviewDTO(review);
+        return new ResponseEntity<>(ownerReviewDTO, HttpStatus.OK);
+    }
+
 
 
 
@@ -69,19 +84,23 @@ public class OwnerReviewController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-       User reviewer = userService.findById(ownerReviewDTO.getReviewerId());
+        User reviewer = userService.findById(ownerReviewDTO.getReviewerId());
         User reviewed = userService.findById(ownerReviewDTO.getReviewedId());
 
         if (reviewer == null || reviewed == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        if(reservationService.getFinishedUsersReservationsForOwner(reviewer.getId(), reviewed.getId()).isEmpty()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         OwnerReview review = new OwnerReview();
         review.setReviewer(reviewer);
         review.setReviewed(reviewed);
-        review.setId(ownerReviewDTO.getId());
         review.setComment(ownerReviewDTO.getComment());
         review.setRating(ownerReviewDTO.getRating());
+        review.setTimePosted(ownerReviewDTO.getTimePosted());
 
         ownerReviewService.save(review);
 
@@ -89,6 +108,7 @@ public class OwnerReviewController {
     }
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_GUEST')")
+    @Transactional
     public ResponseEntity<Void> deleteOwnerReview(@PathVariable Long id) {
 
         OwnerReview review = ownerReviewService.findOne(id);

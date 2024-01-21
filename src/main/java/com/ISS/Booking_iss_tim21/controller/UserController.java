@@ -1,12 +1,14 @@
 package com.ISS.Booking_iss_tim21.controller;
 
 
+import com.ISS.Booking_iss_tim21.dto.NotificationTypeUpdateRequest;
 import com.ISS.Booking_iss_tim21.dto.UserActivationRequestDTO;
 import com.ISS.Booking_iss_tim21.dto.UserDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.Reservation;
 import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.model.UserActivationRequest;
+import com.ISS.Booking_iss_tim21.model.enumeration.NotificationType;
 import com.ISS.Booking_iss_tim21.repository.UserActivationRequestRepository;
 import com.ISS.Booking_iss_tim21.model.enumeration.Role;
 import com.ISS.Booking_iss_tim21.service.AccommodationService;
@@ -19,9 +21,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +50,8 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-  
+
+
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<List<UserDTO>> getUsers() {
@@ -85,20 +90,14 @@ public class UserController {
         return new ResponseEntity<>(new UserDTO(user), HttpStatus.CREATED);
     }
 
-    //@PreAuthorize("hasAnyAuthority('ROLE_GUEST', 'ROLE_OWNER', 'ROLE_ADMIN')")
     @PutMapping(consumes = "application/json")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO) throws ConstraintViolationException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
 
         User user = userService.findById(userDTO.getId());
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        if(!currentUsername.equals(user.getUsername())) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         // if a user that has the same email exists, don't allow save
@@ -122,7 +121,6 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
 
         User user = userService.findById(id);
 
@@ -130,9 +128,6 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if(!currentUsername.equals(user.getUsername())) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
         if (user.getRole() == Role.GUEST) {
             List<Reservation> currentActiveReservations = reservationService.getCurrentActiveReservationsById(user.getId());
             if(!currentActiveReservations.isEmpty()) {
@@ -199,6 +194,33 @@ public class UserController {
         user = userService.save(user);
 
         return new ResponseEntity<>(new UserDTO(user) , HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/notification/{email}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
+    public ResponseEntity<List<NotificationType>> getUserNotificationTypes(@PathVariable String email) {
+        User user = userService.findByEmail(email);
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(user.getSubscribedNotificationTypes(), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/notification",consumes = "application/json")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
+    public ResponseEntity<UserDTO> updateUserNotificationTypes(@Valid @RequestBody NotificationTypeUpdateRequest request) throws ConstraintViolationException {
+
+        User user = userService.findById(request.getUserId());
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        user.setSubscribedNotificationTypes(request.getSubscribedNotificationTypes());
+
+        user = userService.save(user);
+        return new ResponseEntity<>(new UserDTO(user), HttpStatus.OK);
     }
 }
 

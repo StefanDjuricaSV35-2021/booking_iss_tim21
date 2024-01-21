@@ -20,7 +20,6 @@ public interface AccommodationRepository extends JpaRepository<Accommodation, Lo
     public List<Accommodation> findAllNotEnabled();
     public List<Accommodation> getAccommodationsByLocation(String location);
 
-
     @Query("select a from Accommodation a where a.minGuests <= ?1 and a.maxGuests >= ?1")
     public List<Accommodation> getAccommodationsByNOGuests(int noGuests);
 
@@ -28,4 +27,7 @@ public interface AccommodationRepository extends JpaRepository<Accommodation, Lo
     public List<Accommodation> getAccommodationsByAmenitiesIn(Collection<Amenity> amenities,int size);
 
     public List<Accommodation> getAccommodationsByType(AccommodationType type);
+
+    @Query("select a.name from Accommodation a where a.id=?1")
+    String getAccommodationNameById(Long id);
 }

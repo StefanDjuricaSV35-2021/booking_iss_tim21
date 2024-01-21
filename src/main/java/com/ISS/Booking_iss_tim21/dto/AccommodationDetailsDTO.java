@@ -31,6 +31,7 @@ public class AccommodationDetailsDTO {
     private int daysForCancellation;
     private boolean enabled;
     private boolean perNight;
+    private boolean autoAccepting;
     private String location;
     private List<TimeSlot> dates;
 
@@ -44,7 +45,9 @@ public class AccommodationDetailsDTO {
         setDescription(accommodation.getDescription());
         setAmenities(accommodation.getAmenities());
         setPhotos(accommodation.getPhotos());
+        setEnabled(accommodation.isEnabled());
         setDaysForCancellation(accommodation.getDaysForCancellation());
         setLocation(accommodation.getLocation());
+        setAutoAccepting(accommodation.isAutoAccepting());
     }
 }
