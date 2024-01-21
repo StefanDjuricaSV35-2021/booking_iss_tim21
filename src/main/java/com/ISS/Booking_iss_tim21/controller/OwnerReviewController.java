@@ -6,6 +6,7 @@ import com.ISS.Booking_iss_tim21.model.User;
 import com.ISS.Booking_iss_tim21.service.OwnerReviewService;
 import com.ISS.Booking_iss_tim21.service.ReservationService;
 import com.ISS.Booking_iss_tim21.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -107,6 +108,7 @@ public class OwnerReviewController {
     }
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_GUEST')")
+    @Transactional
     public ResponseEntity<Void> deleteOwnerReview(@PathVariable Long id) {
 
         OwnerReview review = ownerReviewService.findOne(id);
