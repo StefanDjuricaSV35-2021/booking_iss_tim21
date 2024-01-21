@@ -120,7 +120,7 @@ class ReservationRequestControllerTest {
     @WithMockUser(authorities = {"ROLE_ADMIN", "ROLE_OWNER", "ROLE_GUEST"})
     public void testUpdateRequestShouldReturnBadRequest() throws Exception {
         ReservationRequestDTO requestDTO = new ReservationRequestDTO();
-        requestDTO.setId(2L);
+        requestDTO.setId(-1L);
         requestDTO.setStatus(ReservationRequestStatus.Accepted);
         requestDTO.setPrice(200.0);
         requestDTO.setTimeSlot(new TimeSlot());
@@ -130,12 +130,12 @@ class ReservationRequestControllerTest {
 
         String jsonRequest = objectMapper.writeValueAsString(requestDTO);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/auth/reservationRequests")
-                        .contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(MockMvcRequestBuilders.put(END_POINT_PATH).with(csrf())
                         .content(jsonRequest)
-                        .characterEncoding("utf-8"))
-                        .andExpect(status().isBadRequest())
-                        .andDo(print());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                        .andDo(print())
+                        .andExpect(status().isBadRequest());
     }
 
     @Test

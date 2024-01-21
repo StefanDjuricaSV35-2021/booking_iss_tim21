@@ -100,7 +100,6 @@ public class ReservationRequestController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<ReservationRequestDTO> updateReservationRequest(@RequestBody ReservationRequestDTO reservationRequestDTO) {
       ReservationRequest reservationRequest = requestService.findOne(reservationRequestDTO.getId());
-        ReservationRequestStatus statusOriginal = reservationRequest.getStatus();
         if (reservationRequest == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -112,6 +111,7 @@ public class ReservationRequestController {
         if (acc == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        ReservationRequestStatus statusOriginal = reservationRequest.getStatus();
         reservationRequest.setUser(user);
         reservationRequest.setAccommodation(acc);
         reservationRequest.setGuestsNumber(reservationRequestDTO.getGuestsNumber());
