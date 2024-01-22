@@ -74,31 +74,12 @@ public class ReservationRequestController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_OWNER','ROLE_GUEST')")
     public ResponseEntity<ReservationRequestDTO> updateReservationRequest(@RequestBody ReservationRequestDTO reservationRequestDTO) {
-      ReservationRequest reservationRequest = requestService.findOne(reservationRequestDTO.getId());
-        if (reservationRequest == null) {
+        try {
+            ReservationRequest request=requestService.updateReservationRequest(reservationRequestDTO);
+            return new ResponseEntity<>(new ReservationRequestDTO(request), HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        User user = userService.findById(reservationRequestDTO.getUserId());
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        Accommodation acc = accommodationService.findOne(reservationRequestDTO.getAccommodationId());
-        if (acc == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        ReservationRequestStatus statusOriginal = reservationRequest.getStatus();
-        reservationRequest.setUser(user);
-        reservationRequest.setAccommodation(acc);
-        reservationRequest.setGuestsNumber(reservationRequestDTO.getGuestsNumber());
-        reservationRequest.setPrice(reservationRequestDTO.getPrice());
-        reservationRequest.setTimeSlot(reservationRequestDTO.getTimeSlot());
-        reservationRequest.setStatus(reservationRequestDTO.getStatus());
-        if(reservationRequest.getStatus() == ReservationRequestStatus.Accepted && statusOriginal != ReservationRequestStatus.Accepted) {
-            reservationService.acceptReservation(reservationRequest);
-        }
-
-        requestService.save(reservationRequest);
-        return new ResponseEntity<>(new ReservationRequestDTO(reservationRequest), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")

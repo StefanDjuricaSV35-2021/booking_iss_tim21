@@ -114,6 +114,38 @@ public class ReservationRequestService {
 
     }
 
+    public ReservationRequest updateReservationRequest(ReservationRequestDTO reservationRequestDTO) throws NullIdException, InvalidIdException {
+        ReservationRequest reservationRequest = findOne(reservationRequestDTO.getId());
+        if (reservationRequestDTO.getUserId() == null) {
+            throw new NullIdException("User id is null");
+        }
+
+        User user = userService.findById(reservationRequestDTO.getUserId());
+        if (user == null) {
+            throw new InvalidIdException("User id is invalid");
+        }
+
+        if (reservationRequestDTO.getAccommodationId() == null) {
+            throw new NullIdException("Accommodation id is null");
+        }
+        Accommodation acc = accommodationService.findOne(reservationRequestDTO.getAccommodationId());
+        if (acc == null) {
+            throw new InvalidIdException("Accommodation id is invalid");
+        }
+        ReservationRequestStatus statusOriginal = reservationRequest.getStatus();
+        reservationRequest.setUser(user);
+        reservationRequest.setAccommodation(acc);
+        reservationRequest.setGuestsNumber(reservationRequestDTO.getGuestsNumber());
+        reservationRequest.setPrice(reservationRequestDTO.getPrice());
+        reservationRequest.setTimeSlot(reservationRequestDTO.getTimeSlot());
+        reservationRequest.setStatus(reservationRequestDTO.getStatus());
+        if(reservationRequest.getStatus() == ReservationRequestStatus.Accepted && statusOriginal != ReservationRequestStatus.Accepted) {
+            reservationService.acceptReservation(reservationRequest);
+        }
+        save(reservationRequest);
+        return reservationRequest;
+    }
+
     Boolean reservationRequestOverlapsActiveReservation(ReservationRequest request,List<Reservation> reservations){
 
         for(Reservation r:reservations){

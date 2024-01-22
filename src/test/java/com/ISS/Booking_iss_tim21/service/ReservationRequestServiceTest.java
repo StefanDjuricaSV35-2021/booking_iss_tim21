@@ -10,6 +10,7 @@ import com.ISS.Booking_iss_tim21.model.enumeration.ReservationRequestStatus;
 import com.ISS.Booking_iss_tim21.model.enumeration.ReservationStatus;
 import com.ISS.Booking_iss_tim21.repository.ReservationRepository;
 import com.ISS.Booking_iss_tim21.repository.ReservationRequestRepository;
+import com.beust.ah.A;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -222,4 +224,138 @@ public class ReservationRequestServiceTest {
 
     }
 
+
+
+
+    //Nenadovi testovi
+    @Test
+    public void testUpdateReservationRequestNullUserId() throws Exception {
+        ReservationRequestDTO request = new ReservationRequestDTO(1L, null, 1L, 1, 100, new TimeSlot(1630995200, 1743673600), ReservationRequestStatus.Waiting);
+        ReservationRequest reservationRequest = new ReservationRequest(1L, new User(), new Accommodation(), 1, 100, new TimeSlot(1630995200, 1743673600), ReservationRequestStatus.Accepted);
+        Mockito.when(reservationRequestRepository.findById(any())).thenReturn(Optional.of(reservationRequest));
+        NullIdException thrown = assertThrows(NullIdException.class,
+                () -> reservationRequestService.updateReservationRequest(request));
+        assertTrue(thrown.getMessage().contains("User id is null"));
+
+        verify(reservationRequestRepository, times(1)).findById(any());
+        verify(accommodationService, times(0)).findOne(any());
+        verify(userService, times(0)).findById(anyLong());
+        verify(reservationService, times(0)).getActiveAccommodationReservations(any());
+        verify(reservationRequestRepository, times(0)).save(any());
+
+    }
+
+    @Test
+    public void testUpdateReservationRequestInvalidUserId() throws Exception {
+        ReservationRequestDTO request = new ReservationRequestDTO(1L, -1L, 1L, 1, 100, new TimeSlot(1630995200, 1743673600), ReservationRequestStatus.Waiting);
+        ReservationRequest reservationRequest = new ReservationRequest(1L, new User(), new Accommodation(), 1, 100, new TimeSlot(1630995200, 1743673600), ReservationRequestStatus.Accepted);
+        Mockito.when(reservationRequestRepository.findById(any())).thenReturn(Optional.of(reservationRequest));
+        Mockito.when(userService.findById(any())).thenReturn(null);
+        Mockito.when(userService.findById(any())).thenReturn(null);
+
+        InvalidIdException thrown = assertThrows(InvalidIdException.class,
+                () -> reservationRequestService.updateReservationRequest(request));
+        assertTrue(thrown.getMessage().contains("User id is invalid"));
+
+        verify(reservationRequestRepository, times(1)).findById(any());
+        verify(accommodationService, times(0)).findOne(any());
+        verify(userService, times(1)).findById(anyLong());
+        verify(reservationService, times(0)).getActiveAccommodationReservations(any());
+        verify(reservationRequestRepository, times(0)).save(any());
+
+    }
+
+    @Test
+    public void testUpdateReservationRequestNullAccommodationId() throws Exception {
+        ReservationRequestDTO request = new ReservationRequestDTO(1L, 1L, null, 1, 100, new TimeSlot(1630995200, 1743673600), ReservationRequestStatus.Waiting);
+        ReservationRequest reservationRequest = new ReservationRequest(1L, new User(), new Accommodation(), 1, 100, new TimeSlot(1630995200, 1743673600), ReservationRequestStatus.Accepted);
+        Mockito.when(reservationRequestRepository.findById(any())).thenReturn(Optional.of(reservationRequest));
+        Mockito.when(userService.findById(any())).thenReturn(new User());
+
+        NullIdException thrown = assertThrows(NullIdException.class,
+                () -> reservationRequestService.updateReservationRequest(request));
+        assertTrue(thrown.getMessage().contains("Accommodation id is null"));
+
+        verify(reservationRequestRepository, times(1)).findById(any());
+        verify(accommodationService, times(0)).findOne(any());
+        verify(userService, times(1)).findById(anyLong());
+        verify(reservationService, times(0)).getActiveAccommodationReservations(any());
+        verify(reservationRequestRepository, times(0)).save(any());
+
+    }
+
+    @Test
+    public void testUpdateReservationRequestInvalidAccommodationId() throws Exception {
+        ReservationRequestDTO request = new ReservationRequestDTO(1L, 1L, -1L, 1, 100, new TimeSlot(1630995200, 1743673600), ReservationRequestStatus.Waiting);
+
+        ReservationRequest reservationRequest = new ReservationRequest(1L, new User(), new Accommodation(), 1, 100, new TimeSlot(1630995200, 1743673600), ReservationRequestStatus.Accepted);
+        Mockito.when(reservationRequestRepository.findById(any())).thenReturn(Optional.of(reservationRequest));
+
+        Mockito.when(userService.findById(any())).thenReturn(new User());
+        Mockito.when(accommodationService.findOne(any())).thenReturn(null);
+
+        InvalidIdException thrown = assertThrows(InvalidIdException.class,
+                () -> reservationRequestService.updateReservationRequest(request));
+        assertTrue(thrown.getMessage().contains("Accommodation id is invalid"));
+
+        verify(reservationRequestRepository, times(1)).findById(any());
+        verify(accommodationService, times(1)).findOne(any());
+        verify(userService, times(1)).findById(anyLong());
+        verify(reservationService, times(0)).getActiveAccommodationReservations(any());
+        verify(reservationRequestRepository, times(0)).save(any());
+
+    }
+
+    @Test
+    public void testUpdateReservationRequestValidRequestAccepted() throws Exception {
+        ReservationRequestDTO request = new ReservationRequestDTO(1L, 1L, 1L, 1, 100, new TimeSlot(1740995200, 1743673600), ReservationRequestStatus.Accepted);
+        ReservationRequest reservationRequest = new ReservationRequest(1L, new User(), new Accommodation(), 1, 100, new TimeSlot(1630995200, 1743673600), ReservationRequestStatus.Waiting);
+        Mockito.when(reservationRequestRepository.findById(any())).thenReturn(Optional.of(reservationRequest));
+        Mockito.when(userService.findById(any())).thenReturn(new User());
+        Mockito.when(accommodationService.findOne(any())).thenReturn(new Accommodation());
+
+        ReservationRequest req=reservationRequestService.updateReservationRequest(request);
+
+        verify(reservationRequestRepository, times(1)).findById(any());
+        verify(accommodationService, times(1)).findOne(anyLong());
+        verify(userService, times(1)).findById(anyLong());
+        verify(reservationService, times(1)).acceptReservation(any());
+        verify(reservationRequestRepository, times(1)).save(reservationRequestArgumentCaptor.capture());
+
+    }
+    @Test
+    public void testUpdateReservationRequestValidRequestWaiting() throws Exception {
+        ReservationRequestDTO request = new ReservationRequestDTO(1L, 1L, 1L, 1, 100, new TimeSlot(1740995200, 1743673600), ReservationRequestStatus.Waiting);
+        ReservationRequest reservationRequest = new ReservationRequest(1L, new User(), new Accommodation(), 1, 100, new TimeSlot(1630995200, 1743673600), ReservationRequestStatus.Waiting);
+        Mockito.when(reservationRequestRepository.findById(any())).thenReturn(Optional.of(reservationRequest));
+        Mockito.when(userService.findById(any())).thenReturn(new User());
+        Mockito.when(accommodationService.findOne(any())).thenReturn(new Accommodation());
+
+        ReservationRequest req=reservationRequestService.updateReservationRequest(request);
+
+        verify(reservationRequestRepository, times(1)).findById(any());
+        verify(accommodationService, times(1)).findOne(anyLong());
+        verify(userService, times(1)).findById(anyLong());
+        verify(reservationService, times(0)).acceptReservation(any());
+        verify(reservationRequestRepository, times(1)).save(reservationRequestArgumentCaptor.capture());
+
+    }
+
+    @Test
+    public void testUpdateReservationRequestValidRequestStatusWasAccepted() throws Exception {
+        ReservationRequestDTO request = new ReservationRequestDTO(1L, 1L, 1L, 1, 100, new TimeSlot(1740995200, 1743673600), ReservationRequestStatus.Accepted);
+        ReservationRequest reservationRequest = new ReservationRequest(1L, new User(), new Accommodation(), 1, 100, new TimeSlot(1630995200, 1743673600), ReservationRequestStatus.Accepted);
+        Mockito.when(reservationRequestRepository.findById(any())).thenReturn(Optional.of(reservationRequest));
+        Mockito.when(userService.findById(any())).thenReturn(new User());
+        Mockito.when(accommodationService.findOne(any())).thenReturn(new Accommodation());
+
+        ReservationRequest req=reservationRequestService.updateReservationRequest(request);
+
+        verify(reservationRequestRepository, times(1)).findById(any());
+        verify(accommodationService, times(1)).findOne(anyLong());
+        verify(userService, times(1)).findById(anyLong());
+        verify(reservationService, times(0)).acceptReservation(any());
+        verify(reservationRequestRepository, times(1)).save(reservationRequestArgumentCaptor.capture());
+
+    }
 }
