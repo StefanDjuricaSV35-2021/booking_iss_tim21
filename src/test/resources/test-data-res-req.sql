@@ -9,4 +9,4 @@ VALUES (2,1, 3, 150.00, 1, 1643673600, 1644595200, 1);
 INSERT INTO reservation_request (id,accommodation_id, guests_number, price, status, start_date, end_date, user_id)
 VALUES (3,1, 3, 150.00, 1, 1643673600, 1644595200, 1);
 INSERT INTO reservation_request (id,accommodation_id, guests_number, price, status, start_date, end_date, user_id)
-VALUES (4,1, 3, 150.00, 1, 1643673600, 1644595200, 1);
+VALUES (4,1, 3, 150.00, 1, 1643673600, 1644595200, 2);

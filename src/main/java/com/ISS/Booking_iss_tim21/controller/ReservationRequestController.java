@@ -1,5 +1,6 @@
 package com.ISS.Booking_iss_tim21.controller;
 
+import com.ISS.Booking_iss_tim21.exception.NullIdException;
 import com.ISS.Booking_iss_tim21.dto.ReservationRequestDTO;
 import com.ISS.Booking_iss_tim21.model.Accommodation;
 import com.ISS.Booking_iss_tim21.model.ReservationRequest;
@@ -61,39 +62,13 @@ public class ReservationRequestController {
     @PreAuthorize("hasAnyAuthority('ROLE_GUEST')")
     public ResponseEntity<ReservationRequestDTO> createReservationRequest(@RequestBody ReservationRequestDTO reservationRequestDTO) {
 
-        if (reservationRequestDTO.getUserId() == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        User user = userService.findById(reservationRequestDTO.getUserId());
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        if (reservationRequestDTO.getAccommodationId() == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        Accommodation acc = accommodationService.findOne(reservationRequestDTO.getAccommodationId());
-        if (acc == null) {
+        try {
+            ReservationRequest request=requestService.createRequest(reservationRequestDTO);
+            return new ResponseEntity<>(new ReservationRequestDTO(request), HttpStatus.CREATED);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        ReservationRequest reservationRequest = new ReservationRequest();
-        reservationRequest.setId(reservationRequestDTO.getId());
-        reservationRequest.setUser(userService.findById(reservationRequestDTO.getUserId()));
-        reservationRequest.setAccommodation(accommodationService.findOne(reservationRequestDTO.getAccommodationId()));
-        reservationRequest.setGuestsNumber(reservationRequestDTO.getGuestsNumber());
-        reservationRequest.setPrice(reservationRequestDTO.getPrice());
-        reservationRequest.setTimeSlot(reservationRequestDTO.getTimeSlot());
-        reservationRequest.setStatus(reservationRequestDTO.getStatus());
-
-        if(reservationRequest.getAccommodation().isAutoAccepting()){
-            reservationRequest.setStatus(ReservationRequestStatus.Accepted);
-            reservationService.acceptReservation(reservationRequest);
-        }
-
-        requestService.save(reservationRequest);
-
-        return new ResponseEntity<>(new ReservationRequestDTO(reservationRequest), HttpStatus.CREATED);
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
